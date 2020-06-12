@@ -51,8 +51,13 @@ async function getPages() {
   return figmaPages;
 }
 
-async function getImage(node) {
-  const _id = node.replace("-", ":");
+/**
+ * Get a PDF of a Figma node.
+ * @param {string} nodeId The id of the Figma node to grab a PDF of.
+ * @returns {Promise<string>} URL of the generated PDF
+ */
+async function getImage(nodeId) {
+  const _id = nodeId.replace("-", ":");
 
   let image = null;
   try {
