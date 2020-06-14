@@ -1,7 +1,8 @@
 /**
- * Returns a list of Figma Pages, including their children, which are
- * top-level Figma Frames. By convention, Frames and Pages are filtered to only
- * include ones that are visible and start with a capital letter.
+ * Returns a list of Figma Pages and the Figma file name. The pages include
+ * their immediate children, which are top-level Figma Frames. By convention,
+ * Frames and Pages are filtered to only include ones that are visible and
+ * start with a capital letter.
  */
 async function getPages() {
   let figmaFile = null;
@@ -48,7 +49,7 @@ async function getPages() {
     }
   }
 
-  return figmaPages;
+  return [figmaPages, figmaFile.name];
 }
 
 /**

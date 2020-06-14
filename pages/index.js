@@ -1,35 +1,19 @@
-import Head from "next/head";
+import Layout from "../components/layout.js";
 
 async function getStaticProps() {
   const { getPages } = require("../figma/api.js");
-  const pages = await getPages();
-  return { props: { pages } };
+  const [pages, fileName] = await getPages();
+  return {
+    props: {
+      pages,
+      fileId: process.env.FIGMA_FILE_ID,
+      fileName,
+    },
+  };
 }
 
 function Home({ pages }) {
-  return (
-    <div className="container">
-      <Head>
-        <title>Base - Documentation</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <nav>
-        {pages.map((page) => (
-          <div key={page.id}>
-            <div>{page.name}</div>
-            <div>
-              {page.children.map((frame) => (
-                <div key={frame.id}>
-                  <a href={`/${frame.id.replace(":", "-")}`}>{frame.name}</a>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </nav>
-    </div>
-  );
+  return <Layout pages={pages}>Home</Layout>;
 }
 
 export { Home as default, getStaticProps };
