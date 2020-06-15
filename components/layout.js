@@ -7,6 +7,7 @@ import {
   LightThemeMove,
   DarkThemeMove,
 } from "baseui";
+import { Grid, Cell } from "baseui/layout-grid";
 import { Button, KIND, SHAPE, SIZE } from "baseui/button";
 import { StatefulPopover, PLACEMENT } from "baseui/popover";
 import { StatefulMenu } from "baseui/menu";
@@ -106,6 +107,7 @@ function Figma({ size = "24px" }) {
 }
 
 function PageDropdown({ pages }) {
+  const [css] = useStyletron();
   const ITEMS = pages.reduce((acc, cur) => {
     acc[cur.name] = cur.children.map((frame) => ({
       id: frame.id,
@@ -144,8 +146,25 @@ function PageDropdown({ pages }) {
         shape={SHAPE.pill}
         size={SIZE.compact}
         startEnhancer={() => <Book size="16px" />}
+        overrides={{
+          StartEnhancer: {
+            style: {
+              marginRight: "0px",
+              [`@media (min-width: 500px)`]: {
+                marginRight: "12px",
+              },
+            },
+          },
+        }}
       >
-        Guidelines
+        <span
+          className={css({
+            display: "none",
+            [`@media (min-width: 500px)`]: { display: "inline" },
+          })}
+        >
+          Guidelines
+        </span>
       </Button>
     </StatefulPopover>
   );
@@ -160,57 +179,93 @@ function Header({ pages, fileId, fileName, nodeId }) {
         top: "0px",
         width: "100%",
         background: theme.colors.backgroundPrimary,
-        borderBottom: `solid ${theme.borders.border400.borderWidth} ${theme.borders.border400.borderColor}`,
-        display: "flex",
+        borderBottom: `solid 1px ${theme.borders.border400.borderColor}`,
         alignItems: "center",
-        height: "70px",
-        padding: theme.sizing.scale800,
       })}
     >
-      <Link href="/" as="/">
-        <a
-          className={css({
-            display: "flex",
-            alignItems: "center",
-            textDecoration: "none",
-            ":focus": {
-              outline: `solid 3px ${theme.colors.borderAccent}`,
-              outlineOffset: "2px",
-            },
-          })}
-        >
-          <Logo size="24px" />
-          <DisplayXSmall
-            $style={{
-              marginLeft: theme.sizing.scale400,
-              fontSize: theme.typography.HeadingSmall.fontSize,
-            }}
+      <Grid>
+        <Cell span={[1, 3, 6]}>
+          <div
+            className={css({
+              display: "flex",
+              alignItems: "center",
+              height: "70px",
+            })}
           >
-            Design
-          </DisplayXSmall>
-        </a>
-      </Link>
-      <div
-        className={css({
-          marginLeft: "auto",
-          marginRight: theme.sizing.scale400,
-        })}
-      >
-        <PageDropdown pages={pages} />
-      </div>
-      <Button
-        $as="a"
-        href={`https://www.figma.com/file/${fileId}/${fileName}${
-          nodeId ? `?node-id=${nodeId.replace("-", ":")}` : ""
-        }`}
-        target="_blank"
-        kind={KIND.tertiary}
-        shape={SHAPE.pill}
-        startEnhancer={() => <Figma size="16px" />}
-        size={SIZE.compact}
-      >
-        Open in Figma
-      </Button>
+            <Link href="/" as="/">
+              <a
+                className={css({
+                  display: "flex",
+                  alignItems: "center",
+                  textDecoration: "none",
+                  ":focus": {
+                    outline: `solid 3px ${theme.colors.borderAccent}`,
+                    outlineOffset: "2px",
+                  },
+                })}
+              >
+                <Logo size="24px" />
+                <DisplayXSmall
+                  $style={{
+                    marginLeft: theme.sizing.scale400,
+                    fontSize: theme.typography.HeadingSmall.fontSize,
+                  }}
+                >
+                  Design
+                </DisplayXSmall>
+              </a>
+            </Link>
+          </div>
+        </Cell>
+        <Cell span={[3, 5, 6]}>
+          <div
+            className={css({
+              display: "flex",
+              alignItems: "center",
+              height: "70px",
+            })}
+          >
+            <div
+              className={css({
+                marginLeft: "auto",
+                marginRight: theme.sizing.scale400,
+              })}
+            >
+              <PageDropdown pages={pages} />
+            </div>
+            <Button
+              $as="a"
+              href={`https://www.figma.com/file/${fileId}/${fileName}${
+                nodeId ? `?node-id=${nodeId.replace("-", ":")}` : ""
+              }`}
+              target="_blank"
+              kind={KIND.tertiary}
+              shape={SHAPE.pill}
+              startEnhancer={() => <Figma size="16px" />}
+              size={SIZE.compact}
+              overrides={{
+                StartEnhancer: {
+                  style: {
+                    marginRight: "0px",
+                    [`@media (min-width: 500px)`]: {
+                      marginRight: "12px",
+                    },
+                  },
+                },
+              }}
+            >
+              <span
+                className={css({
+                  display: "none",
+                  [`@media (min-width: 500px)`]: { display: "inline" },
+                })}
+              >
+                Open in Figma
+              </span>
+            </Button>
+          </div>
+        </Cell>
+      </Grid>
     </header>
   );
 }
