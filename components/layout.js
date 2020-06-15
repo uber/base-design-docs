@@ -1,7 +1,12 @@
 import Head from "next/head";
 import Link from "next/link";
 
-import { useStyletron, ThemeProvider, DarkThemeMove } from "baseui";
+import {
+  useStyletron,
+  ThemeProvider,
+  LightThemeMove,
+  DarkThemeMove,
+} from "baseui";
 import { Button, KIND, SHAPE, SIZE } from "baseui/button";
 import { StatefulPopover, PLACEMENT } from "baseui/popover";
 import { StatefulMenu } from "baseui/menu";
@@ -114,21 +119,28 @@ function PageDropdown({ pages }) {
       focusLock
       placement={PLACEMENT.bottom}
       content={({ close }) => (
-        <StatefulMenu
-          items={ITEMS}
-          onItemSelect={() => close()}
-          overrides={{
-            Option: {
-              props: {
-                getItemLabel: (item) => item.name,
+        <ThemeProvider theme={LightThemeMove}>
+          <StatefulMenu
+            items={ITEMS}
+            onItemSelect={() => close()}
+            overrides={{
+              ListItemAnchor: {
+                style: {
+                  textDecoration: "none",
+                },
               },
-            },
-          }}
-        />
+              Option: {
+                props: {
+                  getItemLabel: (item) => item.name,
+                },
+              },
+            }}
+          />
+        </ThemeProvider>
       )}
     >
       <Button
-        kind={KIND.secondary}
+        kind={KIND.tertiary}
         shape={SHAPE.pill}
         size={SIZE.compact}
         startEnhancer={() => <Book size="16px" />}
@@ -181,7 +193,7 @@ function Header({ pages, fileId, fileName, nodeId }) {
       <div
         className={css({
           marginLeft: "auto",
-          marginRight: theme.sizing.scale800,
+          marginRight: theme.sizing.scale400,
         })}
       >
         <PageDropdown pages={pages} />
@@ -192,7 +204,7 @@ function Header({ pages, fileId, fileName, nodeId }) {
           nodeId ? `?node-id=${nodeId.replace("-", ":")}` : ""
         }`}
         target="_blank"
-        kind={KIND.secondary}
+        kind={KIND.tertiary}
         shape={SHAPE.pill}
         startEnhancer={() => <Figma size="16px" />}
         size={SIZE.compact}
@@ -208,7 +220,7 @@ function Layout({ children, pages, fileName, fileId, nodeId }) {
   return (
     <div>
       <Head>
-        <title>Base - Documentation</title>
+        <title>Base Documentation</title>
         <link rel="icon" href="/base.svg" />
       </Head>
       <ThemeProvider theme={DarkThemeMove}>
@@ -219,7 +231,7 @@ function Layout({ children, pages, fileName, fileId, nodeId }) {
           nodeId={nodeId}
         />
       </ThemeProvider>
-      <main className={css({ marginTop: "16px" })}>{children}</main>
+      <main className={css({ marginTop: "70px" })}>{children}</main>
     </div>
   );
 }
