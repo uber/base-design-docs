@@ -60,7 +60,7 @@ function Home({ pages, fileId, fileName }) {
               filter: "grayscale(100%)",
               objectFit: "cover",
             })}
-            src="/curvy.jpg"
+            src="/freeway.jpg"
           />
         </Cell>
       </Grid>
