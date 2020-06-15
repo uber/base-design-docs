@@ -126,6 +126,12 @@ function PageDropdown({ pages }) {
             items={ITEMS}
             onItemSelect={() => close()}
             overrides={{
+              List: {
+                style: {
+                  height: "400px",
+                  width: "300px",
+                },
+              },
               ListItemAnchor: {
                 style: {
                   textDecoration: "none",
