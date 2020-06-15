@@ -46,7 +46,11 @@ function Home({ pages, fileId, fileName }) {
             </div>
           </div>
         </Cell>
-        <Cell span={[4, 4, 6]} skip={[0, 1, 2]}>
+        <Cell
+          span={[0, 4, 6]}
+          skip={[0, 1, 2]}
+          overrides={{ Cell: { style: { display: "none" } } }}
+        >
           <img
             alt="Cars driving down a winding road."
             className={css({
