@@ -53,7 +53,7 @@ async function getPages() {
 }
 
 /**
- * Get a PDF of a Figma node.
+ * Get a PDF of a Figma node id.
  * @param {string} nodeId The id of the Figma node to grab a PDF of.
  * @returns {Promise<string>} URL of the generated PDF
  */
@@ -73,7 +73,7 @@ async function getImage(nodeId) {
     const json = await res.json();
     image = json.images[_id] || null;
   } catch (er) {
-    console.log(`there was a problem fetching the image for [${node}]`);
+    console.log(`there was a problem fetching the image for [${nodeId}]`);
     console.log(er);
   }
 
