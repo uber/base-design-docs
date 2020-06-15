@@ -175,6 +175,7 @@ function Header({ pages, fileId, fileName, nodeId }) {
   return (
     <header
       className={css({
+        zIndex: "1",
         position: "fixed",
         top: "0px",
         width: "100%",

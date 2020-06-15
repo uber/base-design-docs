@@ -5,7 +5,7 @@ import { Grid, Cell } from "baseui/layout-grid";
 import { StyledLink } from "baseui/link";
 
 import Layout from "../components/layout.js";
-import { DisplaySmall } from "baseui/typography";
+import { Display, ParagraphMedium, DisplayXSmall } from "baseui/typography";
 
 async function getStaticProps() {
   const { getPages } = require("../figma/api.js");
@@ -19,37 +19,95 @@ async function getStaticProps() {
   };
 }
 
-function Home({ pages }) {
+function Home({ pages, fileId, fileName }) {
   const [css, theme] = useStyletron();
   return (
-    <Layout pages={pages}>
-      <Grid gridGaps={24}>
-        {pages.map((page) => {
-          return (
-            <Cell span={[4, 4, 3]} key={page.id}>
-              <div className={css({ marginBottom: theme.sizing.scale400 })}>
-                <DisplaySmall>{page.name}</DisplaySmall>
-              </div>
-              <div>
-                {page.children.map((frame) => {
-                  return (
-                    <div
-                      key={frame.id}
-                      className={css({ marginBottom: theme.sizing.scale200 })}
-                    >
-                      <Link href={`/[nodeId]`} as={`/${frame.id}`} passHref>
-                        <StyledLink $style={{ textDecoration: "none" }}>
-                          {frame.name}
-                        </StyledLink>
-                      </Link>
-                    </div>
-                  );
-                })}
-              </div>
-            </Cell>
-          );
-        })}
+    <Layout pages={pages} fileId={fileId} fileName={fileName}>
+      <Grid>
+        <Cell span={[4, 3, 4]}>
+          <div
+            className={css({
+              height: "calc(100vh - 70px)",
+              maxHeight: "1000px",
+              display: "flex",
+              alignItems: "flex-end",
+              paddingBottom: theme.sizing.scale1000,
+            })}
+          >
+            <div>
+              <Display>Base</Display>
+              <DisplayXSmall color="contentSecondary">
+                Documentation
+              </DisplayXSmall>
+              <ParagraphMedium color="contentTertiary">
+                Reference this site for both high-level patterns as well as
+                component specific guidelines when using the Base design system.
+              </ParagraphMedium>
+            </div>
+          </div>
+        </Cell>
+        <Cell span={[4, 4, 6]} skip={[0, 1, 2]}>
+          <img
+            alt="Cars driving down a winding road."
+            className={css({
+              height: "calc(100vh - 70px)",
+              maxHeight: "1000px",
+              width: "100%",
+              filter: "grayscale(100%)",
+              objectFit: "cover",
+            })}
+            src="/curvy.jpg"
+          />
+        </Cell>
       </Grid>
+      <div
+        className={css({
+          paddingTop: theme.sizing.scale2400,
+          paddingBottom: theme.sizing.scale2400,
+        })}
+      >
+        <Grid>
+          {pages.map((page) => {
+            return (
+              <Cell span={[4, 4, 3]} key={page.id}>
+                <ParagraphMedium marginBottom="scale800">
+                  {page.name}
+                </ParagraphMedium>
+                <div>
+                  {page.children.map((frame) => {
+                    return (
+                      <div
+                        key={frame.id}
+                        className={css({ marginBottom: theme.sizing.scale200 })}
+                      >
+                        <Link href={`/[nodeId]`} as={`/${frame.id}`} passHref>
+                          <a
+                            className={css({
+                              ...theme.typography.ParagraphMedium,
+                              textDecoration: "none",
+                              color: theme.colors.contentTertiary,
+                              transition: `${theme.animation.timing200} color ${theme.animation.easeInQuinticCurve}`,
+                              ":focus": {
+                                outline: `solid 2px ${theme.colors.accent}`,
+                                outlineOffset: "2px",
+                              },
+                              ":hover": {
+                                color: theme.colors.black,
+                              },
+                            })}
+                          >
+                            {frame.name}
+                          </a>
+                        </Link>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Cell>
+            );
+          })}
+        </Grid>
+      </div>
     </Layout>
   );
 }

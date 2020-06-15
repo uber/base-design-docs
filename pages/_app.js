@@ -15,7 +15,7 @@ function App({ Component, pageProps }) {
   return (
     <div>
       <StyletronProvider value={styletron} debug={debug} debugAfterHydration>
-        <BaseProvider theme={LightThemeMove}>
+        <BaseProvider theme={LightThemeMove} zIndex={2}>
           <Component {...pageProps} />
         </BaseProvider>
       </StyletronProvider>
@@ -26,6 +26,10 @@ function App({ Component, pageProps }) {
         }
         body {
           margin: 0;
+        }
+        ::selection {
+          background: #276ef1;
+          color: white;
         }
       `}</style>
     </div>
