@@ -66,15 +66,15 @@ function Home({ pages, fileId, fileName }) {
       </Grid>
       <div
         className={css({
-          paddingTop: theme.sizing.scale2400,
-          paddingBottom: theme.sizing.scale2400,
+          paddingTop: theme.sizing.scale1600,
+          paddingBottom: theme.sizing.scale1600,
         })}
       >
         <Grid>
           {pages.map((page) => {
             return (
               <Cell span={[4, 4, 3]} key={page.id}>
-                <ParagraphMedium marginBottom="scale800">
+                <ParagraphMedium marginBottom="scale600" marginTop="scale1000">
                   {page.name}
                 </ParagraphMedium>
                 <div>
