@@ -1,30 +1,98 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Development
 
-## Getting Started
-
-First, run the development server:
+First, clone and install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
+$ git clone https://github.com/uber/base-design-docs.git
+$ cd base-design-docs
+$ yarn
+```
+
+Then, create a `.env.local` file like so:
+
+```bash
+# The figma file to build pages from
+FIGMA_FILE_ID=XYZ
+# A figma API auth token with access to the above file
+FIGMA_AUTH_TOKEN=XYZ
+```
+
+Then, run the development server:
+
+```bash
+$ yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+Pages auto-update as you edit the file.
 
-## Learn More
+## How this works
 
-To learn more about Next.js, take a look at the following resources:
+This project is built with Next.js and Vercel.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+We use `getStaticPaths` to render a webpage for each top-level Frame in our Figma documentation File. So, what is a top-level Frame?
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+First, recall that every Figma File has the following structure:
 
-## Deploy on Vercel
+```
+File > Page[] > Frame[]
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Every File can have multiple Pages, which in turn can have multiple Frames. We render a webpage for every top-level Frame within each Page.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Take the following Figma file structure:
+
+```
+- Docs
+  - Setup
+    - Getting started
+    - Living styleguides
+  - Color
+    - Light tokens
+    - Dark tokens
+  - Typography
+    - Uber Move
+    - Uber Move Mono
+  - Grid
+    - Columns
+    - Rows
+```
+
+This results in the following webpages being rendered:
+
+```
+- Getting started
+- Living styleguides
+- Light tokens
+- Dark tokens
+- Uber Move
+- Uber Move Mono
+- Columns
+- Rows
+```
+
+There are a couple more conventions to keep in mind:
+
+- We only use Pages that start with a capital letter.
+- We only use Frames that start with a captial letter and are visible.
+
+So, given any arbitrary File, provided at build time as `FIGMA_FILE_ID`, so long as the file follows the above conventions, we can build a website.
+
+### Rendering a Frame
+
+You might wonder how we render a Frame as a webpage. For now, we just ask the Figma API for a PDF of the Frame at build-time. We receive a link from the API, which we simply embed on the page.
+
+We've done some work on rendering the Frame as html but for a large File it takes quite a long time to query all of the JSON necessary to render the Frame accurately.
+
+There are also many small issues that make it difficult to render things perfectly. For instance, designers frequently use spaces and newlines in text blocks to align separate chunks of text. The Figma API doesn't always return the characters needed to render those text blocks; the information is simply lost. In other cases, we might request an SVG of a vector but it comes back as gobbledegook because of some deeply nested embeded Frame.
+
+This isn't to say the Figma API is buggy, though sometimes it does die on an especially large Frame. It's more so that there is a decent amount of logic required to perfectly render Figma Nodes and the page doesn't look good until you are near perfect.
+
+So, the issues aren't surmountable, but the benefit of wading through all of them is questionable. The main benefit for an html rendering of each Frame would be making the pages indexable, useful for SEO and cross page searches.
+
+The other big feature for html is the possibility of responsive pages. The problem here is that, at this time, it isn't clear if you can do responsive pages without an excessive amount of convention in your Figma File. We want our designers to focus on presenting useful documentation, not fussing over the rules for adding it.
+
+At a certain point a CMS is probably better suited for delivering structured data that can be rendered nicely across multiple mediums.
+
+So with all of this considered, for now we use PDFs.
