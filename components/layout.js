@@ -247,6 +247,7 @@ function Header({ pages, fileId, fileName, nodeId }) {
                 nodeId ? `?node-id=${nodeId.replace("-", ":")}` : ""
               }`}
               target="_blank"
+              rel="noopener"
               kind={KIND.tertiary}
               shape={SHAPE.pill}
               startEnhancer={() => <Figma size="16px" />}
