@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import {
   useStyletron,
@@ -107,7 +108,8 @@ function Figma({ size = "24px" }) {
 }
 
 function PageDropdown({ pages }) {
-  const [css] = useStyletron();
+  const [css, theme] = useStyletron();
+  const router = useRouter();
   const ITEMS = pages.reduce((acc, cur) => {
     acc[cur.name] = cur.children.map((frame) => ({
       id: frame.id,
@@ -124,7 +126,13 @@ function PageDropdown({ pages }) {
         <ThemeProvider theme={LightThemeMove}>
           <StatefulMenu
             items={ITEMS}
-            onItemSelect={() => close()}
+            onItemSelect={(params) => {
+              // Keyboard events do not trigger the link so we do it manually.
+              if (params.event.type === "keydown") {
+                router.push("/[nodeId]", params.item.href);
+              }
+              close();
+            }}
             overrides={{
               List: {
                 style: {
@@ -133,8 +141,22 @@ function PageDropdown({ pages }) {
                 },
               },
               ListItemAnchor: {
-                style: {
-                  textDecoration: "none",
+                component: ({ ...props }) => {
+                  return (
+                    <Link href="/[nodeId]" as={props.href}>
+                      <a
+                        className={css({
+                          display: "block",
+                          color: props.$item.isHighlighted
+                            ? theme.colors.black
+                            : theme.colors.contentTertiary,
+                          textDecoration: "none",
+                        })}
+                      >
+                        {props.children}
+                      </a>
+                    </Link>
+                  );
                 },
               },
               Option: {
