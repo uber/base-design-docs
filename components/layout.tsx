@@ -13,8 +13,13 @@ import { Button, KIND, SHAPE, SIZE } from "baseui/button";
 import { StatefulPopover, PLACEMENT } from "baseui/popover";
 import { StatefulMenu } from "baseui/menu";
 import { DisplayXSmall } from "baseui/typography";
+import { ReactChildren } from "react";
 
-function Book({ size = "24px" }) {
+interface IconProps {
+  size?: string;
+}
+
+function Book({ size = "24px" }: IconProps) {
   return (
     <svg
       width={size}
@@ -50,8 +55,8 @@ function Book({ size = "24px" }) {
   );
 }
 
-function Logo({ size = "24px" }) {
-  const [css, theme] = useStyletron();
+function Logo({ size = "24px" }: IconProps) {
+  const [, theme] = useStyletron();
   return (
     <svg
       width={size}
@@ -78,9 +83,9 @@ function Logo({ size = "24px" }) {
   );
 }
 
-function Figma({ size = "24px" }) {
+function Figma({ size = "16px" }: IconProps) {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
       <title>Figma (filled)</title>
       <path
         d="M5 4c0 1.66 1.34 3 3 3h3V1H8C6.34 1 5 2.34 5 4z"
@@ -106,7 +111,7 @@ function Figma({ size = "24px" }) {
   );
 }
 
-function PageDropdown({ pages }) {
+function PageDropdown({ pages }: { pages: any[] }) {
   const [css, theme] = useStyletron();
   const router = useRouter();
   const ITEMS = pages.reduce((acc, cur) => {
@@ -140,7 +145,15 @@ function PageDropdown({ pages }) {
                 },
               },
               // @ts-ignore - Missing type in baseui
-              ListItemAnchor: ({ children, href, $item }) => {
+              ListItemAnchor: function ListItemAnchor({
+                children,
+                href,
+                $item,
+              }: {
+                children: ReactChildren;
+                href: string;
+                $item: { isHighlighted: boolean };
+              }) {
                 return (
                   <Link href="/[nodeId]" as={href}>
                     <a
@@ -196,7 +209,14 @@ function PageDropdown({ pages }) {
   );
 }
 
-function Header({ pages, fileId, fileName, nodeId }) {
+interface HeaderProps {
+  pages: any[];
+  fileId: string;
+  fileName: string;
+  nodeId?: string;
+}
+
+function Header({ pages, fileId, fileName, nodeId = null }: HeaderProps) {
   const [css, theme] = useStyletron();
   return (
     <header
@@ -300,7 +320,21 @@ function Header({ pages, fileId, fileName, nodeId }) {
   );
 }
 
-function Layout({ children, pages, fileName, fileId, nodeId = null }) {
+interface LayoutProps {
+  children?: any; // TODO: fix this children type
+  pages: any[];
+  fileName: string;
+  fileId: string;
+  nodeId?: string;
+}
+
+function Layout({
+  children,
+  pages,
+  fileName,
+  fileId,
+  nodeId = null,
+}: LayoutProps) {
   const [css] = useStyletron();
   return (
     <div>

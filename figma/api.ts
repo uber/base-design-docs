@@ -40,11 +40,11 @@ async function getPages() {
 
   // By convention, we only use *visible* Figma Frames starting with a capital
   // letter.
-  for (let page of figmaPages) {
+  for (const page of figmaPages) {
     page.children = page.children.filter(
       (frame) => frame.name.match(/^[A-Z]/) && frame.visible !== false
     );
-    for (let frame of page.children) {
+    for (const frame of page.children) {
       frame.id = frame.id.replace(":", "-");
     }
   }

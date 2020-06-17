@@ -18,7 +18,12 @@ async function getStaticProps() {
   };
 }
 
-function Home({ pages, fileId, fileName }) {
+interface HomeProps {
+  pages: any[];
+  fileId: string;
+  fileName: string;
+}
+function Home({ pages, fileId, fileName }: HomeProps) {
   const [css, theme] = useStyletron();
   return (
     <Layout pages={pages} fileId={fileId} fileName={fileName}>
@@ -81,7 +86,9 @@ function Home({ pages, fileId, fileName }) {
                     return (
                       <div
                         key={frame.id}
-                        className={css({ marginBottom: theme.sizing.scale200 })}
+                        className={css({
+                          marginBottom: theme.sizing.scale200,
+                        })}
                       >
                         <Link href={`/[nodeId]`} as={`/${frame.id}`} passHref>
                           <a

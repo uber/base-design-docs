@@ -1,3 +1,5 @@
+import { AppProps } from "next/app";
+
 import { Provider as StyletronProvider, DebugEngine } from "styletron-react";
 import { Client, Server } from "styletron-engine-monolithic";
 import { BaseProvider, LightThemeMove } from "baseui";
@@ -11,7 +13,7 @@ const styletron = isServer
 const debug =
   process.env.NODE_ENV === "production" ? void 0 : new DebugEngine();
 
-function App({ Component, pageProps }) {
+function App({ Component, pageProps }: AppProps) {
   return (
     <div>
       <StyletronProvider value={styletron} debug={debug} debugAfterHydration>
