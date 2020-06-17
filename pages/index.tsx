@@ -2,10 +2,9 @@ import Link from "next/link";
 
 import { useStyletron } from "baseui";
 import { Grid, Cell } from "baseui/layout-grid";
-import { StyledLink } from "baseui/link";
-
-import Layout from "../components/layout.js";
 import { Display, ParagraphMedium, DisplayXSmall } from "baseui/typography";
+
+import Layout from "../components/layout";
 
 async function getStaticProps() {
   const { getPages } = require("../figma/api.js");

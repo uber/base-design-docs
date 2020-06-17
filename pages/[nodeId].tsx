@@ -1,4 +1,4 @@
-import Layout from "../components/layout.js";
+import Layout from "../components/layout";
 
 async function getStaticPaths() {
   const { getPages } = require("../figma/api.js");
