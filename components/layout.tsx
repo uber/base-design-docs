@@ -13,8 +13,13 @@ import { Button, KIND, SHAPE, SIZE } from "baseui/button";
 import { StatefulPopover, PLACEMENT } from "baseui/popover";
 import { StatefulMenu } from "baseui/menu";
 import { DisplayXSmall } from "baseui/typography";
+import { ReactChildren } from "react";
 
-function Book({ size = "24px" }) {
+interface IconProps {
+  size?: string;
+}
+
+function Book({ size = "24px" }: IconProps) {
   return (
     <svg
       width={size}
@@ -50,8 +55,8 @@ function Book({ size = "24px" }) {
   );
 }
 
-function Logo({ size = "24px" }) {
-  const [css, theme] = useStyletron();
+function Logo({ size = "24px" }: IconProps) {
+  const [, theme] = useStyletron();
   return (
     <svg
       width={size}
@@ -59,7 +64,6 @@ function Logo({ size = "24px" }) {
       viewBox="0 0 200 201"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      alt="Base Logo"
     >
       <path
         d="M89.9745 30.5439C95.445 25.0735 104.314 25.0735 109.785 30.5439L169.215 89.9745C174.686 95.445 174.686 104.314 169.215 109.785L109.785 169.215C104.314 174.686 95.445 174.686 89.9745 169.215L30.544 109.785C25.0735 104.314 25.0735 95.445 30.544 89.9745L89.9745 30.5439Z"
@@ -79,9 +83,9 @@ function Logo({ size = "24px" }) {
   );
 }
 
-function Figma({ size = "24px" }) {
+function Figma({ size = "16px" }: IconProps) {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
       <title>Figma (filled)</title>
       <path
         d="M5 4c0 1.66 1.34 3 3 3h3V1H8C6.34 1 5 2.34 5 4z"
@@ -107,7 +111,7 @@ function Figma({ size = "24px" }) {
   );
 }
 
-function PageDropdown({ pages }) {
+function PageDropdown({ pages }: { pages: any[] }) {
   const [css, theme] = useStyletron();
   const router = useRouter();
   const ITEMS = pages.reduce((acc, cur) => {
@@ -140,24 +144,31 @@ function PageDropdown({ pages }) {
                   width: "300px",
                 },
               },
-              ListItemAnchor: {
-                component: ({ ...props }) => {
-                  return (
-                    <Link href="/[nodeId]" as={props.href}>
-                      <a
-                        className={css({
-                          display: "block",
-                          color: props.$item.isHighlighted
-                            ? theme.colors.black
-                            : theme.colors.contentTertiary,
-                          textDecoration: "none",
-                        })}
-                      >
-                        {props.children}
-                      </a>
-                    </Link>
-                  );
-                },
+              // @ts-ignore - Missing type in baseui
+              ListItemAnchor: function ListItemAnchor({
+                children,
+                href,
+                $item,
+              }: {
+                children: ReactChildren;
+                href: string;
+                $item: { isHighlighted: boolean };
+              }) {
+                return (
+                  <Link href="/[nodeId]" as={href}>
+                    <a
+                      className={css({
+                        display: "block",
+                        color: $item.isHighlighted
+                          ? theme.colors.black
+                          : theme.colors.contentTertiary,
+                        textDecoration: "none",
+                      })}
+                    >
+                      {children}
+                    </a>
+                  </Link>
+                );
               },
               Option: {
                 props: {
@@ -198,7 +209,14 @@ function PageDropdown({ pages }) {
   );
 }
 
-function Header({ pages, fileId, fileName, nodeId }) {
+interface HeaderProps {
+  pages: any[];
+  fileId: string;
+  fileName: string;
+  nodeId?: string;
+}
+
+function Header({ pages, fileId, fileName, nodeId = null }: HeaderProps) {
   const [css, theme] = useStyletron();
   return (
     <header
@@ -264,6 +282,7 @@ function Header({ pages, fileId, fileName, nodeId }) {
               <PageDropdown pages={pages} />
             </div>
             <Button
+              // @ts-ignore - Missing type in baseui
               $as="a"
               href={`https://www.figma.com/file/${fileId}/${fileName}${
                 nodeId ? `?node-id=${nodeId.replace("-", ":")}` : ""
@@ -301,7 +320,21 @@ function Header({ pages, fileId, fileName, nodeId }) {
   );
 }
 
-function Layout({ children, pages, fileName, fileId, nodeId }) {
+interface LayoutProps {
+  children?: any; // TODO: fix this children type
+  pages: any[];
+  fileName: string;
+  fileId: string;
+  nodeId?: string;
+}
+
+function Layout({
+  children,
+  pages,
+  fileName,
+  fileId,
+  nodeId = null,
+}: LayoutProps) {
   const [css] = useStyletron();
   return (
     <div>

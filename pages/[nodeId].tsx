@@ -1,7 +1,7 @@
-import Layout from "../components/layout.js";
+import Layout from "../components/layout";
 
 async function getStaticPaths() {
-  const { getPages } = require("../figma/api.js");
+  const { getPages } = require("../figma/api.ts");
   const [pages] = await getPages();
   const paths = pages
     .reduce((acc, page) => {
@@ -12,7 +12,7 @@ async function getStaticPaths() {
 }
 
 async function getStaticProps({ params }) {
-  const { getPages, getImage } = require("../figma/api.js");
+  const { getPages, getImage } = require("../figma/api.ts");
   const [pages, fileName] = await getPages();
   const image = await getImage(params.nodeId);
   return {
@@ -26,7 +26,14 @@ async function getStaticProps({ params }) {
   };
 }
 
-function Node({ pages, image, nodeId, fileId, fileName }) {
+interface NodeProps {
+  pages: any[];
+  image: string;
+  nodeId: string;
+  fileId: string;
+  fileName: string;
+}
+function Node({ pages, image, nodeId, fileId, fileName }: NodeProps) {
   return (
     <Layout pages={pages} nodeId={nodeId} fileId={fileId} fileName={fileName}>
       {image ? (

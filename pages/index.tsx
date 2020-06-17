@@ -2,13 +2,12 @@ import Link from "next/link";
 
 import { useStyletron } from "baseui";
 import { Grid, Cell } from "baseui/layout-grid";
-import { StyledLink } from "baseui/link";
-
-import Layout from "../components/layout.js";
 import { Display, ParagraphMedium, DisplayXSmall } from "baseui/typography";
 
+import Layout from "../components/layout";
+
 async function getStaticProps() {
-  const { getPages } = require("../figma/api.js");
+  const { getPages } = require("../figma/api.ts");
   const [pages, fileName] = await getPages();
   return {
     props: {
@@ -19,7 +18,13 @@ async function getStaticProps() {
   };
 }
 
-function Home({ pages, fileId, fileName }) {
+interface HomeProps {
+  pages: any[];
+  fileId: string;
+  fileName: string;
+}
+
+function Home({ pages, fileId, fileName }: HomeProps) {
   const [css, theme] = useStyletron();
   return (
     <Layout pages={pages} fileId={fileId} fileName={fileName}>
@@ -82,7 +87,9 @@ function Home({ pages, fileId, fileName }) {
                     return (
                       <div
                         key={frame.id}
-                        className={css({ marginBottom: theme.sizing.scale200 })}
+                        className={css({
+                          marginBottom: theme.sizing.scale200,
+                        })}
                       >
                         <Link href={`/[nodeId]`} as={`/${frame.id}`} passHref>
                           <a
