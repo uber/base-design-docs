@@ -7,7 +7,7 @@ import { Display, ParagraphMedium, DisplayXSmall } from "baseui/typography";
 import Layout from "../components/layout";
 
 async function getStaticProps() {
-  const { getPages } = require("../figma/api.js");
+  const { getPages } = require("../figma/api.ts");
   const [pages, fileName] = await getPages();
   return {
     props: {
