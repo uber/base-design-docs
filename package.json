@@ -12,7 +12,6 @@
     "next": "9.4.4",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "styletron-engine-atomic": "^1.4.6",
     "styletron-engine-monolithic": "^0.0.3",
     "styletron-react": "^5.2.7"
   }
