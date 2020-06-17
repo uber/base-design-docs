@@ -59,7 +59,6 @@ function Logo({ size = "24px" }) {
       viewBox="0 0 200 201"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      alt="Base Logo"
     >
       <path
         d="M89.9745 30.5439C95.445 25.0735 104.314 25.0735 109.785 30.5439L169.215 89.9745C174.686 95.445 174.686 104.314 169.215 109.785L109.785 169.215C104.314 174.686 95.445 174.686 89.9745 169.215L30.544 109.785C25.0735 104.314 25.0735 95.445 30.544 89.9745L89.9745 30.5439Z"
@@ -140,24 +139,23 @@ function PageDropdown({ pages }) {
                   width: "300px",
                 },
               },
-              ListItemAnchor: {
-                component: ({ ...props }) => {
-                  return (
-                    <Link href="/[nodeId]" as={props.href}>
-                      <a
-                        className={css({
-                          display: "block",
-                          color: props.$item.isHighlighted
-                            ? theme.colors.black
-                            : theme.colors.contentTertiary,
-                          textDecoration: "none",
-                        })}
-                      >
-                        {props.children}
-                      </a>
-                    </Link>
-                  );
-                },
+              // @ts-ignore - Missing type in baseui
+              ListItemAnchor: ({ children, href, $item }) => {
+                return (
+                  <Link href="/[nodeId]" as={href}>
+                    <a
+                      className={css({
+                        display: "block",
+                        color: $item.isHighlighted
+                          ? theme.colors.black
+                          : theme.colors.contentTertiary,
+                        textDecoration: "none",
+                      })}
+                    >
+                      {children}
+                    </a>
+                  </Link>
+                );
               },
               Option: {
                 props: {
@@ -264,6 +262,7 @@ function Header({ pages, fileId, fileName, nodeId }) {
               <PageDropdown pages={pages} />
             </div>
             <Button
+              // @ts-ignore - Missing type in baseui
               $as="a"
               href={`https://www.figma.com/file/${fileId}/${fileName}${
                 nodeId ? `?node-id=${nodeId.replace("-", ":")}` : ""
@@ -301,7 +300,7 @@ function Header({ pages, fileId, fileName, nodeId }) {
   );
 }
 
-function Layout({ children, pages, fileName, fileId, nodeId }) {
+function Layout({ children, pages, fileName, fileId, nodeId = null }) {
   const [css] = useStyletron();
   return (
     <div>
