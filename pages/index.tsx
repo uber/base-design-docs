@@ -23,6 +23,7 @@ interface HomeProps {
   fileId: string;
   fileName: string;
 }
+
 function Home({ pages, fileId, fileName }: HomeProps) {
   const [css, theme] = useStyletron();
   return (
