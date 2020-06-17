@@ -1,5 +1,30 @@
 steps:
-  - label: "Example Test"
-    command: echo "Hello!"
+  # Build the image in a single place for all parallel steps to leverage the same image.
+  - name: ":docker: :package: unit"
+    plugins:
+      "docker-compose#v3.0.3":
+        build: base-design-docs
+        image-repository: 027047743804.dkr.ecr.us-east-2.amazonaws.com/uber
+    agents:
+      queue: builders
+
+  # Wait until all images are built.
+  # This way we can download the built image from a registry instead of building each for each test task.
+  - wait
+
+  # All of the commands after the wait are run in parallel.
+  - name: ":typescript:"
+    command: yarn tsc
+    plugins:
+      "docker-compose#v3.0.3":
+        run: base-design-docs
+    agents:
+      queue: workers
+
+  - name: ":eslint:"
+    command: yarn lint
+    plugins:
+      "docker-compose#v3.0.3":
+        run: base-design-docs
     agents:
       queue: workers
