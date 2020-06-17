@@ -13,6 +13,7 @@ Then, create a `.env.local` file like so:
 ```bash
 # The figma file to build pages from
 FIGMA_FILE_ID=XYZ
+
 # A figma API auth token with access to the above file
 FIGMA_AUTH_TOKEN=XYZ
 ```
@@ -92,17 +93,9 @@ So, given any arbitrary File, provided at build-time as `FIGMA_FILE_ID`, so long
 
 You might wonder how we render a Frame as a webpage. For now, we just ask the Figma API for a PDF of the Frame at build-time. We receive a link from the API, which we simply embed on the page.
 
-We've done some work on rendering the Frame as html but for a large File it takes quite a long time to query all of the JSON necessary to render the Frame accurately.
+We've also done some prototyping where we render the Frame as HTML & CSS (through React). The main benefit is that the pages are indexable— which is useful for SEO and cross-page search. It would also be interesting if the webpages could be made responsive.
 
-There are also many small issues that make it difficult to render things perfectly. For instance, designers frequently use spaces and newlines in text blocks to align separate chunks of text. The Figma API doesn't always return the characters needed to render those text blocks; the information is simply lost. In other cases, we might request an SVG of a vector but it comes back as gobbledegook because of a deeply nested embeded Frame.
-
-There is a decent amount of work required to perfectly render Figma Nodes and it isn't worthwhile unless you are near perfect.
-
-So, the issues aren't surmountable, but the benefits of wading through all of them is questionable.
-
-The main benefit for an html rendering of each Frame would be making the pages indexable. This is useful for SEO and cross-page searches.
-
-The other big feature for html is the possibility of responsive pages. The problem here is that it isn't clear if you can do responsive pages without an excessive amount of convention in your Figma File. We want our designers to focus on presenting useful documentation, not fussing over the rules for adding it.
+There have been a lot of issues with the HTML & CSS approach though. To start, it isn't clear if you can do responsive pages without an excessive amount of convention in your Figma File. We want our designers to focus on presenting useful documentation, not fussing over the rules for adding it. Furthermore, for a large File, the API can take quite a long time to query all of the JSON necessary to render the Frame accurately.
 
 At a certain point a CMS is probably better suited for delivering structured data that can be rendered nicely across multiple mediums.
 
