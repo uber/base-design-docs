@@ -1,17 +1,9 @@
 import { AppProps } from "next/app";
 
-import { Provider as StyletronProvider, DebugEngine } from "styletron-react";
-import { Client, Server } from "styletron-engine-monolithic";
+import { Provider as StyletronProvider } from "styletron-react";
 import { BaseProvider, LightThemeMove } from "baseui";
 
-// Styletron setup
-const isServer = typeof window === "undefined";
-const getHydrate = () => document.getElementsByClassName("_styletron_hydrate_");
-const styletron = isServer
-  ? new Server()
-  : new Client({ hydrate: getHydrate() });
-const debug =
-  process.env.NODE_ENV === "production" ? void 0 : new DebugEngine();
+import { styletron, debug } from "../lib/styletron";
 
 function App({ Component, pageProps }: AppProps) {
   return (
@@ -21,7 +13,6 @@ function App({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </BaseProvider>
       </StyletronProvider>
-
       <style jsx global>{`
         * {
           box-sizing: border-box;

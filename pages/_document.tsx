@@ -1,14 +1,23 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
+import { Provider as StyletronProvider } from "styletron-react";
 
-class MyDocument extends Document {
+import { styletron } from "../lib/styletron";
+
+class MyDocument extends Document<{ stylesheets: any[] }> {
   static async getInitialProps(ctx) {
     const initialProps = await Document.getInitialProps(ctx);
-    return { ...initialProps };
+    const page = ctx.renderPage((App) => (props) => (
+      <StyletronProvider value={styletron}>
+        <App {...props} />
+      </StyletronProvider>
+    ));
+    const stylesheets = styletron.getStylesheets() || [];
+    return { ...initialProps, page, stylesheets };
   }
 
   render() {
     return (
-      <Html>
+      <Html lang="en">
         <Head>
           <link
             rel="preload"
@@ -24,6 +33,15 @@ class MyDocument extends Document {
             type="font/woff2"
             crossOrigin="anonymous"
           />
+          {this.props.stylesheets.map((sheet, i) => (
+            <style
+              className="_styletron_hydrate_"
+              dangerouslySetInnerHTML={{ __html: sheet.css }}
+              media={sheet.attrs.media}
+              data-hydrate={sheet.attrs["data-hydrate"]}
+              key={i}
+            />
+          ))}
           <link rel="stylesheet" href="/fonts.css" />
         </Head>
         <body>
