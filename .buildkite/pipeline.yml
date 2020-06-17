@@ -1,6 +1,6 @@
 steps:
   # Build the image in a single place for all parallel steps to leverage the same image.
-  - name: ":docker: :package: unit"
+  - name: ":docker:"
     plugins:
       "docker-compose#v3.0.3":
         build: base-design-docs
