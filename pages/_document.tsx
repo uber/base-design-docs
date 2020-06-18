@@ -21,19 +21,26 @@ class MyDocument extends Document<{ stylesheets: any[] }> {
         <Head>
           <link
             rel="preload"
-            href="https://d1a3f4spazzrp4.cloudfront.net/dotcom-assets/fonts/UberMoveText-Regular.woff2"
+            href="/UberMoveText-Regular.woff2"
             as="font"
             type="font/woff2"
             crossOrigin="anonymous"
           />
           <link
             rel="preload"
-            href="https://d1a3f4spazzrp4.cloudfront.net/dotcom-assets/fonts/UberMove-Medium.woff2"
+            href="/UberMove-Medium.woff2"
             as="font"
             type="font/woff2"
             crossOrigin="anonymous"
           />
-          <link rel="stylesheet" href="/global.css" />
+
+          {/*
+            Next.js docs say to put global CSS in _app.tsx and load it with
+            `import`, but we need to load our font declarations before anything
+            else or there will be a flicker as the font changes.
+          */}
+          <link rel="stylesheet" href="/fonts.css" />
+
           {this.props.stylesheets.map((sheet, i) => (
             <style
               className="_styletron_hydrate_"

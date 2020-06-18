@@ -6,6 +6,8 @@ import { BaseProvider, LightThemeMove } from "baseui";
 import { styletron, debug } from "../lib/styletron";
 import Layout from "../components/layout";
 
+import "../styles.css";
+
 function App({ Component, pageProps }: AppProps) {
   return (
     <div>
