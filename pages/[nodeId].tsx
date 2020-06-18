@@ -36,7 +36,7 @@ function Node({ image }: { image: string }) {
           style={{
             display: "block",
             width: "100%",
-            minHeight: "calc(100vh - 70px)",
+            minHeight: "100vh",
             border: "0",
           }}
         />

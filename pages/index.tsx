@@ -19,12 +19,12 @@ async function getStaticProps() {
 function Home({ pages }: { pages: any[] }) {
   const [css, theme] = useStyletron();
   return (
-    <>
+    <div className={css({ borderLeft: `solid 1px ${theme.colors.border}` })}>
       <Grid>
         <Cell span={[4, 3, 4]}>
           <div
             className={css({
-              height: "calc(100vh - 70px)",
+              height: "100vh",
               maxHeight: "1000px",
               display: "flex",
               alignItems: "flex-end",
@@ -51,7 +51,8 @@ function Home({ pages }: { pages: any[] }) {
           <img
             alt="Cars driving down a winding road."
             className={css({
-              height: "calc(100vh - 70px)",
+              display: "block",
+              height: "100vh",
               maxHeight: "1000px",
               width: "100%",
               objectFit: "cover",
@@ -60,57 +61,7 @@ function Home({ pages }: { pages: any[] }) {
           />
         </Cell>
       </Grid>
-      <div
-        className={css({
-          paddingTop: theme.sizing.scale1600,
-          paddingBottom: theme.sizing.scale1600,
-        })}
-      >
-        <Grid>
-          {pages.map((page) => {
-            return (
-              <Cell span={[4, 4, 3]} key={page.id}>
-                <ParagraphMedium marginBottom="scale600" marginTop="scale1000">
-                  {page.name}
-                </ParagraphMedium>
-                <div>
-                  {page.children.map((frame) => {
-                    return (
-                      <div
-                        key={frame.id}
-                        className={css({
-                          marginBottom: theme.sizing.scale200,
-                        })}
-                      >
-                        <Link href={`/[nodeId]`} as={`/${frame.id}`} passHref>
-                          <a
-                            className={css({
-                              ...theme.typography.ParagraphMedium,
-                              textDecoration: "none",
-                              color: theme.colors.contentTertiary,
-                              transition: `${theme.animation.timing200} color ${theme.animation.easeInQuinticCurve}`,
-                              ":focus": {
-                                outline: `solid 2px ${theme.colors.accent}`,
-                                outlineOffset: "2px",
-                              },
-                              ":hover": {
-                                color: theme.colors.black,
-                              },
-                            })}
-                          >
-                            {frame.name}
-                          </a>
-                        </Link>
-                      </div>
-                    );
-                  })}
-                </div>
-              </Cell>
-            );
-          })}
-        </Grid>
-      </div>
-    </>
+    </div>
   );
 }
 
