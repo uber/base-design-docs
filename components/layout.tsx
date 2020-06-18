@@ -346,6 +346,12 @@ function Layout({
     <div>
       <Head>
         <title>Base Documentation</title>
+        <meta
+          name="description"
+          content="A reference for both high-level patterns as well as
+                component specific guidelines when using the Base design system."
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/base.svg" />
       </Head>
       <ThemeProvider theme={DarkThemeMove}>
