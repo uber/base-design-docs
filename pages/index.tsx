@@ -57,7 +57,7 @@ function Home({ pages }: { pages: any[] }) {
               filter: "grayscale(100%)",
               objectFit: "cover",
             })}
-            src="/freeway.jpg"
+            src="/curvy.jpg"
           />
         </Cell>
       </Grid>
