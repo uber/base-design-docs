@@ -1,7 +1,5 @@
-import Layout from "../components/layout";
-
 async function getStaticPaths() {
-  const { getPages } = require("../figma/api.ts");
+  const { getPages } = require("../lib/api");
   const [pages] = await getPages();
   const paths = pages
     .reduce((acc, page) => {
@@ -12,7 +10,7 @@ async function getStaticPaths() {
 }
 
 async function getStaticProps({ params }) {
-  const { getPages, getImage } = require("../figma/api.ts");
+  const { getPages, getImage } = require("../lib/api");
   const [pages, fileName] = await getPages();
   const image = await getImage(params.nodeId);
   return {
@@ -26,16 +24,9 @@ async function getStaticProps({ params }) {
   };
 }
 
-interface NodeProps {
-  pages: any[];
-  image: string;
-  nodeId: string;
-  fileId: string;
-  fileName: string;
-}
-function Node({ pages, image, nodeId, fileId, fileName }: NodeProps) {
+function Node({ image }: { image: string }) {
   return (
-    <Layout pages={pages} nodeId={nodeId} fileId={fileId} fileName={fileName}>
+    <>
       {image ? (
         <embed
           id="pdf"
@@ -52,7 +43,7 @@ function Node({ pages, image, nodeId, fileId, fileName }: NodeProps) {
       ) : (
         "No Figma node found."
       )}
-    </Layout>
+    </>
   );
 }
 

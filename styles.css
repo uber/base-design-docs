@@ -1,0 +1,14 @@
+/* Global CSS */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+::selection {
+  background: #276ef1;
+  color: white;
+}

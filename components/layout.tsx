@@ -114,14 +114,20 @@ function Figma({ size = "16px" }: IconProps) {
 function PageDropdown({ pages }: { pages: any[] }) {
   const [css, theme] = useStyletron();
   const router = useRouter();
-  const ITEMS = pages.reduce((acc, cur) => {
-    acc[cur.name] = cur.children.map((frame) => ({
-      id: frame.id,
-      name: frame.name,
-      href: `/${frame.id}`,
-    }));
-    return acc;
-  }, {});
+
+  // Sometimes pages is undefined.
+  // This might be related to Layout being in _app.tsx...
+  const ITEMS = pages
+    ? pages.reduce((acc, cur) => {
+        acc[cur.name] = cur.children.map((frame) => ({
+          id: frame.id,
+          name: frame.name,
+          href: `/${frame.id}`,
+        }));
+        return acc;
+      }, {})
+    : [];
+
   return (
     <StatefulPopover
       focusLock
@@ -340,6 +346,12 @@ function Layout({
     <div>
       <Head>
         <title>Base Documentation</title>
+        <meta
+          name="description"
+          content="A reference for both high-level patterns as well as
+                component specific guidelines when using the Base design system."
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/base.svg" />
       </Head>
       <ThemeProvider theme={DarkThemeMove}>

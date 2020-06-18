@@ -4,10 +4,8 @@ import { useStyletron } from "baseui";
 import { Grid, Cell } from "baseui/layout-grid";
 import { Display, ParagraphMedium, DisplayXSmall } from "baseui/typography";
 
-import Layout from "../components/layout";
-
 async function getStaticProps() {
-  const { getPages } = require("../figma/api.ts");
+  const { getPages } = require("../lib/api");
   const [pages, fileName] = await getPages();
   return {
     props: {
@@ -18,16 +16,10 @@ async function getStaticProps() {
   };
 }
 
-interface HomeProps {
-  pages: any[];
-  fileId: string;
-  fileName: string;
-}
-
-function Home({ pages, fileId, fileName }: HomeProps) {
+function Home({ pages }: { pages: any[] }) {
   const [css, theme] = useStyletron();
   return (
-    <Layout pages={pages} fileId={fileId} fileName={fileName}>
+    <>
       <Grid>
         <Cell span={[4, 3, 4]}>
           <div
@@ -62,10 +54,9 @@ function Home({ pages, fileId, fileName }: HomeProps) {
               height: "calc(100vh - 70px)",
               maxHeight: "1000px",
               width: "100%",
-              filter: "grayscale(100%)",
               objectFit: "cover",
             })}
-            src="/freeway.jpg"
+            src="/curvy.jpg"
           />
         </Cell>
       </Grid>
@@ -119,7 +110,7 @@ function Home({ pages, fileId, fileName }: HomeProps) {
           })}
         </Grid>
       </div>
-    </Layout>
+    </>
   );
 }
 
