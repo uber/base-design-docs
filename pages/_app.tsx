@@ -16,18 +16,6 @@ function App({ Component, pageProps }: AppProps) {
           </Layout>
         </BaseProvider>
       </StyletronProvider>
-      <style jsx global>{`
-        * {
-          box-sizing: border-box;
-        }
-        body {
-          margin: 0;
-        }
-        ::selection {
-          background: #276ef1;
-          color: white;
-        }
-      `}</style>
     </div>
   );
 }

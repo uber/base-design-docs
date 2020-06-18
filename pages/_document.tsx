@@ -28,11 +28,12 @@ class MyDocument extends Document<{ stylesheets: any[] }> {
           />
           <link
             rel="preload"
-            href="https://d1a3f4spazzrp4.cloudfront.net/dotcom-assets/fonts/UberMoveText-Medium.woff2"
+            href="https://d1a3f4spazzrp4.cloudfront.net/dotcom-assets/fonts/UberMove-Medium.woff2"
             as="font"
             type="font/woff2"
             crossOrigin="anonymous"
           />
+          <link rel="stylesheet" href="/global.css" />
           {this.props.stylesheets.map((sheet, i) => (
             <style
               className="_styletron_hydrate_"
@@ -42,7 +43,6 @@ class MyDocument extends Document<{ stylesheets: any[] }> {
               key={i}
             />
           ))}
-          <link rel="stylesheet" href="/fonts.css" />
         </Head>
         <body>
           <Main />
