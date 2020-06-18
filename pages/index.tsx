@@ -54,7 +54,6 @@ function Home({ pages }: { pages: any[] }) {
               height: "calc(100vh - 70px)",
               maxHeight: "1000px",
               width: "100%",
-              filter: "grayscale(100%)",
               objectFit: "cover",
             })}
             src="/curvy.jpg"
