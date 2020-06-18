@@ -4,8 +4,6 @@ import { useStyletron } from "baseui";
 import { Grid, Cell } from "baseui/layout-grid";
 import { Display, ParagraphMedium, DisplayXSmall } from "baseui/typography";
 
-import Layout from "../components/layout";
-
 async function getStaticProps() {
   const { getPages } = require("../lib/api");
   const [pages, fileName] = await getPages();
@@ -18,16 +16,10 @@ async function getStaticProps() {
   };
 }
 
-interface HomeProps {
-  pages: any[];
-  fileId: string;
-  fileName: string;
-}
-
-function Home({ pages, fileId, fileName }: HomeProps) {
+function Home({ pages }: { pages: any[] }) {
   const [css, theme] = useStyletron();
   return (
-    <Layout pages={pages} fileId={fileId} fileName={fileName}>
+    <>
       <Grid>
         <Cell span={[4, 3, 4]}>
           <div
@@ -119,7 +111,7 @@ function Home({ pages, fileId, fileName }: HomeProps) {
           })}
         </Grid>
       </div>
-    </Layout>
+    </>
   );
 }
 
