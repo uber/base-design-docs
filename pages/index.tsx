@@ -1,10 +1,7 @@
-import Link from "next/link";
-
 import { useStyletron } from "baseui";
-import { Grid, Cell } from "baseui/layout-grid";
 import { Display, ParagraphMedium, DisplayXSmall } from "baseui/typography";
 
-async function getStaticProps() {
+export async function getStaticProps() {
   const { getPages } = require("../lib/api");
   const [pages, fileName] = await getPages();
   return {
@@ -16,17 +13,25 @@ async function getStaticProps() {
   };
 }
 
-function Home({ pages }: { pages: any[] }) {
+export default function Home() {
   const [css, theme] = useStyletron();
-
   return (
-    <div className={css({ display: "flex", alignItems: "flex-end" })}>
+    <div
+      className={css({
+        display: "flex",
+        alignItems: "flex-end",
+        height: "calc(100vh - 60px)",
+      })}
+    >
       <div
         className={css({
-          flexBasis: "50%",
           paddingBottom: "10vh",
           paddingLeft: "8vh",
           paddingRight: "8vh",
+          flexBasis: "75%",
+          [theme.mediaQuery.medium]: {
+            flexBasis: "50%",
+          },
         })}
       >
         <Display>Base</Display>
@@ -36,7 +41,15 @@ function Home({ pages }: { pages: any[] }) {
           specific guidelines when using the Base design system.
         </ParagraphMedium>
       </div>
-      <div className={css({ flexBasis: "50%" })}>
+      <div
+        className={css({
+          display: "none",
+          [theme.mediaQuery.large]: {
+            display: "block",
+            flexBasis: "50%",
+          },
+        })}
+      >
         <img
           alt="Cars driving down a winding road."
           className={css({
@@ -50,48 +63,4 @@ function Home({ pages }: { pages: any[] }) {
       </div>
     </div>
   );
-
-  return (
-    <Grid>
-      <Cell span={[4, 3, 5]}>
-        <div
-          className={css({
-            height: "100vh",
-            maxHeight: "1000px",
-            display: "flex",
-            alignItems: "flex-end",
-            paddingBottom: "10vh",
-          })}
-        >
-          <div>
-            <Display>Base</Display>
-            <DisplayXSmall color="contentTertiary">Documentation</DisplayXSmall>
-            <ParagraphMedium color="contentTertiary">
-              Reference this site for both high-level patterns as well as
-              component specific guidelines when using the Base design system.
-            </ParagraphMedium>
-          </div>
-        </div>
-      </Cell>
-      <Cell
-        span={[0, 4, 6]}
-        skip={[0, 1, 1]}
-        overrides={{ Cell: { style: { display: "none" } } }}
-      >
-        <img
-          alt="Cars driving down a winding road."
-          className={css({
-            display: "block",
-            height: "100vh",
-            maxHeight: "1000px",
-            width: "100%",
-            objectFit: "cover",
-          })}
-          src="/curvy.jpg"
-        />
-      </Cell>
-    </Grid>
-  );
 }
-
-export { Home as default, getStaticProps };
