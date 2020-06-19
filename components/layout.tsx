@@ -386,7 +386,7 @@ function SideNavigation({
         height: "calc(100vh)",
         display: "flex",
         flexDirection: "column",
-        borderRight: nodeId ? null : `solid 1px ${theme.colors.border}`,
+        borderRight: `solid 1px ${theme.colors.border}`,
       })}
     >
       <div
