@@ -386,6 +386,7 @@ function SideNavigation({
         height: "calc(100vh)",
         display: "flex",
         flexDirection: "column",
+        borderRight: nodeId ? null : `solid 1px ${theme.colors.border}`,
       })}
     >
       <div
@@ -405,28 +406,12 @@ function SideNavigation({
             kind={KIND.primary}
             shape={SHAPE.round}
             size={SIZE.compact}
-            title="Base Design"
+            title="Home"
           >
             <Logo dark size="18px" />
           </Button>
         </Link>
         <div>
-          <Button
-            // @ts-ignore - Missing type in baseui
-            $as="a"
-            href={`https://www.figma.com/file/${fileId}/${fileName}${
-              nodeId ? `?node-id=${nodeId.replace("-", ":")}` : ""
-            }`}
-            target="_blank"
-            rel="noopener"
-            kind={KIND.secondary}
-            shape={SHAPE.round}
-            size={SIZE.compact}
-            $style={{ marginRight: theme.sizing.scale400 }}
-            title="Open in Figma"
-          >
-            <Figma size="18px" />
-          </Button>
           <Button
             // @ts-ignore - Missing type in baseui
             $as="a"
@@ -440,6 +425,22 @@ function SideNavigation({
           >
             <Console size="18px" />
           </Button>
+          <Button
+            // @ts-ignore - Missing type in baseui
+            $as="a"
+            href={`https://www.figma.com/file/${fileId}/${fileName}${
+              nodeId ? `?node-id=${nodeId.replace("-", ":")}` : ""
+            }`}
+            target="_blank"
+            rel="noopener"
+            kind={KIND.secondary}
+            shape={SHAPE.round}
+            size={SIZE.compact}
+            $style={{ marginLeft: theme.sizing.scale400 }}
+            title="Open in Figma"
+          >
+            <Figma size="18px" />
+          </Button>
         </div>
       </div>
       <div
@@ -450,17 +451,19 @@ function SideNavigation({
           overflowY: "scroll",
         })}
       >
-        {pages.map((page) => {
+        {pages.map((page, index) => {
           return (
             <div
               key={page.id}
               className={css({
-                marginBottom: theme.sizing.scale800,
+                marginBottom:
+                  index < pages.length - 1 ? theme.sizing.scale800 : null,
               })}
             >
               <div
                 className={css({
                   ...theme.typography.ParagraphMedium,
+                  fontFamily: theme.typography.DisplayXSmall.fontFamily,
                   paddingLeft: theme.sizing.scale800,
                   marginBottom: theme.sizing.scale400,
                 })}
