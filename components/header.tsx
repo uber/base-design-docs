@@ -7,7 +7,7 @@ import { StatefulPopover, PLACEMENT } from "baseui/popover";
 import { StatefulMenu } from "baseui/menu";
 import { Logo, Console, Figma, Book } from "./icons";
 
-function PageDropdown({ pages, children }: { pages: any[]; children: any }) {
+function PageDropdown({ pages }: { pages: any[] }) {
   const [css, theme] = useStyletron();
   const router = useRouter();
 
@@ -82,7 +82,31 @@ function PageDropdown({ pages, children }: { pages: any[]; children: any }) {
         </ThemeProvider>
       )}
     >
-      {children}
+      <Button
+        kind={KIND.tertiary}
+        shape={SHAPE.pill}
+        size={SIZE.compact}
+        overrides={{
+          BaseButton: {
+            props: {
+              title: "Open a specific page",
+            },
+          },
+        }}
+      >
+        <Book size="16px" />
+        <span
+          className={css({
+            display: "none",
+            [theme.mediaQuery.medium]: {
+              display: "inline-block",
+              marginLeft: theme.sizing.scale400,
+            },
+          })}
+        >
+          Patterns
+        </span>
+      </Button>
     </StatefulPopover>
   );
 }
@@ -148,44 +172,10 @@ export default function Header({
           marginLeft: "auto",
         })}
       >
+        <PageDropdown pages={pages} />
         <div
           className={css({
-            marginRight: theme.sizing.scale400,
-            [theme.mediaQuery.large]: {
-              display: "none",
-            },
-          })}
-        >
-          <PageDropdown pages={pages}>
-            <Button
-              kind={KIND.tertiary}
-              shape={SHAPE.pill}
-              size={SIZE.compact}
-              overrides={{
-                BaseButton: {
-                  props: {
-                    title: "Open a specific page",
-                  },
-                },
-              }}
-            >
-              <Book size="16px" />
-              <span
-                className={css({
-                  display: "none",
-                  [theme.mediaQuery.medium]: {
-                    display: "inline-block",
-                    marginLeft: theme.sizing.scale400,
-                  },
-                })}
-              >
-                Pages
-              </span>
-            </Button>
-          </PageDropdown>
-        </div>
-        <div
-          className={css({
+            marginLeft: theme.sizing.scale400,
             marginRight: theme.sizing.scale400,
           })}
         >
