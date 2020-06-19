@@ -104,7 +104,7 @@ function PageDropdown({ pages }: { pages: any[] }) {
             },
           })}
         >
-          Patterns
+          Components
         </span>
       </Button>
     </StatefulPopover>
