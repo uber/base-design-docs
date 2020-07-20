@@ -58,7 +58,7 @@ export default function Home() {
             width: "100%",
             objectFit: "cover",
           })}
-          src="/curvy.jpg"
+          src="/collage.png"
         />
       </div>
     </div>
