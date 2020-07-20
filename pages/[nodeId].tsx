@@ -1,3 +1,5 @@
+import { useStyletron } from "baseui";
+
 async function getStaticPaths() {
   const { getPages } = require("../lib/api");
   const [pages] = await getPages();
@@ -25,6 +27,7 @@ async function getStaticProps({ params }) {
 }
 
 function Node({ image }: { image: string }) {
+  const [css] = useStyletron();
   return (
     <>
       {image ? (
@@ -36,12 +39,22 @@ function Node({ image }: { image: string }) {
           style={{
             display: "block",
             width: "100%",
-            minHeight: "calc(100vh - 70px)",
+            minHeight: "100vh",
             border: "0",
           }}
         />
       ) : (
-        "No Figma node found."
+        <div
+          className={css({
+            width: "100%",
+            height: "100vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          })}
+        >
+          Yikes! There was a problem rendering this page.
+        </div>
       )}
     </>
   );
