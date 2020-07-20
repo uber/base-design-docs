@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { useStyletron } from "baseui";
+import * as gtag from "../lib/gtag";
 
 interface Props {
   fileId: string;
@@ -84,6 +85,13 @@ function SideNavigation({ pages = [], nodeId = null }: Props) {
                           color: theme.colors.black,
                         },
                       })}
+                      onClick={() => {
+                        gtag.event({
+                          action: "click_link_sidenav",
+                          category: "navigation",
+                          label: nodeId,
+                        });
+                      }}
                     >
                       {frame.name}
                     </a>

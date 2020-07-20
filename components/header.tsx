@@ -3,6 +3,7 @@ import { useStyletron } from "baseui";
 import { Button, KIND, SHAPE, SIZE } from "baseui/button";
 import { Logo, Console, Figma } from "./icons";
 import PageDropdown from "./page-dropdown";
+import * as gtag from "../lib/gtag";
 
 interface Props {
   pages: any[];
@@ -40,6 +41,13 @@ function Header({ pages, fileId, fileName, nodeId = null }: Props) {
               outlineOffset: "2px",
             },
           })}
+          onClick={() => {
+            gtag.event({
+              action: "click_link_header",
+              category: "navigation",
+              label: "home",
+            });
+          }}
         >
           <Logo dark size="22px" />
           <div
@@ -77,6 +85,13 @@ function Header({ pages, fileId, fileName, nodeId = null }: Props) {
             shape={SHAPE.pill}
             size={SIZE.compact}
             title="Open Base Web documentation"
+            onClick={() => {
+              gtag.event({
+                action: "click_link_header_external",
+                category: "navigation",
+                label: "base_web",
+              });
+            }}
           >
             <Console size="16px" />
             <span
@@ -104,6 +119,13 @@ function Header({ pages, fileId, fileName, nodeId = null }: Props) {
           shape={SHAPE.pill}
           size={SIZE.compact}
           title="Open in Figma"
+          onClick={() => {
+            gtag.event({
+              action: "click_link_header_external",
+              category: "navigation",
+              label: nodeId ? `figma_${nodeId}` : "figma_root",
+            });
+          }}
         >
           <Figma size="16px" />
           <span

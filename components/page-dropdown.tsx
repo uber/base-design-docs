@@ -7,6 +7,7 @@ import { Button, KIND, SHAPE, SIZE } from "baseui/button";
 import { StatefulPopover, PLACEMENT } from "baseui/popover";
 import { StatefulMenu } from "baseui/menu";
 import { Book } from "./icons";
+import * as gtag from "../lib/gtag";
 
 interface Props {
   nodeId: string;
@@ -54,6 +55,11 @@ function PageDropdown({ nodeId, pages = [] }: Props) {
             onItemSelect={(params) => {
               // Keyboard events do not trigger the link so we do it manually.
               if (params.event.type === "keydown") {
+                gtag.event({
+                  action: "click_link_dropdown",
+                  category: "navigation",
+                  label: nodeId,
+                });
                 router.push("/[nodeId]", params.item.href);
               }
               close();
@@ -87,6 +93,13 @@ function PageDropdown({ nodeId, pages = [] }: Props) {
                             : theme.colors.contentTertiary,
                         textDecoration: "none",
                       })}
+                      onClick={() => {
+                        gtag.event({
+                          action: "click_link_dropdown",
+                          category: "navigation",
+                          label: nodeId,
+                        });
+                      }}
                     >
                       {children}
                     </a>
