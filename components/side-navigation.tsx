@@ -1,18 +1,22 @@
+import * as React from "react";
 import Link from "next/link";
 import { useStyletron } from "baseui";
 
-export default function SideNavigation({
-  fileId,
-  fileName,
-  pages = [],
-  nodeId = null,
-}: {
+interface Props {
   fileId: string;
   fileName: string;
   pages?: any[];
   nodeId?: string;
-}) {
+}
+
+export default function SideNavigation({ pages = [], nodeId = null }: Props) {
   const [css, theme] = useStyletron();
+  const activeLink = React.useRef<HTMLDivElement>();
+  React.useEffect(() => {
+    if (activeLink.current && activeLink.current.scrollIntoView) {
+      activeLink.current.scrollIntoView();
+    }
+  }, [nodeId]);
   return (
     <nav
       className={css({
@@ -30,14 +34,11 @@ export default function SideNavigation({
         },
       })}
     >
-      {pages.map((page, index) => {
+      {pages.map((page) => {
         return (
           <div
             key={page.id}
-            className={css({
-              marginBottom:
-                index < pages.length - 1 ? theme.sizing.scale800 : null,
-            })}
+            className={css({ marginBottom: theme.sizing.scale800 })}
           >
             <div
               className={css({
@@ -50,12 +51,17 @@ export default function SideNavigation({
               {page.name}
             </div>
             {page.children.map((frame) => {
+              const isActive = frame.id === nodeId;
               return (
                 <div
+                  ref={isActive ? activeLink : null}
                   key={frame.id}
                   className={css({
                     padding: `${theme.sizing.scale200} 0`,
                     paddingLeft: theme.sizing.scale800,
+                    background: isActive
+                      ? theme.colors.backgroundLightAccent
+                      : "none",
                   })}
                 >
                   <Link href={`/[nodeId]`} as={`/${frame.id}`} passHref>
@@ -63,8 +69,10 @@ export default function SideNavigation({
                       className={css({
                         ...theme.typography.ParagraphMedium,
                         textDecoration: "none",
-                        color: theme.colors.contentTertiary,
-                        ":focus": {
+                        color: isActive
+                          ? theme.colors.contentPrimary
+                          : theme.colors.contentTertiary,
+                        ":focus-visible": {
                           outline: `solid 2px ${theme.colors.accent}`,
                           outlineOffset: "2px",
                         },
