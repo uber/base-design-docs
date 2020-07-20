@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { useStyletron } from "baseui";
 
@@ -9,12 +9,16 @@ interface Props {
   nodeId?: string;
 }
 
-export default function SideNavigation({ pages = [], nodeId = null }: Props) {
+function SideNavigation({ pages = [], nodeId = null }: Props) {
   const [css, theme] = useStyletron();
-  const activeLink = React.useRef<HTMLDivElement>();
-  React.useEffect(() => {
+  const activeLink = useRef<HTMLDivElement>();
+  useEffect(() => {
     if (activeLink.current && activeLink.current.scrollIntoView) {
-      activeLink.current.scrollIntoView();
+      activeLink.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+      });
     }
   }, [nodeId]);
   return (
@@ -60,7 +64,7 @@ export default function SideNavigation({ pages = [], nodeId = null }: Props) {
                     padding: `${theme.sizing.scale200} 0`,
                     paddingLeft: theme.sizing.scale800,
                     background: isActive
-                      ? theme.colors.backgroundLightAccent
+                      ? theme.colors.backgroundSecondary
                       : "none",
                   })}
                 >
@@ -93,3 +97,5 @@ export default function SideNavigation({ pages = [], nodeId = null }: Props) {
     </nav>
   );
 }
+
+export default SideNavigation;

@@ -3,7 +3,7 @@ import { useStyletron, DarkThemeMove, ThemeProvider } from "baseui";
 import SideNavigation from "./side-navigation";
 import Header from "./header";
 
-interface LayoutProps {
+interface Props {
   children?: any; // TODO: fix this children type
   pages: any[];
   fileName: string;
@@ -11,13 +11,7 @@ interface LayoutProps {
   nodeId?: string;
 }
 
-function Layout({
-  children,
-  pages,
-  fileName,
-  fileId,
-  nodeId = null,
-}: LayoutProps) {
+function Layout({ children, pages, fileName, fileId, nodeId = null }: Props) {
   const [css, theme] = useStyletron();
   return (
     <div>
