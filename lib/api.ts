@@ -6,6 +6,7 @@
  */
 async function getPages() {
   let figmaFile = null;
+  let request;
   try {
     // Figma file structure: File > Pages > Frames.
 
@@ -15,7 +16,7 @@ async function getPages() {
 
     // Fetch Figma file 2 levels deep. We only need Figma Pages & the
     // top level Figma Frames within them.
-    const res = await fetch(
+    request = await fetch(
       `https://api.figma.com/v1/files/${process.env.FIGMA_FILE_ID}?depth=2`,
       {
         headers: {
@@ -23,10 +24,13 @@ async function getPages() {
         },
       }
     );
-    figmaFile = await res.json();
+    figmaFile = await request.json();
+    console.log("REQUEST FILE");
+    console.log(figmaFile);
   } catch (er) {
     console.log("There was an error fetching the Figma file.");
     console.log(er);
+    console.log(await request.text());
   }
 
   // Exit if we don't have a Figma file.
@@ -34,21 +38,28 @@ async function getPages() {
 
   // ERROR - somewhere below children is undefined
 
-  // Now we want to process the Figma file into a list of pages.
-  // By convention, only use Figma Pages starting with a capital letter.
-  const figmaPages = figmaFile.document.children.filter((page) =>
-    page.name.match(/^[A-Z]/)
-  );
-
-  // By convention, we only use *visible* Figma Frames starting with a capital
-  // letter.
-  for (const page of figmaPages) {
-    page.children = page.children.filter(
-      (frame) => frame.name.match(/^[A-Z]/) && frame.visible !== false
+  let figmaPages;
+  try {
+    // Now we want to process the Figma file into a list of pages.
+    // By convention, only use Figma Pages starting with a capital letter.
+    figmaPages = figmaFile.document.children.filter((page) =>
+      page.name.match(/^[A-Z]/)
     );
-    for (const frame of page.children) {
-      frame.id = frame.id.replace(":", "-");
+
+    // By convention, we only use *visible* Figma Frames starting with a capital
+    // letter.
+    for (const page of figmaPages) {
+      page.children = page.children.filter(
+        (frame) => frame.name.match(/^[A-Z]/) && frame.visible !== false
+      );
+      for (const frame of page.children) {
+        frame.id = frame.id.replace(":", "-");
+      }
     }
+  } catch (er) {
+    console.log("Something went wrong while processing the figma file!");
+    console.log(er);
+    console.log(figmaFile);
   }
 
   return [figmaPages, figmaFile.name];
@@ -73,6 +84,8 @@ async function getImage(nodeId) {
       }
     );
     const json = await res.json();
+    console.log("REQUEST IMAGE");
+    console.log(json);
     image = json.images[_id] || null; // ERROR - images is undefined
   } catch (er) {
     console.log(`there was a problem fetching the image for [${nodeId}]`);
