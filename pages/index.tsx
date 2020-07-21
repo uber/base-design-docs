@@ -57,7 +57,7 @@ export default function Home() {
             height: "100vh",
             width: "100%",
             objectFit: "cover",
-            objectPosition: "cover",
+            objectPosition: "left",
           })}
           src="/base-collage.png"
         />
