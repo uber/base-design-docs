@@ -32,6 +32,8 @@ async function getPages() {
   // Exit if we don't have a Figma file.
   if (figmaFile === null) return [];
 
+  // ERROR - somewhere below children is undefined
+
   // Now we want to process the Figma file into a list of pages.
   // By convention, only use Figma Pages starting with a capital letter.
   const figmaPages = figmaFile.document.children.filter((page) =>
@@ -71,7 +73,7 @@ async function getImage(nodeId) {
       }
     );
     const json = await res.json();
-    image = json.images[_id] || null;
+    image = json.images[_id] || null; // ERROR - images is undefined
   } catch (er) {
     console.log(`there was a problem fetching the image for [${nodeId}]`);
     console.log(er);
