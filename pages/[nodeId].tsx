@@ -39,7 +39,7 @@ function Node({ image }: { image: string }) {
           style={{
             display: "block",
             width: "100%",
-            minHeight: "100vh",
+            minHeight: "calc(100vh - 60px)",
             border: "0",
           }}
         />
@@ -47,7 +47,7 @@ function Node({ image }: { image: string }) {
         <div
           className={css({
             width: "100%",
-            height: "100vh",
+            height: "calc(100vh - 60px)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

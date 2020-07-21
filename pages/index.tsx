@@ -54,7 +54,7 @@ export default function Home() {
           alt="Cars driving down a winding road."
           className={css({
             display: "block",
-            height: "100vh",
+            height: "calc(100vh - 60px)",
             width: "100%",
             objectFit: "cover",
             objectPosition: "left",
