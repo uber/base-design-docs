@@ -25,10 +25,8 @@ async function getPages() {
       }
     );
     figmaFile = await request.json();
-    console.log("REQUEST FILE");
-    console.log(figmaFile);
   } catch (er) {
-    console.log("There was an error fetching the Figma file.");
+    console.log("There was a problem fetching the figma file");
     console.log(er);
     console.log(await request.text());
   }
@@ -38,7 +36,7 @@ async function getPages() {
 
   // ERROR - somewhere below children is undefined
 
-  let figmaPages;
+  let figmaPages = [];
   try {
     // Now we want to process the Figma file into a list of pages.
     // By convention, only use Figma Pages starting with a capital letter.
@@ -57,7 +55,7 @@ async function getPages() {
       }
     }
   } catch (er) {
-    console.log("Something went wrong while processing the figma file!");
+    console.log("There was a problem processing the figma file");
     console.log(er);
     console.log(figmaFile);
   }
@@ -84,12 +82,11 @@ async function getImage(nodeId) {
       }
     );
     const json = await res.json();
-    console.log("REQUEST IMAGE");
-    console.log(json);
     image = json.images[_id] || null; // ERROR - images is undefined
   } catch (er) {
-    console.log(`there was a problem fetching the image for [${nodeId}]`);
+    console.log(`There was a problem fetching the PDF for frame [${nodeId}]`);
     console.log(er);
+    console.log(image);
   }
 
   return image;
