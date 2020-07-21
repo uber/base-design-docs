@@ -1,3 +1,5 @@
+import retry from "async-retry";
+
 /**
  * Returns a list of Figma Pages and the Figma file name. The pages include
  * their immediate children, which are top-level Figma Frames. By convention,
@@ -5,36 +7,35 @@
  * start with a capital letter.
  */
 async function getPages() {
-  let figmaFile = null;
-  let request;
+  let figmaFile;
+  let figmaFileRequest;
   try {
-    // Figma file structure: File > Pages > Frames.
-
-    // By convention we turn the top level Figma Frames for each Figma Page
-    // into web pages. The Figma Pages become headers for grouping the pages
-    // in our navigation.
-
-    // Fetch Figma file 2 levels deep. We only need Figma Pages & the
-    // top level Figma Frames within them.
-    request = await fetch(
-      `https://api.figma.com/v1/files/${process.env.FIGMA_FILE_ID}?depth=2`,
-      {
-        headers: {
-          "X-FIGMA-TOKEN": process.env.FIGMA_AUTH_TOKEN,
-        },
-      }
+    await retry(
+      async () => {
+        figmaFileRequest = await fetch(
+          `https://api.figma.com/v1/files/${process.env.FIGMA_FILE_ID}?depth=2`,
+          {
+            headers: {
+              "X-FIGMA-TOKEN": process.env.FIGMA_AUTH_TOKEN,
+            },
+          }
+        );
+        figmaFile = await figmaFileRequest.json();
+      },
+      { retries: 3 }
     );
-    figmaFile = await request.json();
   } catch (er) {
-    console.log("There was a problem fetching the figma file");
+    console.log("There was a problem fetching the figma file.");
     console.log(er);
-    console.log(await request.text());
+    console.log(await figmaFileRequest.text());
   }
 
-  // Exit if we don't have a Figma file.
-  if (figmaFile === null) return [];
-
-  // ERROR - somewhere below children is undefined
+  // Bail early if figma file is mal-formed.
+  if (!figmaFile || !figmaFile.document) {
+    console.log("The figma file we got is mal-formed.");
+    console.log(figmaFile);
+    return [[], "Figma File"];
+  }
 
   let figmaPages = [];
   try {
@@ -55,7 +56,7 @@ async function getPages() {
       }
     }
   } catch (er) {
-    console.log("There was a problem processing the figma file");
+    console.log("There was a problem processing the figma file.");
     console.log(er);
     console.log(figmaFile);
   }
@@ -73,16 +74,21 @@ async function getImage(nodeId) {
 
   let image = null;
   try {
-    const res = await fetch(
-      `https://api.figma.com/v1/images/${process.env.FIGMA_FILE_ID}?ids=${_id}&format=pdf`,
-      {
-        headers: {
-          "X-FIGMA-TOKEN": process.env.FIGMA_AUTH_TOKEN,
-        },
-      }
+    retry(
+      async () => {
+        const res = await fetch(
+          `https://api.figma.com/v1/images/${process.env.FIGMA_FILE_ID}?ids=${_id}&format=pdf`,
+          {
+            headers: {
+              "X-FIGMA-TOKEN": process.env.FIGMA_AUTH_TOKEN,
+            },
+          }
+        );
+        const json = await res.json();
+        image = json.images[_id] || null;
+      },
+      { retries: 3 }
     );
-    const json = await res.json();
-    image = json.images[_id] || null; // ERROR - images is undefined
   } catch (er) {
     console.log(`There was a problem fetching the PDF for frame [${nodeId}]`);
     console.log(er);
