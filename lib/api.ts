@@ -1,7 +1,10 @@
+import fs from "fs";
+import path from "path";
 import retry from "async-retry";
 
 const RETRY_LIMIT = 2;
-const RETRY_TIMEOUT = 1000 * 60; // 1 minute
+const RETRY_TIMEOUT = 1000 * 30; // 30s
+const FILE_DATA_PATH = path.join(process.cwd(), "file-data.json");
 
 /**
  * Returns a list of Figma Pages and the Figma file name. The pages include
@@ -12,36 +15,36 @@ const RETRY_TIMEOUT = 1000 * 60; // 1 minute
 async function getPages() {
   let figmaFile;
   try {
-    await retry(
-      async () => {
-        const response = await fetch(
-          `https://api.figma.com/v1/files/${process.env.FIGMA_FILE_ID}?depth=2`,
-          {
-            headers: {
-              "X-FIGMA-TOKEN": process.env.FIGMA_AUTH_TOKEN,
-            },
-          }
-        );
-        const contentType = response.headers.get("Content-Type");
-        if (contentType === "application/json; charset=utf-8") {
-          figmaFile = await response.json();
-        } else {
-          throw new Error(await response.text());
-        }
-      },
-      {
-        retries: RETRY_LIMIT,
-        onRetry: (er) => {
-          console.log(
-            "There was a problem fetching the figma file. Retrying..."
-          );
-          console.log(er);
-        },
-      }
-    );
+    const file = fs.readFileSync(FILE_DATA_PATH);
+    figmaFile = JSON.parse(file.toString());
+    console.log("File data found.");
   } catch (er) {
-    console.log("There was a problem fetching the figma file.");
-    console.log(er);
+    // file does not exist yet...
+    console.log("File data has not been saved yet.");
+  }
+  if (!figmaFile) {
+    try {
+      console.log("Fetching file data.");
+      const response = await fetch(
+        `https://api.figma.com/v1/files/${process.env.FIGMA_FILE_ID}?depth=2`,
+        {
+          headers: {
+            "X-FIGMA-TOKEN": process.env.FIGMA_AUTH_TOKEN,
+          },
+        }
+      );
+      const contentType = response.headers.get("Content-Type");
+      if (contentType === "application/json; charset=utf-8") {
+        figmaFile = await response.json();
+        console.log("Saving file data to disk.");
+        fs.writeFileSync(FILE_DATA_PATH, JSON.stringify(figmaFile));
+      } else {
+        throw new Error(await response.text());
+      }
+    } catch (er) {
+      console.log("There was a problem fetching the figma file.");
+      console.log(er);
+    }
   }
 
   // Bail early if figma file is mal-formed.
@@ -51,9 +54,9 @@ async function getPages() {
     return [[], "Figma File"];
   }
 
+  // Now we want to process the Figma file into a list of pages.
   let figmaPages = [];
   try {
-    // Now we want to process the Figma file into a list of pages.
     // By convention, only use Figma Pages starting with a capital letter.
     figmaPages = figmaFile.document.children.filter((page) =>
       page.name.match(/^[A-Z]/)
@@ -107,7 +110,7 @@ async function getImage(nodeId) {
       },
       {
         retries: RETRY_LIMIT,
-        // minTimeout: RETRY_TIMEOUT,
+        minTimeout: RETRY_TIMEOUT,
         onRetry: (er) => {
           console.log(
             `There was a problem fetching the PDF for frame [${nodeId}]. Retrying...`
