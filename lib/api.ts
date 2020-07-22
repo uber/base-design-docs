@@ -23,7 +23,7 @@ async function getPages() {
           }
         );
         const contentType = response.headers.get("Content-Type");
-        if (contentType === "application/json") {
+        if (contentType === "application/json; charset=utf-8") {
           figmaFile = await response.json();
         } else {
           throw new Error(await response.text());
@@ -31,7 +31,6 @@ async function getPages() {
       },
       {
         retries: RETRY_LIMIT,
-        minTimeout: RETRY_TIMEOUT,
         onRetry: (er) => {
           console.log(
             "There was a problem fetching the figma file. Retrying..."
@@ -99,7 +98,7 @@ async function getImage(nodeId) {
           }
         );
         const contentType = response.headers.get("Content-Type");
-        if (contentType === "application/json") {
+        if (contentType === "application/json; charset=utf-8") {
           const json = await response.json();
           image = json.images[_id] || null;
         } else {
@@ -108,7 +107,7 @@ async function getImage(nodeId) {
       },
       {
         retries: RETRY_LIMIT,
-        minTimeout: RETRY_TIMEOUT,
+        // minTimeout: RETRY_TIMEOUT,
         onRetry: (er) => {
           console.log(
             `There was a problem fetching the PDF for frame [${nodeId}]. Retrying...`
