@@ -105,11 +105,11 @@ async function getImage(nodeId) {
         const contentType = response.headers.get("Content-Type");
         if (contentType === "application/json; charset=utf-8") {
           const json = await response.json();
-          if (json.images) {
-            image = json.images[_id] || null;
+          if (json.images && json.images[_id]) {
+            image = json.images[_id];
             console.log(`Fetch PDF for [${nodeId}] success!`);
           } else {
-            throw new Error(json);
+            throw new Error(JSON.stringify(json));
           }
         } else {
           throw new Error(await response.text());
