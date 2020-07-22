@@ -1,5 +1,8 @@
 import retry from "async-retry";
 
+// This will retry the request twice, with the last request being reported for
+const RETRY_LIMIT = 2;
+
 /**
  * Returns a list of Figma Pages and the Figma file name. The pages include
  * their immediate children, which are top-level Figma Frames. By convention,
@@ -8,11 +11,10 @@ import retry from "async-retry";
  */
 async function getPages() {
   let figmaFile;
-  let figmaFileRequest;
   try {
     await retry(
       async () => {
-        figmaFileRequest = await fetch(
+        const response = await fetch(
           `https://api.figma.com/v1/files/${process.env.FIGMA_FILE_ID}?depth=2`,
           {
             headers: {
@@ -20,13 +22,19 @@ async function getPages() {
             },
           }
         );
-        figmaFile = await figmaFileRequest.json();
+        const contentType = response.headers.get("Content-Type");
+        if (contentType === "application/json") {
+          figmaFile = await response.json();
+        } else {
+          console.log("There was a problem fetching the figma file.");
+          console.log(await response.text());
+        }
       },
       {
-        retries: 3,
+        retries: RETRY_LIMIT,
         onRetry: (er) => {
           console.log(
-            "There was an error while fetching the figma file. Retrying..."
+            "There was a problem fetching the figma file. Retrying..."
           );
           console.log(er);
         },
@@ -35,7 +43,6 @@ async function getPages() {
   } catch (er) {
     console.log("There was a problem fetching the figma file.");
     console.log(er);
-    console.log(await figmaFileRequest.text());
   }
 
   // Bail early if figma file is mal-formed.
@@ -79,13 +86,11 @@ async function getPages() {
  */
 async function getImage(nodeId) {
   const _id = nodeId.replace("-", ":");
-
   let image = null;
-  let imageRequest;
   try {
     await retry(
       async () => {
-        imageRequest = await fetch(
+        const response = await fetch(
           `https://api.figma.com/v1/images/${process.env.FIGMA_FILE_ID}?ids=${_id}&format=pdf`,
           {
             headers: {
@@ -93,27 +98,30 @@ async function getImage(nodeId) {
             },
           }
         );
-        const json = await imageRequest.json();
-        image = json.images[_id] || null;
+        const contentType = response.headers.get("Content-Type");
+        if (contentType === "application/json") {
+          const json = await response.json();
+          image = json.images[_id] || null;
+        } else {
+          console.log(
+            `There was a problem fetching the PDF for frame [${nodeId}].`
+          );
+          console.log(await response.text());
+        }
       },
       {
-        retries: 3,
+        retries: RETRY_LIMIT,
         onRetry: (er) => {
           console.log(
-            `There was an error while fetching the PDF for frame [${nodeId}]. Retrying...`
+            `There was a problem fetching the PDF for frame [${nodeId}]. Retrying...`
           );
           console.log(er);
         },
       }
     );
   } catch (er) {
-    console.log(`There was a problem fetching the PDF for frame [${nodeId}]`);
-    console.log(`Error:`);
+    console.log(`There was a problem fetching the PDF for frame [${nodeId}].`);
     console.log(er);
-    console.log(`Image object:`);
-    console.log(image);
-    console.log(`Response:`);
-    console.log(await imageRequest.text());
   }
 
   return image;
