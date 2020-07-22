@@ -3,14 +3,14 @@ import { useRouter } from "next/router";
 import { route } from "next/dist/next-server/server/router";
 
 async function getStaticPaths() {
-  const { getPages } = require("../lib/api");
-  const [pages] = await getPages();
-  const paths = pages
-    .reduce((acc, page) => {
-      return [...acc, ...page.children];
-    }, [])
-    .map((frame) => ({ params: { nodeId: frame.id } }));
-  return { paths, fallback: true };
+  // const { getPages } = require("../lib/api");
+  // const [pages] = await getPages();
+  // const paths = pages
+  //   .reduce((acc, page) => {
+  //     return [...acc, ...page.children];
+  //   }, [])
+  //   .map((frame) => ({ params: { nodeId: frame.id } }));
+  return { paths: [], fallback: true };
 }
 
 async function getStaticProps({ params }) {
