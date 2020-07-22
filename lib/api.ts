@@ -13,19 +13,15 @@ const FILE_DATA_PATH = path.join(process.cwd(), "file-data.json");
  * start with a capital letter.
  */
 async function getPages() {
-  console.log("getPages start");
   let figmaFile;
   try {
     const file = fs.readFileSync(FILE_DATA_PATH);
     figmaFile = JSON.parse(file.toString());
-    console.log("File data found on disk.");
   } catch (er) {
     // file does not exist yet...
-    console.log("File data not found on disk.");
   }
   if (!figmaFile) {
     try {
-      console.log("Fetching file data.");
       const response = await fetch(
         `https://api.figma.com/v1/files/${process.env.FIGMA_FILE_ID}?depth=2`,
         {
@@ -37,8 +33,12 @@ async function getPages() {
       const contentType = response.headers.get("Content-Type");
       if (contentType === "application/json; charset=utf-8") {
         figmaFile = await response.json();
-        console.log("Saving file data to disk.");
-        fs.writeFileSync(FILE_DATA_PATH, JSON.stringify(figmaFile));
+        try {
+          fs.writeFileSync(FILE_DATA_PATH, JSON.stringify(figmaFile));
+        } catch (er) {
+          console.log("There was a problem saving the figma file to disk.");
+          console.log(er);
+        }
       } else {
         throw new Error(await response.text());
       }
@@ -52,7 +52,6 @@ async function getPages() {
   if (!figmaFile || !figmaFile.document) {
     console.log("The figma file we got is mal-formed.");
     console.log(figmaFile);
-    console.log("getPages done");
     return [[], "Figma File"];
   }
 
@@ -80,7 +79,6 @@ async function getPages() {
     console.log(figmaFile);
   }
 
-  console.log("getPages done");
   return [figmaPages, figmaFile.name];
 }
 
@@ -90,11 +88,10 @@ async function getPages() {
  * @returns {Promise<string>} URL of the generated PDF
  */
 async function getImage(nodeId) {
-  console.log("getImage start");
   const _id = nodeId.replace("-", ":");
   let image = null;
   try {
-    console.log(`Fetching PDF for frame [${nodeId}].`);
+    console.log(`Fetching PDF for frame [${nodeId}]...`);
     await retry(
       async () => {
         const response = await fetch(
@@ -108,8 +105,12 @@ async function getImage(nodeId) {
         const contentType = response.headers.get("Content-Type");
         if (contentType === "application/json; charset=utf-8") {
           const json = await response.json();
-          image = json.images[_id] || null;
-          console.log("PDF success!");
+          if (json.images) {
+            image = json.images[_id] || null;
+            console.log(`Fetch PDF for [${nodeId}] success!`);
+          } else {
+            throw new Error(json);
+          }
         } else {
           throw new Error(await response.text());
         }
@@ -119,19 +120,20 @@ async function getImage(nodeId) {
         minTimeout: RETRY_TIMEOUT,
         onRetry: (er) => {
           console.log(
-            `There was a problem fetching the PDF for frame [${nodeId}]. Retrying...`
+            `There was a problem fetching the PDF for [${nodeId}]. Retrying...`
           );
           console.log(er);
         },
       }
     );
   } catch (er) {
-    console.log(`There was a problem fetching the PDF for frame [${nodeId}].`);
+    console.log(
+      `There was a problem fetching the PDF for [${nodeId}]. Giving up.`
+    );
     console.log(er);
   }
 
   return image;
 }
 
-console.log("getImage done");
 export { getPages, getImage };
