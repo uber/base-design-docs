@@ -82,7 +82,7 @@ async function getImage(nodeId) {
 
   let image = null;
   try {
-    retry(
+    await retry(
       async () => {
         const res = await fetch(
           `https://api.figma.com/v1/images/${process.env.FIGMA_FILE_ID}?ids=${_id}&format=pdf`,
