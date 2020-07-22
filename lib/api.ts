@@ -1,7 +1,7 @@
 import retry from "async-retry";
 
-// This will retry the request twice, with the last request being reported for
 const RETRY_LIMIT = 2;
+const RETRY_TIMEOUT = 1000 * 60; // 1 minute
 
 /**
  * Returns a list of Figma Pages and the Figma file name. The pages include
@@ -26,12 +26,12 @@ async function getPages() {
         if (contentType === "application/json") {
           figmaFile = await response.json();
         } else {
-          console.log("There was a problem fetching the figma file.");
-          console.log(await response.text());
+          throw new Error(await response.text());
         }
       },
       {
         retries: RETRY_LIMIT,
+        minTimeout: RETRY_TIMEOUT,
         onRetry: (er) => {
           console.log(
             "There was a problem fetching the figma file. Retrying..."
@@ -103,14 +103,12 @@ async function getImage(nodeId) {
           const json = await response.json();
           image = json.images[_id] || null;
         } else {
-          console.log(
-            `There was a problem fetching the PDF for frame [${nodeId}].`
-          );
-          console.log(await response.text());
+          throw new Error(await response.text());
         }
       },
       {
         retries: RETRY_LIMIT,
+        minTimeout: RETRY_TIMEOUT,
         onRetry: (er) => {
           console.log(
             `There was a problem fetching the PDF for frame [${nodeId}]. Retrying...`
