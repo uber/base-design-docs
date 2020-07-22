@@ -3,7 +3,7 @@ import path from "path";
 import retry from "async-retry";
 
 const RETRY_LIMIT = 2;
-const RETRY_TIMEOUT = 1000 * 30; // 30s
+const RETRY_TIMEOUT = 1000 * 60; // 1min
 const FILE_DATA_PATH = path.join(process.cwd(), "file-data.json");
 
 /**
@@ -13,14 +13,15 @@ const FILE_DATA_PATH = path.join(process.cwd(), "file-data.json");
  * start with a capital letter.
  */
 async function getPages() {
+  console.log("getPages start");
   let figmaFile;
   try {
     const file = fs.readFileSync(FILE_DATA_PATH);
     figmaFile = JSON.parse(file.toString());
-    console.log("File data found.");
+    console.log("File data found on disk.");
   } catch (er) {
     // file does not exist yet...
-    console.log("File data has not been saved yet.");
+    console.log("File data not found on disk.");
   }
   if (!figmaFile) {
     try {
@@ -51,6 +52,7 @@ async function getPages() {
   if (!figmaFile || !figmaFile.document) {
     console.log("The figma file we got is mal-formed.");
     console.log(figmaFile);
+    console.log("getPages done");
     return [[], "Figma File"];
   }
 
@@ -78,6 +80,7 @@ async function getPages() {
     console.log(figmaFile);
   }
 
+  console.log("getPages done");
   return [figmaPages, figmaFile.name];
 }
 
@@ -87,9 +90,11 @@ async function getPages() {
  * @returns {Promise<string>} URL of the generated PDF
  */
 async function getImage(nodeId) {
+  console.log("getImage start");
   const _id = nodeId.replace("-", ":");
   let image = null;
   try {
+    console.log(`Fetching PDF for frame [${nodeId}].`);
     await retry(
       async () => {
         const response = await fetch(
@@ -104,6 +109,7 @@ async function getImage(nodeId) {
         if (contentType === "application/json; charset=utf-8") {
           const json = await response.json();
           image = json.images[_id] || null;
+          console.log("PDF success!");
         } else {
           throw new Error(await response.text());
         }
@@ -127,4 +133,5 @@ async function getImage(nodeId) {
   return image;
 }
 
+console.log("getImage done");
 export { getPages, getImage };
