@@ -22,7 +22,15 @@ async function getPages() {
         );
         figmaFile = await figmaFileRequest.json();
       },
-      { retries: 3 }
+      {
+        retries: 3,
+        onRetry: (er) => {
+          console.log(
+            "There was an error while fetching the figma file. Retrying..."
+          );
+          console.log(er);
+        },
+      }
     );
   } catch (er) {
     console.log("There was a problem fetching the figma file.");
@@ -87,7 +95,15 @@ async function getImage(nodeId) {
         const json = await res.json();
         image = json.images[_id] || null;
       },
-      { retries: 3 }
+      {
+        retries: 3,
+        onRetry: (er) => {
+          console.log(
+            `There was an error while fetching the PDF for frame [${nodeId}]. Retrying...`
+          );
+          console.log(er);
+        },
+      }
     );
   } catch (er) {
     console.log(`There was a problem fetching the PDF for frame [${nodeId}]`);
