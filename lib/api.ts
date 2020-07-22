@@ -81,10 +81,11 @@ async function getImage(nodeId) {
   const _id = nodeId.replace("-", ":");
 
   let image = null;
+  let imageRequest;
   try {
     await retry(
       async () => {
-        const res = await fetch(
+        imageRequest = await fetch(
           `https://api.figma.com/v1/images/${process.env.FIGMA_FILE_ID}?ids=${_id}&format=pdf`,
           {
             headers: {
@@ -92,7 +93,7 @@ async function getImage(nodeId) {
             },
           }
         );
-        const json = await res.json();
+        const json = await imageRequest.json();
         image = json.images[_id] || null;
       },
       {
@@ -107,8 +108,12 @@ async function getImage(nodeId) {
     );
   } catch (er) {
     console.log(`There was a problem fetching the PDF for frame [${nodeId}]`);
+    console.log(`Error:`);
     console.log(er);
+    console.log(`Image object:`);
     console.log(image);
+    console.log(`Response:`);
+    console.log(await imageRequest.text());
   }
 
   return image;
