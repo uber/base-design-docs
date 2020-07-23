@@ -131,6 +131,7 @@ async function getImage(nodeId) {
       `There was a problem fetching the PDF for [${nodeId}]. Giving up.`
     );
     console.log(er);
+    console.log(image);
   }
 
   return image;
