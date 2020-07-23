@@ -2,8 +2,8 @@ import fs from "fs";
 import path from "path";
 import retry from "async-retry";
 
-const RETRY_LIMIT = 2;
-const RETRY_TIMEOUT = 1000 * 60; // 1min
+const RETRY_LIMIT = 10;
+const RETRY_TIMEOUT = 1000 * 30; // 30s
 const FILE_DATA_PATH = path.join(process.cwd(), "file-data.json");
 
 /**
