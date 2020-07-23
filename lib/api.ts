@@ -1,4 +1,10 @@
+import fs from "fs";
+import path from "path";
 import retry from "async-retry";
+
+const RETRY_LIMIT = 10;
+const RETRY_TIMEOUT = 1000 * 30; // 30s
+const FILE_DATA_PATH = path.join(process.cwd(), "file-data.json");
 
 /**
  * Returns a list of Figma Pages and the Figma file name. The pages include
@@ -8,34 +14,38 @@ import retry from "async-retry";
  */
 async function getPages() {
   let figmaFile;
-  let figmaFileRequest;
   try {
-    await retry(
-      async () => {
-        figmaFileRequest = await fetch(
-          `https://api.figma.com/v1/files/${process.env.FIGMA_FILE_ID}?depth=2`,
-          {
-            headers: {
-              "X-FIGMA-TOKEN": process.env.FIGMA_AUTH_TOKEN,
-            },
-          }
-        );
-        figmaFile = await figmaFileRequest.json();
-      },
-      {
-        retries: 3,
-        onRetry: (er) => {
-          console.log(
-            "There was an error while fetching the figma file. Retrying..."
-          );
-          console.log(er);
-        },
-      }
-    );
+    const file = fs.readFileSync(FILE_DATA_PATH);
+    figmaFile = JSON.parse(file.toString());
   } catch (er) {
-    console.log("There was a problem fetching the figma file.");
-    console.log(er);
-    console.log(await figmaFileRequest.text());
+    // file does not exist yet...
+  }
+  if (!figmaFile) {
+    try {
+      const response = await fetch(
+        `https://api.figma.com/v1/files/${process.env.FIGMA_FILE_ID}?depth=2`,
+        {
+          headers: {
+            "X-FIGMA-TOKEN": process.env.FIGMA_AUTH_TOKEN,
+          },
+        }
+      );
+      const contentType = response.headers.get("Content-Type");
+      if (contentType === "application/json; charset=utf-8") {
+        figmaFile = await response.json();
+        try {
+          fs.writeFileSync(FILE_DATA_PATH, JSON.stringify(figmaFile));
+        } catch (er) {
+          console.log("There was a problem saving the figma file to disk.");
+          console.log(er);
+        }
+      } else {
+        throw new Error(await response.text());
+      }
+    } catch (er) {
+      console.log("There was a problem fetching the figma file.");
+      console.log(er);
+    }
   }
 
   // Bail early if figma file is mal-formed.
@@ -45,9 +55,9 @@ async function getPages() {
     return [[], "Figma File"];
   }
 
+  // Now we want to process the Figma file into a list of pages.
   let figmaPages = [];
   try {
-    // Now we want to process the Figma file into a list of pages.
     // By convention, only use Figma Pages starting with a capital letter.
     figmaPages = figmaFile.document.children.filter((page) =>
       page.name.match(/^[A-Z]/)
@@ -79,12 +89,12 @@ async function getPages() {
  */
 async function getImage(nodeId) {
   const _id = nodeId.replace("-", ":");
-
   let image = null;
   try {
+    console.log(`Fetching PDF for frame [${nodeId}]...`);
     await retry(
       async () => {
-        const res = await fetch(
+        const response = await fetch(
           `https://api.figma.com/v1/images/${process.env.FIGMA_FILE_ID}?ids=${_id}&format=pdf`,
           {
             headers: {
@@ -92,21 +102,34 @@ async function getImage(nodeId) {
             },
           }
         );
-        const json = await res.json();
-        image = json.images[_id] || null;
+        const contentType = response.headers.get("Content-Type");
+        if (contentType === "application/json; charset=utf-8") {
+          const json = await response.json();
+          if (json.images && json.images[_id]) {
+            image = json.images[_id];
+            console.log(`Fetch PDF for [${nodeId}] success!`);
+          } else {
+            throw new Error(JSON.stringify(json));
+          }
+        } else {
+          throw new Error(await response.text());
+        }
       },
       {
-        retries: 3,
+        retries: RETRY_LIMIT,
+        minTimeout: RETRY_TIMEOUT,
         onRetry: (er) => {
           console.log(
-            `There was an error while fetching the PDF for frame [${nodeId}]. Retrying...`
+            `There was a problem fetching the PDF for [${nodeId}]. Retrying...`
           );
           console.log(er);
         },
       }
     );
   } catch (er) {
-    console.log(`There was a problem fetching the PDF for frame [${nodeId}]`);
+    console.log(
+      `There was a problem fetching the PDF for [${nodeId}]. Giving up.`
+    );
     console.log(er);
     console.log(image);
   }
