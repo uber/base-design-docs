@@ -8,7 +8,7 @@ async function getStaticPaths() {
       return [...acc, ...page.children];
     }, [])
     .map((frame) => ({ params: { nodeId: frame.id } }));
-  return { paths, fallback: true };
+  return { paths, fallback: false };
 }
 
 async function getStaticProps({ params }) {
