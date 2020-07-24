@@ -8,6 +8,7 @@ import { StatefulPopover, PLACEMENT } from "baseui/popover";
 import { StatefulMenu } from "baseui/menu";
 import { Book } from "./icons";
 import * as gtag from "../lib/gtag";
+import { MQ } from "../lib/constants";
 
 interface Props {
   nodeId: string;
@@ -138,7 +139,7 @@ function PageDropdown({ nodeId, pages = [] }: Props) {
         <span
           className={css({
             display: "none",
-            [theme.mediaQuery.medium]: {
+            [MQ.medium]: {
               display: "inline-block",
               marginLeft: theme.sizing.scale400,
             },

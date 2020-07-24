@@ -3,6 +3,7 @@ import { useStyletron } from "baseui";
 import { Button, KIND, SHAPE, SIZE } from "baseui/button";
 import { Logo, Console, Figma } from "./icons";
 import Search from "./search";
+import { MQ } from "../lib/constants";
 import * as gtag from "../lib/gtag";
 
 interface Props {
@@ -17,64 +18,88 @@ function Header({ pages, fileId, fileName, nodeId = null }: Props) {
   return (
     <header
       className={css({
-        height: "60px",
         width: "100%",
         display: "flex",
+        flexWrap: "wrap",
         alignItems: "center",
         justifyContent: "space-between",
-        position: "fixed",
-        top: "0",
         background: theme.colors.backgroundPrimary,
+        height: "124px",
         paddingLeft: theme.sizing.scale800,
         paddingRight: theme.sizing.scale800,
-        zIndex: "1",
+        [MQ.medium]: {
+          position: "fixed",
+          top: "0",
+          zIndex: "1",
+          height: "60px",
+        },
       })}
     >
-      <Link href="/" as="/">
-        <a
-          className={css({
-            display: "flex",
-            alignItems: "center",
-            textDecoration: "none",
-            ":focus": {
-              outline: `solid 3px ${theme.colors.borderAccent}`,
-              outlineOffset: "2px",
-            },
-          })}
-          onClick={() => {
-            gtag.event({
-              action: "click_link_header",
-              category: "navigation",
-              label: "home",
-            });
-          }}
-        >
-          <Logo dark size="22px" />
-          <div
+      <div
+        className={css({
+          marginRight: "auto",
+          order: 1,
+        })}
+      >
+        <Link href="/" as="/">
+          <a
             className={css({
-              ...theme.typography.DisplayXSmall,
-              fontSize: theme.typography.HeadingSmall.fontSize,
-              color: theme.colors.white,
-              marginLeft: theme.sizing.scale400,
+              display: "flex",
+              alignItems: "center",
+              textDecoration: "none",
+              ":focus": {
+                outline: `solid 3px ${theme.colors.borderAccent}`,
+                outlineOffset: "2px",
+              },
             })}
+            onClick={() => {
+              gtag.event({
+                action: "click_link_header",
+                category: "navigation",
+                label: "home",
+              });
+            }}
           >
-            Base
-          </div>
-        </a>
-      </Link>
+            <Logo dark size="22px" />
+            <div
+              className={css({
+                ...theme.typography.DisplayXSmall,
+                fontSize: theme.typography.HeadingSmall.fontSize,
+                color: theme.colors.white,
+                marginLeft: theme.sizing.scale400,
+              })}
+            >
+              Base
+            </div>
+          </a>
+        </Link>
+      </div>
+      <div
+        className={css({
+          width: "100%",
+          order: 3,
+          alignSelf: "baseline",
+          [MQ.medium]: {
+            width: "300px",
+            order: 2,
+            alignSelf: "initial",
+          },
+          [MQ.large]: {
+            width: "400px",
+          },
+        })}
+      >
+        <Search pages={pages} nodeId={nodeId} />
+      </div>
       <div
         className={css({
           display: "flex",
-          marginLeft: "auto",
+          order: 2,
+          [MQ.medium]: {
+            order: 3,
+          },
         })}
       >
-        <div
-          className={css({
-            width: "250px",
-          })}
-        >
-          <Search pages={pages} nodeId={nodeId} />
-        </div>
         <div
           className={css({
             marginLeft: theme.sizing.scale400,
@@ -103,7 +128,7 @@ function Header({ pages, fileId, fileName, nodeId = null }: Props) {
             <span
               className={css({
                 display: "none",
-                [theme.mediaQuery.medium]: {
+                [MQ.small]: {
                   display: "inline-block",
                   marginLeft: theme.sizing.scale400,
                 },
@@ -137,7 +162,7 @@ function Header({ pages, fileId, fileName, nodeId = null }: Props) {
           <span
             className={css({
               display: "none",
-              [theme.mediaQuery.medium]: {
+              [MQ.small]: {
                 display: "inline-block",
                 marginLeft: theme.sizing.scale400,
               },

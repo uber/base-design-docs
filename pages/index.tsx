@@ -1,5 +1,6 @@
 import { useStyletron } from "baseui";
 import { Display, ParagraphMedium, DisplayXSmall } from "baseui/typography";
+import { MQ } from "../lib/constants";
 
 export async function getStaticProps() {
   const { getPages } = require("../lib/api");
@@ -20,7 +21,10 @@ export default function Home() {
       className={css({
         display: "flex",
         alignItems: "flex-end",
-        height: "calc(100vh - 60px)",
+        height: "calc(100vh - 124px)",
+        [MQ.medium]: {
+          height: "calc(100vh - 60px)",
+        },
       })}
     >
       <div
@@ -29,7 +33,7 @@ export default function Home() {
           paddingLeft: "8vh",
           paddingRight: "8vh",
           flexBasis: "75%",
-          [theme.mediaQuery.medium]: {
+          [MQ.medium]: {
             flexBasis: "50%",
           },
         })}
@@ -44,20 +48,23 @@ export default function Home() {
       <div
         className={css({
           display: "none",
-          [theme.mediaQuery.large]: {
+          [MQ.medium]: {
             display: "block",
             flexBasis: "50%",
           },
         })}
       >
         <img
-          alt="Cars driving down a winding road."
+          alt="A collage of Base UI components."
           className={css({
             display: "block",
-            height: "calc(100vh - 60px)",
+            height: "calc(100vh - 124px)",
             width: "100%",
             objectFit: "cover",
             objectPosition: "left",
+            [MQ.medium]: {
+              height: "calc(100vh - 60px)",
+            },
           })}
           src="/base-collage.png"
         />
