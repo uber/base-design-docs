@@ -11,7 +11,7 @@ interface Props {
   nodeId: string;
 }
 
-function Search({ pages, nodeId }: Props) {
+function Search({ pages = [], nodeId }: Props) {
   const router = useRouter();
   const controlRef = useRef<HTMLInputElement>();
 
