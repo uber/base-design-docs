@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useStyletron } from "baseui";
 import { Button, KIND, SHAPE, SIZE } from "baseui/button";
 import { Logo, Console, Figma } from "./icons";
-import PageDropdown from "./page-dropdown";
+import Search from "./search";
 import * as gtag from "../lib/gtag";
 
 interface Props {
@@ -68,7 +68,13 @@ function Header({ pages, fileId, fileName, nodeId = null }: Props) {
           marginLeft: "auto",
         })}
       >
-        <PageDropdown pages={pages} nodeId={nodeId} />
+        <div
+          className={css({
+            width: "250px",
+          })}
+        >
+          <Search pages={pages} nodeId={nodeId} />
+        </div>
         <div
           className={css({
             marginLeft: theme.sizing.scale400,
