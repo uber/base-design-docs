@@ -64,6 +64,9 @@ function Search({ pages = [], nodeId }: Props) {
         }
       }}
       overrides={{
+        Input: {
+          props: { "aria-label": "Search through components and pages." },
+        },
         Placeholder: {
           style: ({ $theme }) => ({
             // Default fails Lighthouse contrast ratio
