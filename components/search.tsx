@@ -64,6 +64,12 @@ function Search({ pages = [], nodeId }: Props) {
         }
       }}
       overrides={{
+        Placeholder: {
+          style: ({ $theme }) => ({
+            // Default fails Lighthouse contrast ratio
+            color: $theme.colors.backgroundInverseSecondary,
+          }),
+        },
         SearchIcon: {
           component: function SearchIconOverride() {
             return <SearchIcon />;
