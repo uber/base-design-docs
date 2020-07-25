@@ -15,7 +15,7 @@ export async function getStaticProps() {
 }
 
 export default function Home() {
-  const [css, theme] = useStyletron();
+  const [css] = useStyletron();
   return (
     <div
       className={css({
@@ -51,24 +51,22 @@ export default function Home() {
           [MQ.medium]: {
             display: "block",
             flexBasis: "50%",
+            height: "100%",
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundImage: `url('collage-405.png')`,
+          },
+          [MQ.medium + "and (min-height: 405px)"]: {
+            backgroundImage: `url('collage-810.png')`,
+          },
+          [MQ.medium + "and (min-height: 810px)"]: {
+            backgroundImage: `url('collage-1620.png')`,
+          },
+          [MQ.medium + "and (min-height: 1620px)"]: {
+            backgroundImage: `url('collage-3240.png')`,
           },
         })}
-      >
-        <img
-          alt="A collage of Base UI components."
-          className={css({
-            display: "block",
-            height: "calc(100vh - 124px)",
-            width: "100%",
-            objectFit: "cover",
-            objectPosition: "left",
-            [MQ.medium]: {
-              height: "calc(100vh - 60px)",
-            },
-          })}
-          src="/base-collage.png"
-        />
-      </div>
+      ></div>
     </div>
   );
 }
