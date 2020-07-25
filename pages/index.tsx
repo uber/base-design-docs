@@ -32,7 +32,10 @@ export default function Home() {
           paddingBottom: "10vh",
           paddingLeft: "8vh",
           paddingRight: "8vh",
-          flexBasis: "75%",
+          flexBasis: "100%",
+          [MQ.small]: {
+            flexBasis: "75%",
+          },
           [MQ.medium]: {
             flexBasis: "50%",
           },
