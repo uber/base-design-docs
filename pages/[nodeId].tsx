@@ -1,4 +1,5 @@
 import { useStyletron } from "baseui";
+import { MQ } from "../lib/constants";
 
 async function getStaticPaths() {
   const { getPages } = require("../lib/api");
@@ -36,21 +37,27 @@ function Node({ image }: { image: string }) {
           title="Figma PDF"
           type="application/pdf"
           src={image}
-          style={{
+          className={css({
             display: "block",
             width: "100%",
-            minHeight: "calc(100vh - 60px)",
             border: "0",
-          }}
+            minHeight: "calc(100vh - 124px)",
+            [MQ.medium]: {
+              minHeight: "calc(100vh - 60px)",
+            },
+          })}
         />
       ) : (
         <div
           className={css({
             width: "100%",
-            height: "calc(100vh - 60px)",
+            height: "calc(100vh - 124px)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            [MQ.medium]: {
+              height: "calc(100vh - 60px)",
+            },
           })}
         >
           Yikes! There was a problem rendering this page.

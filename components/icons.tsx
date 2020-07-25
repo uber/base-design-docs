@@ -132,3 +132,31 @@ export function Figma({ size = "24px" }: IconProps) {
     </svg>
   );
 }
+
+export function SearchIcon({ size = "16px" }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g
+        transform="matrix(
+          1 0
+          0 1
+          1 0.899993896484375
+        )"
+      >
+        <path
+          fillRule="nonzero"
+          clipRule="nonzero"
+          d="M21.6001 19.5L17.2002 15.1C18.3002 13.5 19 11.6 19 9.50003C19 4.30003 14.7 0 9.5 0C4.3 0 0 4.30003 0 9.50003C0 14.7 4.3 19 9.5 19C11.6 19 13.5001 18.3 15.1001 17.2L19.5 21.6L21.6001 19.5ZM3 9.60001C3 6.00001 5.9 3.10001 9.5 3.10001C13.1 3.10001 16 6.00001 16 9.60001C16 13.2 13.1 16.1 9.5 16.1C5.9 16.1 3 13.2 3 9.60001Z"
+          fill="currentColor"
+          opacity="1"
+        />
+      </g>
+    </svg>
+  );
+}

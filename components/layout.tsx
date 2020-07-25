@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useStyletron, DarkThemeMove, ThemeProvider } from "baseui";
 import SideNavigation from "./side-navigation";
 import Header from "./header";
+import { MQ } from "../lib/constants";
 
 interface Props {
   children?: any; // TODO: fix this children type
@@ -12,7 +13,7 @@ interface Props {
 }
 
 function Layout({ children, pages, fileName, fileId, nodeId = null }: Props) {
-  const [css, theme] = useStyletron();
+  const [css] = useStyletron();
   return (
     <div>
       <Head>
@@ -42,8 +43,10 @@ function Layout({ children, pages, fileName, fileId, nodeId = null }: Props) {
         />
         <main
           className={css({
-            marginTop: "60px",
-            [theme.mediaQuery.large]: {
+            [MQ.medium]: {
+              marginTop: "60px",
+            },
+            [MQ.large]: {
               marginLeft: "300px",
             },
           })}

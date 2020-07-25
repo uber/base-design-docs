@@ -1,5 +1,6 @@
 import { useStyletron } from "baseui";
 import { Display, ParagraphMedium, DisplayXSmall } from "baseui/typography";
+import { MQ } from "../lib/constants";
 
 export async function getStaticProps() {
   const { getPages } = require("../lib/api");
@@ -14,13 +15,16 @@ export async function getStaticProps() {
 }
 
 export default function Home() {
-  const [css, theme] = useStyletron();
+  const [css] = useStyletron();
   return (
     <div
       className={css({
         display: "flex",
         alignItems: "flex-end",
-        height: "calc(100vh - 60px)",
+        height: "calc(100vh - 124px)",
+        [MQ.medium]: {
+          height: "calc(100vh - 60px)",
+        },
       })}
     >
       <div
@@ -28,8 +32,11 @@ export default function Home() {
           paddingBottom: "10vh",
           paddingLeft: "8vh",
           paddingRight: "8vh",
-          flexBasis: "75%",
-          [theme.mediaQuery.medium]: {
+          flexBasis: "100%",
+          [MQ.small]: {
+            flexBasis: "75%",
+          },
+          [MQ.medium]: {
             flexBasis: "50%",
           },
         })}
@@ -44,24 +51,25 @@ export default function Home() {
       <div
         className={css({
           display: "none",
-          [theme.mediaQuery.large]: {
+          [MQ.medium]: {
             display: "block",
             flexBasis: "50%",
+            height: "100%",
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundImage: `url('collage-405.png')`,
+          },
+          [MQ.medium + "and (min-height: 405px)"]: {
+            backgroundImage: `url('collage-810.png')`,
+          },
+          [MQ.medium + "and (min-height: 810px)"]: {
+            backgroundImage: `url('collage-1620.png')`,
+          },
+          [MQ.medium + "and (min-height: 1620px)"]: {
+            backgroundImage: `url('collage-3240.png')`,
           },
         })}
-      >
-        <img
-          alt="Cars driving down a winding road."
-          className={css({
-            display: "block",
-            height: "calc(100vh - 60px)",
-            width: "100%",
-            objectFit: "cover",
-            objectPosition: "left",
-          })}
-          src="/base-collage.png"
-        />
-      </div>
+      ></div>
     </div>
   );
 }

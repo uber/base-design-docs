@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { useStyletron } from "baseui";
 import * as gtag from "../lib/gtag";
+import { MQ } from "../lib/constants";
 
 interface Props {
   fileId: string;
@@ -26,7 +27,7 @@ function SideNavigation({ pages = [], nodeId = null }: Props) {
     <nav
       className={css({
         display: "none",
-        [theme.mediaQuery.large]: {
+        [MQ.large]: {
           position: "fixed",
           top: "60px",
           width: "300px",
