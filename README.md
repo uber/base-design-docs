@@ -43,7 +43,7 @@ First, recall that every Figma File has the following structure:
 Project > File[] > Page[] > Frame[]
 ```
 
-Every File can have multiple Pages, which in turn can have multiple Frames. We render a webpage for every top-level Frame within each Page.
+Every Project can have multuple Files, which can have multiple Pages, which in turn can have multiple Frames. We render a webpage for every top-level Frame within each Page.
 
 Take the following Figma file structure:
 
