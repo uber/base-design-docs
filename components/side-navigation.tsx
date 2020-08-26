@@ -5,8 +5,6 @@ import * as gtag from "../lib/gtag";
 import { MQ } from "../lib/constants";
 
 interface Props {
-  fileId: string;
-  fileName: string;
   pages?: any[];
   nodeId?: string;
 }

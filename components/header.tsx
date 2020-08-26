@@ -8,12 +8,17 @@ import * as gtag from "../lib/gtag";
 
 interface Props {
   pages: any[];
-  fileId: string;
-  fileName: string;
+  fileId?: string;
+  fileName?: string;
   nodeId?: string;
 }
 
-function Header({ pages, fileId, fileName, nodeId = null }: Props) {
+function Header({
+  pages,
+  fileId = null,
+  fileName = null,
+  nodeId = null,
+}: Props) {
   const [css, theme] = useStyletron();
   return (
     <header
