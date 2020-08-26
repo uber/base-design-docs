@@ -10,6 +10,7 @@ interface Props {
   fileName?: string;
   fileId?: string;
   nodeId?: string;
+  projectId?: string;
 }
 
 function Layout({
@@ -18,6 +19,7 @@ function Layout({
   fileName = null,
   fileId = null,
   nodeId = null,
+  projectId = null,
 }: Props) {
   const [css] = useStyletron();
   return (
@@ -38,6 +40,7 @@ function Layout({
             fileId={fileId}
             fileName={fileName}
             nodeId={nodeId}
+            projectId={projectId}
             pages={pages}
           />
         </ThemeProvider>

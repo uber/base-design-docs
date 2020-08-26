@@ -11,6 +11,7 @@ interface Props {
   fileId?: string;
   fileName?: string;
   nodeId?: string;
+  projectId?: string;
 }
 
 function Header({
@@ -18,6 +19,7 @@ function Header({
   fileId = null,
   fileName = null,
   nodeId = null,
+  projectId = null,
 }: Props) {
   const [css, theme] = useStyletron();
   return (
@@ -147,11 +149,12 @@ function Header({
           // @ts-ignore - Missing type in baseui
           $as="a"
           href={
-            fileId && fileName
-              ? `https://www.figma.com/file/${fileId}/${fileName}${
-                  nodeId ? `?node-id=${nodeId.replace("-", ":")}` : ""
-                }`
-              : `https://www.figma.com/files/${process.env.FIGMA_FILE_ID}/project/${process.env.FIGMA_PROJECT_ID}/%E2%9D%96-Base-Documentation`
+            nodeId
+              ? `https://www.figma.com/file/${fileId}/${fileName}?node-id=${nodeId.replace(
+                  "-",
+                  ":"
+                )}`
+              : `https://www.figma.com/files/${fileId}/project/${projectId}/%E2%9D%96-Base-Documentation`
           }
           target="_blank"
           rel="noopener"
