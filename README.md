@@ -11,8 +11,11 @@ $ yarn
 Then, create a `.env.local` file like so:
 
 ```bash
-# The figma file to build pages from
+# The base figma file for the org
 FIGMA_FILE_ID=XYZ
+
+# The figma project to build pages from
+FIGMA_PROJECT_ID=XYZ
 
 # A figma API auth token with access to the above file
 FIGMA_AUTH_TOKEN=XYZ
@@ -32,12 +35,12 @@ Pages auto-update as you edit files.
 
 This project is built with Next.js and Vercel.
 
-We use `getStaticPaths` to render a webpage for each top-level Frame in our Figma documentation File. So, what is a top-level Frame?
+We use `getStaticPaths` to render a webpage for each top-level Frame in each file in our Figma Project. So, what is a top-level Frame?
 
 First, recall that every Figma File has the following structure:
 
 ```
-File > Page[] > Frame[]
+Project > File[] > Page[] > Frame[]
 ```
 
 Every File can have multiple Pages, which in turn can have multiple Frames. We render a webpage for every top-level Frame within each Page.
@@ -82,12 +85,14 @@ Setup
 ...
 ```
 
+We apply this to each file in the Figma project. Note, the file structure itself only impacts the rendered website by influencing the order of pages. We have a step that essentially "joins" each page into one list before processing top-level frames.
+
 There are a couple more conventions to keep in mind:
 
 - We only use Pages that start with a capital letter.
 - We only use Frames that start with a captial letter and are visible.
 
-So, given any arbitrary File, provided at build-time as `FIGMA_FILE_ID`, so long as the file follows the above conventions, we can build a website.
+So, given any arbitrary Project, provided at build-time as `FIGMA_PROJECT_ID`, so long as the files in the project follow the above conventions, we can build a website.
 
 ### Rendering a Frame
 
