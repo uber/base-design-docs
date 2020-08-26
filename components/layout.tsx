@@ -7,12 +7,20 @@ import { MQ } from "../lib/constants";
 interface Props {
   children?: any; // TODO: fix this children type
   pages: any[];
-  fileName: string;
-  fileId: string;
+  fileName?: string;
+  fileId?: string;
   nodeId?: string;
+  projectId?: string;
 }
 
-function Layout({ children, pages, fileName, fileId, nodeId = null }: Props) {
+function Layout({
+  children,
+  pages,
+  fileName = null,
+  fileId = null,
+  nodeId = null,
+  projectId = null,
+}: Props) {
   const [css] = useStyletron();
   return (
     <div>
@@ -32,15 +40,11 @@ function Layout({ children, pages, fileName, fileId, nodeId = null }: Props) {
             fileId={fileId}
             fileName={fileName}
             nodeId={nodeId}
+            projectId={projectId}
             pages={pages}
           />
         </ThemeProvider>
-        <SideNavigation
-          fileId={fileId}
-          fileName={fileName}
-          nodeId={nodeId}
-          pages={pages}
-        />
+        <SideNavigation nodeId={nodeId} pages={pages} />
         <main
           className={css({
             [MQ.medium]: {

@@ -8,12 +8,19 @@ import * as gtag from "../lib/gtag";
 
 interface Props {
   pages: any[];
-  fileId: string;
-  fileName: string;
+  fileId?: string;
+  fileName?: string;
   nodeId?: string;
+  projectId?: string;
 }
 
-function Header({ pages, fileId, fileName, nodeId = null }: Props) {
+function Header({
+  pages,
+  fileId = null,
+  fileName = null,
+  nodeId = null,
+  projectId = null,
+}: Props) {
   const [css, theme] = useStyletron();
   return (
     <header
@@ -141,9 +148,14 @@ function Header({ pages, fileId, fileName, nodeId = null }: Props) {
         <Button
           // @ts-ignore - Missing type in baseui
           $as="a"
-          href={`https://www.figma.com/file/${fileId}/${fileName}${
-            nodeId ? `?node-id=${nodeId.replace("-", ":")}` : ""
-          }`}
+          href={
+            nodeId
+              ? `https://www.figma.com/file/${fileId}/${fileName}?node-id=${nodeId.replace(
+                  "-",
+                  ":"
+                )}`
+              : `https://www.figma.com/files/${fileId}/project/${projectId}/%E2%9D%96-Base-Documentation`
+          }
           target="_blank"
           rel="noopener"
           kind={KIND.tertiary}

@@ -4,12 +4,12 @@ import { MQ } from "../lib/constants";
 
 export async function getStaticProps() {
   const { getPages } = require("../lib/api");
-  const [pages, fileName] = await getPages();
+  const pages = await getPages();
   return {
     props: {
       pages,
+      projectId: process.env.FIGMA_PROJECT_ID,
       fileId: process.env.FIGMA_FILE_ID,
-      fileName,
     },
   };
 }
