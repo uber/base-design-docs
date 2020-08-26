@@ -6,7 +6,7 @@ const RETRY_LIMIT = 10;
 const RETRY_TIMEOUT = 1000 * 30; // 30s
 const PROJECT_DATA_PATH = path.join(process.cwd(), "./data/project.json");
 const PAGES_DATA_PATH = path.join(process.cwd(), "./data/pages.json");
-const getImagesPath = (nodeId) =>
+const getImageDataPath = (nodeId) =>
   path.join(process.cwd(), `./data/image-[${nodeId}].json`);
 
 /**
@@ -141,7 +141,7 @@ async function getImage(fileId, nodeId) {
   let image = null;
   try {
     if (process.env.CACHE_IMAGES) {
-      const project = fs.readFileSync(getImagesPath(_nodeId));
+      const project = fs.readFileSync(getImageDataPath(_nodeId));
       const images = JSON.parse(project.toString());
       image = images[_nodeId];
     } else {
@@ -168,7 +168,7 @@ async function getImage(fileId, nodeId) {
               console.log(`Fetch PDF for [${nodeId}] success!`);
               try {
                 fs.writeFileSync(
-                  getImagesPath(_nodeId),
+                  getImageDataPath(_nodeId),
                   JSON.stringify(json.images)
                 );
               } catch (er) {
