@@ -4,8 +4,10 @@ import retry from "async-retry";
 
 const RETRY_LIMIT = 10;
 const RETRY_TIMEOUT = 1000 * 30; // 30s
-const PROJECT_DATA_PATH = path.join(process.cwd(), "project-data.json");
-const PAGES_DATA_PATH = path.join(process.cwd(), "pages-data.json");
+const PROJECT_DATA_PATH = path.join(process.cwd(), "./data/project.json");
+const PAGES_DATA_PATH = path.join(process.cwd(), "./data/pages.json");
+const getImagesPath = (nodeId) =>
+  path.join(process.cwd(), `./data/image-[${nodeId}].json`);
 
 /**
  * Returns a list of Figma Pages. The pages include their immediate children,
@@ -128,65 +130,81 @@ async function getPages() {
   return figmaPages;
 }
 
-async function getPage(pages, nodeId) {
-  return pages.find((page) =>
-    page.children.find((frame) => frame.id === nodeId)
-  );
-}
-
 /**
  * Get a PDF of a Figma node id.
  * @param {string} nodeId The id of the Figma node to grab a PDF of.
  * @returns {Promise<string>} URL of the generated PDF
  */
 async function getImage(fileId, nodeId) {
+  // For network requests
+  const _nodeId = nodeId.replace("-", ":");
   let image = null;
   try {
-    console.log(`Fetching PDF for frame [${nodeId}]...`);
-    const _nodeId = nodeId.replace("-", ":");
-    await retry(
-      async () => {
-        const response = await fetch(
-          `https://api.figma.com/v1/images/${fileId}?ids=${_nodeId}&format=pdf`,
-          {
-            headers: {
-              "X-FIGMA-TOKEN": process.env.FIGMA_AUTH_TOKEN,
-            },
-          }
-        );
-        const contentType = response.headers.get("Content-Type");
-        if (contentType === "application/json; charset=utf-8") {
-          const json = await response.json();
-          if (json.images && json.images[_nodeId]) {
-            image = json.images[_nodeId];
-            console.log(`Fetch PDF for [${nodeId}] success!`);
-          } else {
-            throw new Error(JSON.stringify(json));
-          }
-        } else {
-          throw new Error(await response.text());
-        }
-      },
-      {
-        retries: RETRY_LIMIT,
-        minTimeout: RETRY_TIMEOUT,
-        onRetry: (er) => {
-          console.log(
-            `There was a problem fetching the PDF for [${nodeId}]. Retrying...`
-          );
-          console.log(er);
-        },
-      }
-    );
+    if (process.env.CACHE_IMAGES) {
+      const project = fs.readFileSync(getImagesPath(_nodeId));
+      const images = JSON.parse(project.toString());
+      image = images[_nodeId];
+    } else {
+      throw new Error("Do not cache images");
+    }
   } catch (er) {
-    console.log(
-      `There was a problem fetching the PDF for [${nodeId}]. Giving up.`
-    );
-    console.log(er);
-    console.log(image);
+    try {
+      console.log(`Fetching PDF for frame [${nodeId}]...`);
+      await retry(
+        async () => {
+          const response = await fetch(
+            `https://api.figma.com/v1/images/${fileId}?ids=${_nodeId}&format=pdf`,
+            {
+              headers: {
+                "X-FIGMA-TOKEN": process.env.FIGMA_AUTH_TOKEN,
+              },
+            }
+          );
+          const contentType = response.headers.get("Content-Type");
+          if (contentType === "application/json; charset=utf-8") {
+            const json = await response.json();
+            if (json.images && json.images[_nodeId]) {
+              image = json.images[_nodeId];
+              console.log(`Fetch PDF for [${nodeId}] success!`);
+              try {
+                fs.writeFileSync(
+                  getImagesPath(_nodeId),
+                  JSON.stringify(json.images)
+                );
+              } catch (er) {
+                console.log(
+                  `There was a problem saving the figma image to disk.`
+                );
+                console.log(er);
+              }
+            } else {
+              throw new Error(JSON.stringify(json));
+            }
+          } else {
+            throw new Error(await response.text());
+          }
+        },
+        {
+          retries: RETRY_LIMIT,
+          minTimeout: RETRY_TIMEOUT,
+          onRetry: (er) => {
+            console.log(
+              `There was a problem fetching the PDF for [${nodeId}]. Retrying...`
+            );
+            console.log(er);
+          },
+        }
+      );
+    } catch (er) {
+      console.log(
+        `There was a problem fetching the PDF for [${nodeId}]. Giving up.`
+      );
+      console.log(er);
+      console.log(image);
+    }
   }
 
   return image;
 }
 
-export { getPages, getImage, getPage };
+export { getPages, getImage };

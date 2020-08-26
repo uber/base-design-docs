@@ -33,6 +33,4 @@ yarn-error.log*
 
 .eslintcache
 
-file-data.json
-project-data.json
-pages-data.json
+/data

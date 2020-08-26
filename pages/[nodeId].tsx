@@ -13,9 +13,11 @@ async function getStaticPaths() {
 }
 
 async function getStaticProps({ params }) {
-  const { getPages, getImage, getPage } = require("../lib/api");
+  const { getPages, getImage } = require("../lib/api");
   const pages = await getPages();
-  const page = await getPage(pages, params.nodeId);
+  const page = pages.find((page) =>
+    page.children.find((frame) => frame.id === params.nodeId)
+  );
   const frame = page.children[0];
   const image = await getImage(frame.fileKey, params.nodeId);
   return {
