@@ -141,9 +141,13 @@ function Header({ pages, fileId, fileName, nodeId = null }: Props) {
         <Button
           // @ts-ignore - Missing type in baseui
           $as="a"
-          href={`https://www.figma.com/file/${fileId}/${fileName}${
-            nodeId ? `?node-id=${nodeId.replace("-", ":")}` : ""
-          }`}
+          href={
+            fileId && fileName
+              ? `https://www.figma.com/file/${fileId}/${fileName}${
+                  nodeId ? `?node-id=${nodeId.replace("-", ":")}` : ""
+                }`
+              : `https://www.figma.com/files/${process.env.FIGMA_FILE_ID}/project/${process.env.FIGMA_PROJECT_ID}/%E2%9D%96-Base-Documentation`
+          }
           target="_blank"
           rel="noopener"
           kind={KIND.tertiary}
