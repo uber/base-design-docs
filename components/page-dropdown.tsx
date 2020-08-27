@@ -59,7 +59,7 @@ function PageDropdown({ nodeId, pages = [] }: Props) {
                 gtag.event({
                   action: "click_link_dropdown",
                   category: "navigation",
-                  label: nodeId,
+                  label: params.item.href,
                 });
                 router.push("/[nodeId]", params.item.href);
               }

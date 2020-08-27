@@ -30,7 +30,7 @@ function Search({ pages = [], nodeId }: Props) {
           id: frame.id,
           name: frame.name,
           self: `${page.name} ${frame.name}`,
-          href: `/${frame.id}`,
+          href: `/${frame.url}`,
         });
       }
     }
@@ -57,7 +57,7 @@ function Search({ pages = [], nodeId }: Props) {
           gtag.event({
             action: "click_link_search",
             category: "navigation",
-            label: value[0].id as string,
+            label: value[0].href as string,
           });
           router.push("/[nodeId]", value[0].href);
           controlRef.current && controlRef.current.blur();

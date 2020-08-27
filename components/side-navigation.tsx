@@ -68,7 +68,7 @@ function SideNavigation({ pages = [], nodeId = null }: Props) {
                       : "none",
                   })}
                 >
-                  <Link href={`/[nodeId]`} as={`/${frame.id}`} passHref>
+                  <Link href={`/[nodeId]`} as={`/${frame.url}`} passHref>
                     <a
                       className={css({
                         ...theme.typography.ParagraphMedium,

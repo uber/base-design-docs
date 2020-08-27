@@ -4,11 +4,17 @@ import { MQ } from "../lib/constants";
 async function getStaticPaths() {
   const { getPages } = require("../lib/api");
   const pages = await getPages();
-  const paths = pages
-    .reduce((acc, page) => {
-      return [...acc, ...page.children];
-    }, [])
-    .map((frame) => ({ params: { nodeId: frame.id } }));
+  let paths = [];
+  for (const page of pages) {
+    if (page && page.children) {
+      paths = [
+        ...paths,
+        ...page.children.map((frame) => ({
+          params: { nodeId: frame.url },
+        })),
+      ];
+    }
+  }
   return { paths, fallback: false };
 }
 
@@ -16,15 +22,15 @@ async function getStaticProps({ params }) {
   const { getPages, getImage } = require("../lib/api");
   const pages = await getPages();
   const page = pages.find((page) =>
-    page.children.find((frame) => frame.id === params.nodeId)
+    page.children.find((frame) => frame.url === params.nodeId)
   );
   const frame = page.children[0];
-  const image = await getImage(frame.fileKey, params.nodeId);
+  const image = await getImage(frame.fileKey, frame.id);
   return {
     props: {
       pages,
       image,
-      nodeId: params.nodeId,
+      nodeId: frame.id,
       fileId: frame.fileKey,
       fileName: frame.fileName,
     },

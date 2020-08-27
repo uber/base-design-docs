@@ -8,6 +8,25 @@ const PROJECT_DATA_PATH = path.join(process.cwd(), "./data/project.json");
 const PAGES_DATA_PATH = path.join(process.cwd(), "./data/pages.json");
 const getImageDataPath = (nodeId) =>
   path.join(process.cwd(), `./data/image-[${nodeId}].json`);
+function getPageUrl(page, frame) {
+  return (
+    `${page.name}-${frame.name}`
+      .toLowerCase()
+      // Convert common expressions
+      .replace(" / ", "-")
+      .replace(" - ", "-")
+      .replace(" + ", "-")
+      .replace(" & ", "-")
+      .replace(": ", "-")
+      .replace(" ", "-")
+      // Remove problematic characters
+      .replace("/", "")
+      .replace(":", "")
+      .replace(".", "")
+      .replace("(", "")
+      .replace(")", "")
+  );
+}
 
 /**
  * Returns a list of Figma Pages. The pages include their immediate children,
@@ -103,9 +122,10 @@ async function getPages() {
 
           // Add some additional metadata to make things easier later on.
           for (const frame of page.children) {
-            frame.id = frame.id.replace(":", "-");
+            frame.id = frame.id;
             frame.fileKey = figmaProjectFile.key;
             frame.fileName = figmaProjectFile.name;
+            frame.url = getPageUrl(page, frame);
           }
         }
 
@@ -137,23 +157,22 @@ async function getPages() {
  */
 async function getImage(fileId, nodeId) {
   // For network requests
-  const _nodeId = nodeId.replace("-", ":");
   let image = null;
   try {
     if (process.env.CACHE_IMAGES) {
-      const project = fs.readFileSync(getImageDataPath(_nodeId));
+      const project = fs.readFileSync(getImageDataPath(nodeId));
       const images = JSON.parse(project.toString());
-      image = images[_nodeId];
+      image = images[nodeId];
     } else {
       throw new Error("Do not cache images");
     }
   } catch (er) {
     try {
-      console.log(`Fetching PDF for frame [${nodeId}]...`);
+      console.log(`Fetching PDF for [${nodeId}]...`);
       await retry(
         async () => {
           const response = await fetch(
-            `https://api.figma.com/v1/images/${fileId}?ids=${_nodeId}&format=pdf`,
+            `https://api.figma.com/v1/images/${fileId}?ids=${nodeId}&format=pdf`,
             {
               headers: {
                 "X-FIGMA-TOKEN": process.env.FIGMA_AUTH_TOKEN,
@@ -163,18 +182,16 @@ async function getImage(fileId, nodeId) {
           const contentType = response.headers.get("Content-Type");
           if (contentType === "application/json; charset=utf-8") {
             const json = await response.json();
-            if (json.images && json.images[_nodeId]) {
-              image = json.images[_nodeId];
+            if (json.images && json.images[nodeId]) {
+              image = json.images[nodeId];
               console.log(`Fetch PDF for [${nodeId}] success!`);
               try {
                 fs.writeFileSync(
-                  getImageDataPath(_nodeId),
+                  getImageDataPath(nodeId),
                   JSON.stringify(json.images)
                 );
               } catch (er) {
-                console.log(
-                  `There was a problem saving the figma image to disk.`
-                );
+                console.log(`There was a problem saving the PDF to disk.`);
                 console.log(er);
               }
             } else {

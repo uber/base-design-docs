@@ -150,10 +150,7 @@ function Header({
           $as="a"
           href={
             nodeId
-              ? `https://www.figma.com/file/${fileId}/${fileName}?node-id=${nodeId.replace(
-                  "-",
-                  ":"
-                )}`
+              ? `https://www.figma.com/file/${fileId}/${fileName}?node-id=${nodeId}`
               : `https://www.figma.com/files/${fileId}/project/${projectId}/%E2%9D%96-Base-Documentation`
           }
           target="_blank"
