@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import retry from "async-retry";
+import { Page, Frame } from "./types";
 
 const RETRY_LIMIT = 10;
 const RETRY_TIMEOUT = 1000 * 30; // 30s
@@ -34,7 +35,7 @@ function getPageUrl(page, frame) {
  * which are top-level Figma Frames. By convention, Frames and Pages are
  * filtered to include only nodes that are visible and start with a capital letter.
  */
-async function getPages() {
+async function getPages(): Promise<Page[]> {
   let figmaProject;
   try {
     const project = fs.readFileSync(PROJECT_DATA_PATH);
@@ -103,7 +104,7 @@ async function getPages() {
       if (!figmaFile || !figmaFile.document) {
         console.log("The figma file we got is mal-formed.");
         console.log(figmaFile);
-        return [[], "Figma File"];
+        return [];
       }
 
       // Now we want to process the Figma file into a list of pages.
@@ -151,12 +152,7 @@ async function getPages() {
   return figmaPages;
 }
 
-/**
- * Get a PDF of a Figma node id.
- * @param {string} nodeId The id of the Figma node to grab a PDF of.
- * @returns {Promise<string>} URL of the generated PDF
- */
-async function getImage(frame) {
+async function getImage(frame: Frame): Promise<string> {
   // For network requests
   let image = null;
   try {

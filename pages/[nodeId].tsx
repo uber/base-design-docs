@@ -21,24 +21,23 @@ async function getStaticPaths() {
 async function getStaticProps({ params }) {
   const { getPages, getImage } = require("../lib/api");
   const pages = await getPages();
-  let frame;
+  let activeFrame;
   for (const page of pages) {
     const foundFrame = page.children.find(
       (frame) => frame.url === params.nodeId
     );
     if (foundFrame) {
-      frame = foundFrame;
+      activeFrame = foundFrame;
       break;
     }
   }
-  const image = await getImage(frame);
+  const image = await getImage(activeFrame);
   return {
     props: {
-      pages,
       image,
-      nodeId: frame.id,
-      fileId: frame.fileKey,
-      fileName: frame.fileName,
+      pages,
+      activeFrame,
+      figmaLink: `https://www.figma.com/file/${activeFrame.fileKey}/${activeFrame.fileName}?node-id=${activeFrame.id}`,
     },
   };
 }

@@ -8,8 +8,8 @@ export async function getStaticProps() {
   return {
     props: {
       pages,
-      projectId: process.env.FIGMA_PROJECT_ID,
-      fileId: process.env.FIGMA_FILE_ID,
+      activeFrame: {},
+      figmaLink: `https://www.figma.com/files/${process.env.FIGMA_FILE_ID}/project/${process.env.FIGMA_PROJECT_ID}/%E2%9D%96-Base-Documentation`,
     },
   };
 }

@@ -1,27 +1,16 @@
+import { useContext } from "react";
 import Link from "next/link";
 import { useStyletron } from "baseui";
 import { Button, KIND, SHAPE, SIZE } from "baseui/button";
 import { Logo, Console, Figma } from "./icons";
 import Search from "./search";
+import { PageContext } from "./layout";
 import { MQ } from "../lib/constants";
 import * as gtag from "../lib/gtag";
 
-interface Props {
-  pages: any[];
-  fileId?: string;
-  fileName?: string;
-  nodeId?: string;
-  projectId?: string;
-}
-
-function Header({
-  pages,
-  fileId = null,
-  fileName = null,
-  nodeId = null,
-  projectId = null,
-}: Props) {
+function Header() {
   const [css, theme] = useStyletron();
+  const { activeFrame, figmaLink } = useContext(PageContext);
   return (
     <header
       className={css({
@@ -96,7 +85,7 @@ function Header({
           },
         })}
       >
-        <Search pages={pages} nodeId={nodeId} />
+        <Search />
       </div>
       <div
         className={css({
@@ -148,11 +137,7 @@ function Header({
         <Button
           // @ts-ignore - Missing type in baseui
           $as="a"
-          href={
-            nodeId
-              ? `https://www.figma.com/file/${fileId}/${fileName}?node-id=${nodeId}`
-              : `https://www.figma.com/files/${fileId}/project/${projectId}/%E2%9D%96-Base-Documentation`
-          }
+          href={figmaLink}
           target="_blank"
           rel="noopener"
           kind={KIND.tertiary}
@@ -163,7 +148,9 @@ function Header({
             gtag.event({
               action: "click_link_header_external",
               category: "navigation",
-              label: nodeId ? `figma_${nodeId}` : "figma_root",
+              label: activeFrame.url
+                ? `figma_${activeFrame.url}`
+                : "figma_root",
             });
           }}
         >

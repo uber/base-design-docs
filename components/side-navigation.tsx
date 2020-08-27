@@ -1,6 +1,7 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useContext } from "react";
 import Link from "next/link";
 import { useStyletron } from "baseui";
+import { PageContext } from "./layout";
 import * as gtag from "../lib/gtag";
 import { MQ } from "../lib/constants";
 
@@ -9,9 +10,10 @@ interface Props {
   nodeId?: string;
 }
 
-function SideNavigation({ pages = [], nodeId = null }: Props) {
+function SideNavigation() {
   const [css, theme] = useStyletron();
   const activeLink = useRef<HTMLDivElement>();
+  const { pages, activeFrame } = useContext(PageContext);
   useEffect(() => {
     if (activeLink.current && activeLink.current.scrollIntoView) {
       activeLink.current.scrollIntoView({
@@ -20,7 +22,7 @@ function SideNavigation({ pages = [], nodeId = null }: Props) {
         inline: "center",
       });
     }
-  }, [nodeId]);
+  }, [activeFrame.id]);
   return (
     <nav
       className={css({
@@ -55,11 +57,11 @@ function SideNavigation({ pages = [], nodeId = null }: Props) {
               {page.name}
             </div>
             {page.children.map((frame) => {
-              const isActive = frame.id === nodeId;
+              const isActive = frame.id === activeFrame.id;
               return (
                 <div
                   ref={isActive ? activeLink : null}
-                  key={frame.id}
+                  key={frame.url}
                   className={css({
                     padding: `${theme.sizing.scale200} 0`,
                     paddingLeft: theme.sizing.scale800,
@@ -88,7 +90,7 @@ function SideNavigation({ pages = [], nodeId = null }: Props) {
                         gtag.event({
                           action: "click_link_sidenav",
                           category: "navigation",
-                          label: nodeId,
+                          label: frame.url,
                         });
                       }}
                     >

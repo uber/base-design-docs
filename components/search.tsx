@@ -1,19 +1,16 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useContext } from "react";
 import { useRouter } from "next/router";
 import { ThemeProvider, LightThemeMove } from "baseui";
 import { StatefulMenu } from "baseui/menu";
 import { Select, TYPE, SIZE } from "baseui/select";
 import { SearchIcon } from "./icons";
+import { PageContext } from "./layout";
 import * as gtag from "../lib/gtag";
 
-interface Props {
-  pages: any[];
-  nodeId: string;
-}
-
-function Search({ pages = [], nodeId }: Props) {
+function Search() {
   const router = useRouter();
   const controlRef = useRef<HTMLInputElement>();
+  const { pages, activeFrame } = useContext(PageContext);
 
   // Create list of options
   const [options, activeIndex] = useMemo(() => {
@@ -24,7 +21,7 @@ function Search({ pages = [], nodeId }: Props) {
     for (const page of pages) {
       options[page.name] = [];
       for (const frame of page.children) {
-        if (frame.id === nodeId) activeIndex = count;
+        if (frame.id === activeFrame.id) activeIndex = count;
         count += 1;
         options[page.name].push({
           id: frame.id,
@@ -36,7 +33,7 @@ function Search({ pages = [], nodeId }: Props) {
     }
 
     return [options, activeIndex];
-  }, [nodeId]);
+  }, [activeFrame.id]);
 
   return (
     <Select
@@ -87,7 +84,7 @@ function Search({ pages = [], nodeId }: Props) {
                   initialState={{
                     highlightedIndex: activeIndex,
                     isFocused: true,
-                    activedescendantId: nodeId,
+                    activedescendantId: activeFrame.id,
                   }}
                 />
               </ThemeProvider>
