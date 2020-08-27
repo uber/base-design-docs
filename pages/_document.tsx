@@ -19,6 +19,7 @@ class MyDocument extends Document<{ stylesheets: any[] }> {
     return (
       <Html lang="en">
         <Head>
+          <meta name="robots" content="noindex" />
           {/* Global Site Tag (gtag.js) - Google Analytics */}
           <script
             async
