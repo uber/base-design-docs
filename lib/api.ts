@@ -13,18 +13,19 @@ function getPageUrl(page, frame) {
     `${page.name}-${frame.name}`
       .toLowerCase()
       // Convert common expressions
-      .replace(" / ", "-")
-      .replace(" - ", "-")
-      .replace(" + ", "-")
-      .replace(" & ", "-")
-      .replace(": ", "-")
-      .replace(" ", "-")
+      .replace(/\s\/\s/g, "-")
+      .replace(/\s\\\s/g, "-")
+      .replace(/\s-\s/g, "-")
+      .replace(/\s\+\s/g, "-")
+      .replace(/\s&\s/g, "-")
+      .replace(/:\s/g, "-")
+      .replace(/\s/g, "-")
       // Remove problematic characters
-      .replace("/", "")
-      .replace(":", "")
-      .replace(".", "")
-      .replace("(", "")
-      .replace(")", "")
+      .replace(/\//g, "")
+      .replace(/:/g, "")
+      .replace(/\./g, "")
+      .replace(/\(/g, "")
+      .replace(/\)/g, "")
   );
 }
 
@@ -155,24 +156,24 @@ async function getPages() {
  * @param {string} nodeId The id of the Figma node to grab a PDF of.
  * @returns {Promise<string>} URL of the generated PDF
  */
-async function getImage(fileId, nodeId) {
+async function getImage(frame) {
   // For network requests
   let image = null;
   try {
     if (process.env.CACHE_IMAGES) {
-      const project = fs.readFileSync(getImageDataPath(nodeId));
+      const project = fs.readFileSync(getImageDataPath(frame.id));
       const images = JSON.parse(project.toString());
-      image = images[nodeId];
+      image = images[frame.id];
     } else {
       throw new Error("Do not cache images");
     }
   } catch (er) {
     try {
-      console.log(`Fetching PDF for [${nodeId}]...`);
+      console.log(`Fetching PDF for [${frame.id}]...`);
       await retry(
         async () => {
           const response = await fetch(
-            `https://api.figma.com/v1/images/${fileId}?ids=${nodeId}&format=pdf`,
+            `https://api.figma.com/v1/images/${frame.fileKey}?ids=${frame.id}&format=pdf`,
             {
               headers: {
                 "X-FIGMA-TOKEN": process.env.FIGMA_AUTH_TOKEN,
@@ -182,12 +183,12 @@ async function getImage(fileId, nodeId) {
           const contentType = response.headers.get("Content-Type");
           if (contentType === "application/json; charset=utf-8") {
             const json = await response.json();
-            if (json.images && json.images[nodeId]) {
-              image = json.images[nodeId];
-              console.log(`Fetch PDF for [${nodeId}] success!`);
+            if (json.images && json.images[frame.id]) {
+              image = json.images[frame.id];
+              console.log(`Fetch PDF for [${frame.id}] success!`);
               try {
                 fs.writeFileSync(
-                  getImageDataPath(nodeId),
+                  getImageDataPath(frame.id),
                   JSON.stringify(json.images)
                 );
               } catch (er) {
@@ -206,7 +207,7 @@ async function getImage(fileId, nodeId) {
           minTimeout: RETRY_TIMEOUT,
           onRetry: (er) => {
             console.log(
-              `There was a problem fetching the PDF for [${nodeId}]. Retrying...`
+              `There was a problem fetching the PDF for [${frame.id}]. Retrying...`
             );
             console.log(er);
           },
@@ -214,7 +215,7 @@ async function getImage(fileId, nodeId) {
       );
     } catch (er) {
       console.log(
-        `There was a problem fetching the PDF for [${nodeId}]. Giving up.`
+        `There was a problem fetching the PDF for [${frame.id}]. Giving up.`
       );
       console.log(er);
       console.log(image);
