@@ -10,7 +10,9 @@ import * as gtag from "../lib/gtag";
 
 function Header() {
   const [css, theme] = useStyletron();
-  const { activeFrame, figmaLink } = useContext(PageContext);
+  const { activeFrame = { key: null }, figmaLink = "#" } = useContext(
+    PageContext
+  );
   return (
     <header
       className={css({
