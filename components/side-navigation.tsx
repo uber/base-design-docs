@@ -1,17 +1,15 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useContext } from "react";
 import Link from "next/link";
 import { useStyletron } from "baseui";
+import { PageContext } from "./layout";
 import * as gtag from "../lib/gtag";
 import { MQ } from "../lib/constants";
 
-interface Props {
-  pages?: any[];
-  nodeId?: string;
-}
-
-function SideNavigation({ pages = [], nodeId = null }: Props) {
+function SideNavigation() {
   const [css, theme] = useStyletron();
   const activeLink = useRef<HTMLDivElement>();
+  const { pages = [], activeFrame = { key: null } } = useContext(PageContext);
+
   useEffect(() => {
     if (activeLink.current && activeLink.current.scrollIntoView) {
       activeLink.current.scrollIntoView({
@@ -20,7 +18,8 @@ function SideNavigation({ pages = [], nodeId = null }: Props) {
         inline: "center",
       });
     }
-  }, [nodeId]);
+  }, [activeFrame.key]);
+
   return (
     <nav
       className={css({
@@ -55,11 +54,11 @@ function SideNavigation({ pages = [], nodeId = null }: Props) {
               {page.name}
             </div>
             {page.children.map((frame) => {
-              const isActive = frame.id === nodeId;
+              const isActive = frame.key === activeFrame.key;
               return (
                 <div
                   ref={isActive ? activeLink : null}
-                  key={frame.id}
+                  key={frame.key}
                   className={css({
                     padding: `${theme.sizing.scale200} 0`,
                     paddingLeft: theme.sizing.scale800,
@@ -68,7 +67,7 @@ function SideNavigation({ pages = [], nodeId = null }: Props) {
                       : "none",
                   })}
                 >
-                  <Link href={`/[nodeId]`} as={`/${frame.id}`} passHref>
+                  <Link href={`/[frameKey]`} as={`/${frame.key}`} passHref>
                     <a
                       className={css({
                         ...theme.typography.ParagraphMedium,
@@ -88,7 +87,7 @@ function SideNavigation({ pages = [], nodeId = null }: Props) {
                         gtag.event({
                           action: "click_link_sidenav",
                           category: "navigation",
-                          label: nodeId,
+                          label: frame.key,
                         });
                       }}
                     >

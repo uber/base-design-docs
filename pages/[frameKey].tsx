@@ -4,29 +4,40 @@ import { MQ } from "../lib/constants";
 async function getStaticPaths() {
   const { getPages } = require("../lib/api");
   const pages = await getPages();
-  const paths = pages
-    .reduce((acc, page) => {
-      return [...acc, ...page.children];
-    }, [])
-    .map((frame) => ({ params: { nodeId: frame.id } }));
+  let paths = [];
+  for (const page of pages) {
+    if (page && page.children) {
+      paths = [
+        ...paths,
+        ...page.children.map((frame) => ({
+          params: { frameKey: frame.key },
+        })),
+      ];
+    }
+  }
   return { paths, fallback: false };
 }
 
 async function getStaticProps({ params }) {
   const { getPages, getImage } = require("../lib/api");
   const pages = await getPages();
-  const page = pages.find((page) =>
-    page.children.find((frame) => frame.id === params.nodeId)
-  );
-  const frame = page.children[0];
-  const image = await getImage(frame.fileKey, params.nodeId);
+  let activeFrame;
+  for (const page of pages) {
+    const foundFrame = page.children.find(
+      (frame) => frame.key === params.frameKey
+    );
+    if (foundFrame) {
+      activeFrame = foundFrame;
+      break;
+    }
+  }
+  const image = await getImage(activeFrame);
   return {
     props: {
-      pages,
       image,
-      nodeId: params.nodeId,
-      fileId: frame.fileKey,
-      fileName: frame.fileName,
+      pages,
+      activeFrame,
+      figmaLink: `https://www.figma.com/file/${activeFrame.fileKey}/${activeFrame.fileName}?node-id=${activeFrame.id}`,
     },
   };
 }

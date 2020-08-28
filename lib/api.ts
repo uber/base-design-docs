@@ -1,20 +1,41 @@
 import fs from "fs";
 import path from "path";
 import retry from "async-retry";
+import { Page, Frame } from "./types";
 
 const RETRY_LIMIT = 10;
 const RETRY_TIMEOUT = 1000 * 30; // 30s
 const PROJECT_DATA_PATH = path.join(process.cwd(), "./data/project.json");
 const PAGES_DATA_PATH = path.join(process.cwd(), "./data/pages.json");
-const getImageDataPath = (nodeId) =>
-  path.join(process.cwd(), `./data/image-[${nodeId}].json`);
+const getImageDataPath = (id) =>
+  path.join(process.cwd(), `./data/image-[${id}].json`);
+function getPageUrl(page, frame) {
+  return (
+    `${page.name}-${frame.name}`
+      .toLowerCase()
+      // Convert common expressions
+      .replace(/\s\/\s/g, "-")
+      .replace(/\s\\\s/g, "-")
+      .replace(/\s-\s/g, "-")
+      .replace(/\s\+\s/g, "-")
+      .replace(/\s&\s/g, "-")
+      .replace(/:\s/g, "-")
+      .replace(/\s/g, "-")
+      // Remove problematic characters
+      .replace(/\//g, "")
+      .replace(/:/g, "")
+      .replace(/\./g, "")
+      .replace(/\(/g, "")
+      .replace(/\)/g, "")
+  );
+}
 
 /**
  * Returns a list of Figma Pages. The pages include their immediate children,
  * which are top-level Figma Frames. By convention, Frames and Pages are
  * filtered to include only nodes that are visible and start with a capital letter.
  */
-async function getPages() {
+async function getPages(): Promise<Page[]> {
   let figmaProject;
   try {
     const project = fs.readFileSync(PROJECT_DATA_PATH);
@@ -83,7 +104,7 @@ async function getPages() {
       if (!figmaFile || !figmaFile.document) {
         console.log("The figma file we got is mal-formed.");
         console.log(figmaFile);
-        return [[], "Figma File"];
+        return [];
       }
 
       // Now we want to process the Figma file into a list of pages.
@@ -103,9 +124,9 @@ async function getPages() {
 
           // Add some additional metadata to make things easier later on.
           for (const frame of page.children) {
-            frame.id = frame.id.replace(":", "-");
             frame.fileKey = figmaProjectFile.key;
             frame.fileName = figmaProjectFile.name;
+            frame.key = getPageUrl(page, frame);
           }
         }
 
@@ -130,30 +151,24 @@ async function getPages() {
   return figmaPages;
 }
 
-/**
- * Get a PDF of a Figma node id.
- * @param {string} nodeId The id of the Figma node to grab a PDF of.
- * @returns {Promise<string>} URL of the generated PDF
- */
-async function getImage(fileId, nodeId) {
+async function getImage(frame: Frame): Promise<string> {
   // For network requests
-  const _nodeId = nodeId.replace("-", ":");
   let image = null;
   try {
     if (process.env.CACHE_IMAGES) {
-      const project = fs.readFileSync(getImageDataPath(_nodeId));
+      const project = fs.readFileSync(getImageDataPath(frame.key));
       const images = JSON.parse(project.toString());
-      image = images[_nodeId];
+      image = images[frame.key];
     } else {
       throw new Error("Do not cache images");
     }
   } catch (er) {
     try {
-      console.log(`Fetching PDF for frame [${nodeId}]...`);
+      console.log(`Fetching PDF for [${frame.key}]...`);
       await retry(
         async () => {
           const response = await fetch(
-            `https://api.figma.com/v1/images/${fileId}?ids=${_nodeId}&format=pdf`,
+            `https://api.figma.com/v1/images/${frame.fileKey}?ids=${frame.id}&format=pdf`,
             {
               headers: {
                 "X-FIGMA-TOKEN": process.env.FIGMA_AUTH_TOKEN,
@@ -163,18 +178,16 @@ async function getImage(fileId, nodeId) {
           const contentType = response.headers.get("Content-Type");
           if (contentType === "application/json; charset=utf-8") {
             const json = await response.json();
-            if (json.images && json.images[_nodeId]) {
-              image = json.images[_nodeId];
-              console.log(`Fetch PDF for [${nodeId}] success!`);
+            if (json.images && json.images[frame.id]) {
+              image = json.images[frame.id];
+              console.log(`Fetch PDF for [${frame.key}] success!`);
               try {
                 fs.writeFileSync(
-                  getImageDataPath(_nodeId),
+                  getImageDataPath(frame.key),
                   JSON.stringify(json.images)
                 );
               } catch (er) {
-                console.log(
-                  `There was a problem saving the figma image to disk.`
-                );
+                console.log(`There was a problem saving the PDF to disk.`);
                 console.log(er);
               }
             } else {
@@ -189,7 +202,7 @@ async function getImage(fileId, nodeId) {
           minTimeout: RETRY_TIMEOUT,
           onRetry: (er) => {
             console.log(
-              `There was a problem fetching the PDF for [${nodeId}]. Retrying...`
+              `There was a problem fetching the PDF for [${frame.key}]. Retrying...`
             );
             console.log(er);
           },
@@ -197,7 +210,7 @@ async function getImage(fileId, nodeId) {
       );
     } catch (er) {
       console.log(
-        `There was a problem fetching the PDF for [${nodeId}]. Giving up.`
+        `There was a problem fetching the PDF for [${frame.key}]. Giving up.`
       );
       console.log(er);
       console.log(image);

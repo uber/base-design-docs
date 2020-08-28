@@ -1,26 +1,28 @@
+import { createContext } from "react";
 import Head from "next/head";
 import { useStyletron, DarkThemeMove, ThemeProvider } from "baseui";
 import SideNavigation from "./side-navigation";
 import Header from "./header";
 import { MQ } from "../lib/constants";
+import { Page, Frame } from "../lib/types";
 
-interface Props {
-  children?: any; // TODO: fix this children type
-  pages: any[];
-  fileName?: string;
-  fileId?: string;
-  nodeId?: string;
-  projectId?: string;
+interface Context {
+  pages: Page[];
+  figmaLink: string;
+  activeFrame?: Frame;
 }
 
-function Layout({
-  children,
-  pages,
-  fileName = null,
-  fileId = null,
-  nodeId = null,
-  projectId = null,
-}: Props) {
+export const PageContext = createContext({
+  pages: [],
+  figmaLink: "",
+  activeFrame: {},
+} as Context);
+
+interface Props extends Context {
+  children?: React.ReactNode;
+}
+
+function Layout({ children, ...pageProps }: Props) {
   const [css] = useStyletron();
   return (
     <div>
@@ -35,28 +37,24 @@ function Layout({
         <link rel="icon" href="/base.svg" />
       </Head>
       <div>
-        <ThemeProvider theme={DarkThemeMove}>
-          <Header
-            fileId={fileId}
-            fileName={fileName}
-            nodeId={nodeId}
-            projectId={projectId}
-            pages={pages}
-          />
-        </ThemeProvider>
-        <SideNavigation nodeId={nodeId} pages={pages} />
-        <main
-          className={css({
-            [MQ.medium]: {
-              marginTop: "60px",
-            },
-            [MQ.large]: {
-              marginLeft: "300px",
-            },
-          })}
-        >
-          {children}
-        </main>
+        <PageContext.Provider value={pageProps}>
+          <ThemeProvider theme={DarkThemeMove}>
+            <Header />
+          </ThemeProvider>
+          <SideNavigation />
+          <main
+            className={css({
+              [MQ.medium]: {
+                marginTop: "60px",
+              },
+              [MQ.large]: {
+                marginLeft: "300px",
+              },
+            })}
+          >
+            {children}
+          </main>
+        </PageContext.Provider>
       </div>
     </div>
   );
