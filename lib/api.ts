@@ -158,7 +158,7 @@ async function getImage(frame: Frame): Promise<string> {
     if (process.env.CACHE_IMAGES) {
       const project = fs.readFileSync(getImageDataPath(frame.key));
       const images = JSON.parse(project.toString());
-      image = images[frame.key];
+      image = images[frame.id];
     } else {
       throw new Error("Do not cache images");
     }
@@ -168,7 +168,8 @@ async function getImage(frame: Frame): Promise<string> {
       await retry(
         async () => {
           const response = await fetch(
-            `https://api.figma.com/v1/images/${frame.fileKey}?ids=${frame.id}&format=pdf`,
+            // `https://api.figma.com/v1/images/${frame.fileKey}?ids=${frame.id}&format=pdf`,
+            `https://api.figma.com/v1/images/${frame.fileKey}?ids=${frame.id}&format=png&scale=2`,
             {
               headers: {
                 "X-FIGMA-TOKEN": process.env.FIGMA_AUTH_TOKEN,

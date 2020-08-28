@@ -47,10 +47,10 @@ function Node({ image }: { image: string }) {
   return (
     <>
       {image ? (
-        <embed
+        <img
           id="pdf"
           title="Figma PDF"
-          type="application/pdf"
+          // type="application/pdf"
           src={image}
           className={css({
             display: "block",
