@@ -148,8 +148,8 @@ function Header() {
             gtag.event({
               action: "click_link_header_external",
               category: "navigation",
-              label: activeFrame.url
-                ? `figma_${activeFrame.url}`
+              label: activeFrame.key
+                ? `figma_${activeFrame.key}`
                 : "figma_root",
             });
           }}

@@ -12,7 +12,7 @@ Then, create a `.env.local` file like so:
 
 ```bash
 # The base figma file for the org
-FIGMA_FILE_ID=XYZ
+FIGMA_FILE_KEY=XYZ
 
 # The figma project to build pages from
 FIGMA_PROJECT_ID=XYZ

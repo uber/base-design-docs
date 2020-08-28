@@ -10,7 +10,7 @@ async function getStaticPaths() {
       paths = [
         ...paths,
         ...page.children.map((frame) => ({
-          params: { nodeId: frame.url },
+          params: { frameKey: frame.key },
         })),
       ];
     }
@@ -24,7 +24,7 @@ async function getStaticProps({ params }) {
   let activeFrame;
   for (const page of pages) {
     const foundFrame = page.children.find(
-      (frame) => frame.url === params.nodeId
+      (frame) => frame.key === params.frameKey
     );
     if (foundFrame) {
       activeFrame = foundFrame;

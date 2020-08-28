@@ -5,11 +5,6 @@ import { PageContext } from "./layout";
 import * as gtag from "../lib/gtag";
 import { MQ } from "../lib/constants";
 
-interface Props {
-  pages?: any[];
-  nodeId?: string;
-}
-
 function SideNavigation() {
   const [css, theme] = useStyletron();
   const activeLink = useRef<HTMLDivElement>();
@@ -61,7 +56,7 @@ function SideNavigation() {
               return (
                 <div
                   ref={isActive ? activeLink : null}
-                  key={frame.url}
+                  key={frame.key}
                   className={css({
                     padding: `${theme.sizing.scale200} 0`,
                     paddingLeft: theme.sizing.scale800,
@@ -70,7 +65,7 @@ function SideNavigation() {
                       : "none",
                   })}
                 >
-                  <Link href={`/[nodeId]`} as={`/${frame.url}`} passHref>
+                  <Link href={`/[frameKey]`} as={`/${frame.key}`} passHref>
                     <a
                       className={css({
                         ...theme.typography.ParagraphMedium,
@@ -90,7 +85,7 @@ function SideNavigation() {
                         gtag.event({
                           action: "click_link_sidenav",
                           category: "navigation",
-                          label: frame.url,
+                          label: frame.key,
                         });
                       }}
                     >

@@ -27,7 +27,7 @@ function Search() {
           id: frame.id,
           name: frame.name,
           self: `${page.name} ${frame.name}`,
-          href: `/${frame.url}`,
+          href: `/${frame.key}`,
         });
       }
     }
@@ -56,7 +56,7 @@ function Search() {
             category: "navigation",
             label: value[0].href as string,
           });
-          router.push("/[nodeId]", value[0].href);
+          router.push("/[frameKey]", value[0].href);
           controlRef.current && controlRef.current.blur();
         }
       }}

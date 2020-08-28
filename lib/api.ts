@@ -7,8 +7,8 @@ const RETRY_LIMIT = 10;
 const RETRY_TIMEOUT = 1000 * 30; // 30s
 const PROJECT_DATA_PATH = path.join(process.cwd(), "./data/project.json");
 const PAGES_DATA_PATH = path.join(process.cwd(), "./data/pages.json");
-const getImageDataPath = (nodeId) =>
-  path.join(process.cwd(), `./data/image-[${nodeId}].json`);
+const getImageDataPath = (id) =>
+  path.join(process.cwd(), `./data/image-[${id}].json`);
 function getPageUrl(page, frame) {
   return (
     `${page.name}-${frame.name}`
@@ -124,10 +124,9 @@ async function getPages(): Promise<Page[]> {
 
           // Add some additional metadata to make things easier later on.
           for (const frame of page.children) {
-            frame.id = frame.id;
             frame.fileKey = figmaProjectFile.key;
             frame.fileName = figmaProjectFile.name;
-            frame.url = getPageUrl(page, frame);
+            frame.key = getPageUrl(page, frame);
           }
         }
 

@@ -9,7 +9,7 @@ export async function getStaticProps() {
     props: {
       pages,
       activeFrame: {},
-      figmaLink: `https://www.figma.com/files/${process.env.FIGMA_FILE_ID}/project/${process.env.FIGMA_PROJECT_ID}/%E2%9D%96-Base-Documentation`,
+      figmaLink: `https://www.figma.com/files/${process.env.FIGMA_FILE_KEY}/project/${process.env.FIGMA_PROJECT_ID}/%E2%9D%96-Base-Documentation`,
     },
   };
 }
