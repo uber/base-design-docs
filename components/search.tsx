@@ -10,7 +10,7 @@ import * as gtag from "../lib/gtag";
 function Search() {
   const router = useRouter();
   const controlRef = useRef<HTMLInputElement>();
-  const { pages = [], activeFrame = { id: null } } = useContext(PageContext);
+  const { pages = [], activeFrame = { key: null } } = useContext(PageContext);
 
   // Create list of options
   const [options, activeIndex] = useMemo(() => {
@@ -21,10 +21,10 @@ function Search() {
     for (const page of pages) {
       options[page.name] = [];
       for (const frame of page.children) {
-        if (frame.id === activeFrame.id) activeIndex = count;
+        if (frame.key === activeFrame.key) activeIndex = count;
         count += 1;
         options[page.name].push({
-          id: frame.id,
+          id: frame.key, // IDs may not be unique, so use `key` for this.
           name: frame.name,
           self: `${page.name} ${frame.name}`,
           href: `/${frame.key}`,
@@ -33,7 +33,7 @@ function Search() {
     }
 
     return [options, activeIndex];
-  }, [activeFrame.id]);
+  }, [activeFrame.key]);
 
   return (
     <Select
@@ -84,7 +84,7 @@ function Search() {
                   initialState={{
                     highlightedIndex: activeIndex,
                     isFocused: true,
-                    activedescendantId: activeFrame.id,
+                    activedescendantId: activeFrame.key,
                   }}
                 />
               </ThemeProvider>

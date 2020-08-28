@@ -8,7 +8,7 @@ import { MQ } from "../lib/constants";
 function SideNavigation() {
   const [css, theme] = useStyletron();
   const activeLink = useRef<HTMLDivElement>();
-  const { pages = [], activeFrame = { id: null } } = useContext(PageContext);
+  const { pages = [], activeFrame = { key: null } } = useContext(PageContext);
 
   useEffect(() => {
     if (activeLink.current && activeLink.current.scrollIntoView) {
@@ -18,7 +18,8 @@ function SideNavigation() {
         inline: "center",
       });
     }
-  }, [activeFrame.id]);
+  }, [activeFrame.key]);
+
   return (
     <nav
       className={css({
@@ -53,7 +54,7 @@ function SideNavigation() {
               {page.name}
             </div>
             {page.children.map((frame) => {
-              const isActive = frame.id === activeFrame.id;
+              const isActive = frame.key === activeFrame.key;
               return (
                 <div
                   ref={isActive ? activeLink : null}
