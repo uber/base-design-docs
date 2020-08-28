@@ -156,15 +156,15 @@ async function getImage(frame: Frame): Promise<string> {
   let image = null;
   try {
     if (process.env.CACHE_IMAGES) {
-      const project = fs.readFileSync(getImageDataPath(frame.id));
+      const project = fs.readFileSync(getImageDataPath(frame.key));
       const images = JSON.parse(project.toString());
-      image = images[frame.id];
+      image = images[frame.key];
     } else {
       throw new Error("Do not cache images");
     }
   } catch (er) {
     try {
-      console.log(`Fetching PDF for [${frame.id}]...`);
+      console.log(`Fetching PDF for [${frame.key}]...`);
       await retry(
         async () => {
           const response = await fetch(
@@ -180,10 +180,10 @@ async function getImage(frame: Frame): Promise<string> {
             const json = await response.json();
             if (json.images && json.images[frame.id]) {
               image = json.images[frame.id];
-              console.log(`Fetch PDF for [${frame.id}] success!`);
+              console.log(`Fetch PDF for [${frame.key}] success!`);
               try {
                 fs.writeFileSync(
-                  getImageDataPath(frame.id),
+                  getImageDataPath(frame.key),
                   JSON.stringify(json.images)
                 );
               } catch (er) {
@@ -202,7 +202,7 @@ async function getImage(frame: Frame): Promise<string> {
           minTimeout: RETRY_TIMEOUT,
           onRetry: (er) => {
             console.log(
-              `There was a problem fetching the PDF for [${frame.id}]. Retrying...`
+              `There was a problem fetching the PDF for [${frame.key}]. Retrying...`
             );
             console.log(er);
           },
@@ -210,7 +210,7 @@ async function getImage(frame: Frame): Promise<string> {
       );
     } catch (er) {
       console.log(
-        `There was a problem fetching the PDF for [${frame.id}]. Giving up.`
+        `There was a problem fetching the PDF for [${frame.key}]. Giving up.`
       );
       console.log(er);
       console.log(image);
