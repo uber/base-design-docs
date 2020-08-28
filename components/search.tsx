@@ -10,7 +10,7 @@ import * as gtag from "../lib/gtag";
 function Search() {
   const router = useRouter();
   const controlRef = useRef<HTMLInputElement>();
-  const { pages, activeFrame } = useContext(PageContext);
+  const { pages, activeFrame = { id: null } } = useContext(PageContext);
 
   // Create list of options
   const [options, activeIndex] = useMemo(() => {
