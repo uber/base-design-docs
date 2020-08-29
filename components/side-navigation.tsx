@@ -13,7 +13,6 @@ function SideNavigation() {
   useEffect(() => {
     if (activeLink.current && activeLink.current.scrollIntoView) {
       activeLink.current.scrollIntoView({
-        behavior: "smooth",
         block: "center",
         inline: "center",
       });

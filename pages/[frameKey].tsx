@@ -48,7 +48,7 @@ function Node({ image }: { image: string }) {
 
   // Scroll to top of page when image changes.
   useEffect(() => {
-    window.scroll({ top: 0, behavior: "smooth" });
+    window.scroll({ top: 0 });
   }, [image]);
 
   return (
