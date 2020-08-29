@@ -1,5 +1,6 @@
-import { useRef, useMemo, useContext } from "react";
+import { useRef, useMemo, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
+import tinykeys from "tinykeys";
 import { ThemeProvider, LightThemeMove } from "baseui";
 import { StatefulMenu } from "baseui/menu";
 import { Select, TYPE, SIZE } from "baseui/select";
@@ -11,6 +12,20 @@ function Search() {
   const router = useRouter();
   const controlRef = useRef<HTMLInputElement>();
   const { pages = [], activeFrame = { key: null } } = useContext(PageContext);
+
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      "/": (event) => {
+        if (event.target !== controlRef.current) {
+          event.preventDefault();
+          controlRef.current.focus();
+        }
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   // Create list of options
   const [options, activeIndex] = useMemo(() => {
@@ -49,6 +64,10 @@ function Search() {
       placeholder="Components"
       maxDropdownHeight="300px"
       getOptionLabel={({ option }) => option.name}
+      onFocus={(event) => {
+        // Opens the dropdown
+        event.target.click();
+      }}
       onChange={({ value }) => {
         if (value[0]) {
           gtag.event({

@@ -16,7 +16,8 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "styletron-engine-monolithic": "^0.0.3",
-    "styletron-react": "^5.2.7"
+    "styletron-react": "^5.2.7",
+    "tinykeys": "^1.1.0"
   },
   "devDependencies": {
     "@types/node": "^14.0.13",

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useStyletron } from "baseui";
 import { MQ } from "../lib/constants";
 
@@ -44,6 +45,12 @@ async function getStaticProps({ params }) {
 
 function Node({ image }: { image: string }) {
   const [css] = useStyletron();
+
+  // Scroll to top of page when image changes.
+  useEffect(() => {
+    window.scroll({ top: 0, behavior: "smooth" });
+  }, [image]);
+
   return (
     <>
       {image ? (
