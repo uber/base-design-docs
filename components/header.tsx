@@ -11,38 +11,40 @@ import * as gtag from "../lib/gtag";
 function Home() {
   const [css, theme] = useStyletron();
   return (
-    <Link href="/" as="/">
-      <a
-        className={css({
-          display: "flex",
-          alignItems: "center",
-          textDecoration: "none",
-          ":focus": {
-            outline: `solid 3px ${theme.colors.borderAccent}`,
-            outlineOffset: "2px",
-          },
-        })}
-        onClick={() => {
-          gtag.event({
-            action: "click_link_header",
-            category: "navigation",
-            label: "home",
-          });
-        }}
-      >
-        <Logo dark size="22px" />
-        <div
+    <div className={css({ display: "flex" })}>
+      <Link href="/" as="/">
+        <a
           className={css({
-            ...theme.typography.DisplayXSmall,
-            fontSize: theme.typography.HeadingSmall.fontSize,
-            color: theme.colors.white,
-            marginLeft: theme.sizing.scale400,
+            display: "flex",
+            alignItems: "center",
+            textDecoration: "none",
+            ":focus": {
+              outline: `solid 3px ${theme.colors.borderAccent}`,
+              outlineOffset: "2px",
+            },
           })}
+          onClick={() => {
+            gtag.event({
+              action: "click_link_header",
+              category: "navigation",
+              label: "home",
+            });
+          }}
         >
-          Base
-        </div>
-      </a>
-    </Link>
+          <Logo dark size="22px" />
+          <div
+            className={css({
+              ...theme.typography.DisplayXSmall,
+              fontSize: theme.typography.HeadingSmall.fontSize,
+              color: theme.colors.white,
+              marginLeft: theme.sizing.scale400,
+            })}
+          >
+            Base
+          </div>
+        </a>
+      </Link>
+    </div>
   );
 }
 
