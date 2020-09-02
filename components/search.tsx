@@ -1,4 +1,4 @@
-import { useRef, useMemo, useContext, useEffect } from "react";
+import { useState, useRef, useMemo, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import tinykeys from "tinykeys";
 import { ThemeProvider, LightThemeMove } from "baseui";
@@ -50,6 +50,8 @@ function Search() {
     return [options, activeIndex];
   }, [activeFrame.key]);
 
+  const [placeholder, setPlaceholder] = useState("Search components...");
+
   return (
     <Select
       searchable
@@ -61,7 +63,7 @@ function Search() {
       type={TYPE.search}
       size={SIZE.compact}
       controlRef={controlRef}
-      placeholder="Components"
+      placeholder={activeFrame.key ? placeholder : "Search components..."}
       maxDropdownHeight="300px"
       getOptionLabel={({ option }) => option.name}
       onFocus={(event) => {
@@ -77,6 +79,7 @@ function Search() {
           });
           router.push("/[frameKey]", value[0].href);
           controlRef.current && controlRef.current.blur();
+          setPlaceholder(value[0].self);
         }
       }}
       overrides={{
