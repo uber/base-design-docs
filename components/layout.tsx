@@ -1,4 +1,5 @@
-import { createContext } from "react";
+import { useEffect, createContext } from "react";
+import tinykeys from "tinykeys";
 import Head from "next/head";
 import { useStyletron, DarkThemeMove, ThemeProvider } from "baseui";
 import SideNavigation from "./side-navigation";
@@ -24,6 +25,20 @@ interface Props extends Context {
 
 function Layout({ children, ...pageProps }: Props) {
   const [css] = useStyletron();
+
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      f: (event) => {
+        if ((event.target as HTMLInputElement).id !== "search") {
+          window.open(pageProps.figmaLink, "_blank");
+        }
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [pageProps.figmaLink]);
+
   return (
     <div>
       <Head>

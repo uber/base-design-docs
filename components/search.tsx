@@ -81,7 +81,10 @@ function Search() {
       }}
       overrides={{
         Input: {
-          props: { "aria-label": "Search through components and pages." },
+          props: {
+            id: "search",
+            "aria-label": "Search through components and pages.",
+          },
         },
         Placeholder: {
           style: ({ $theme }) => ({
