@@ -59,9 +59,8 @@ function Node({ image }: { image: string }) {
     <>
       {image ? (
         <img
-          id="pdf"
+          id="frame-image"
           title={activeFrame && activeFrame.fileName}
-          // type="application/pdf"
           src={image}
           className={css({
             display: "block",

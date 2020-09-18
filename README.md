@@ -96,7 +96,7 @@ So, given any arbitrary Project, provided at build-time as `FIGMA_PROJECT_ID`, s
 
 ### Rendering a Frame
 
-You might wonder how we render a Frame as a webpage. For now, we just ask the Figma API for a PDF of the Frame at build-time. We receive a link from the API, which we simply embed on the page.
+You might wonder how we render a Frame as a webpage. For now, we just ask the Figma API for a PNG of the Frame at build-time. We receive a link from the API, which we simply embed on the page.
 
 We've also done some prototyping where we render the Frame as HTML & CSS (through React). The main benefit is that the pages are indexable— which is useful for SEO and cross-page search. It would also be interesting if the webpages could be made responsive.
 
@@ -104,4 +104,4 @@ There have been a lot of issues with the HTML & CSS approach though. To start, i
 
 At a certain point a CMS is probably better suited for delivering structured data that can be rendered nicely across multiple mediums.
 
-So, with all of this considered, for now we use PDFs.
+So, with all of this considered, for now we use images.

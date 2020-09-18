@@ -164,11 +164,10 @@ async function getImage(frame: Frame): Promise<string> {
     }
   } catch (er) {
     try {
-      console.log(`Fetching PDF for [${frame.key}]...`);
+      console.log(`Fetching image for [${frame.key}]...`);
       await retry(
         async () => {
           const response = await fetch(
-            // `https://api.figma.com/v1/images/${frame.fileKey}?ids=${frame.id}&format=pdf`,
             `https://api.figma.com/v1/images/${frame.fileKey}?ids=${frame.id}&format=png&scale=2`,
             {
               headers: {
@@ -181,14 +180,14 @@ async function getImage(frame: Frame): Promise<string> {
             const json = await response.json();
             if (json.images && json.images[frame.id]) {
               image = json.images[frame.id];
-              console.log(`Fetch PDF for [${frame.key}] success!`);
+              console.log(`Fetch image for [${frame.key}] success!`);
               try {
                 fs.writeFileSync(
                   getImageDataPath(frame.key),
                   JSON.stringify(json.images)
                 );
               } catch (er) {
-                console.log(`There was a problem saving the PDF to disk.`);
+                console.log(`There was a problem saving the image to disk.`);
                 console.log(er);
               }
             } else {
@@ -203,7 +202,7 @@ async function getImage(frame: Frame): Promise<string> {
           minTimeout: RETRY_TIMEOUT,
           onRetry: (er) => {
             console.log(
-              `There was a problem fetching the PDF for [${frame.key}]. Retrying...`
+              `There was a problem fetching the image for [${frame.key}]. Retrying...`
             );
             console.log(er);
           },
@@ -211,7 +210,7 @@ async function getImage(frame: Frame): Promise<string> {
       );
     } catch (er) {
       console.log(
-        `There was a problem fetching the PDF for [${frame.key}]. Giving up.`
+        `There was a problem fetching the image for [${frame.key}]. Giving up.`
       );
       console.log(er);
       console.log(image);
