@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { useStyletron } from "baseui";
 import { MQ } from "../lib/constants";
+import { PageContext } from "../components/layout";
 
 async function getStaticPaths() {
   const { getPages } = require("../lib/api");
@@ -45,6 +46,9 @@ async function getStaticProps({ params }) {
 
 function Node({ image }: { image: string }) {
   const [css] = useStyletron();
+  const { activeFrame = { fileName: "Base Documentation" } } = useContext(
+    PageContext
+  );
 
   // Scroll to top of page when image changes.
   useEffect(() => {
@@ -56,7 +60,7 @@ function Node({ image }: { image: string }) {
       {image ? (
         <img
           id="pdf"
-          title="Figma PDF"
+          title={activeFrame && activeFrame.fileName}
           // type="application/pdf"
           src={image}
           className={css({
