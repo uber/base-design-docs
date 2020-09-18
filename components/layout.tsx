@@ -1,11 +1,16 @@
-import { useEffect, createContext } from "react";
+import { useEffect, createContext, useCallback } from "react";
 import tinykeys from "tinykeys";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import { useStyletron, DarkThemeMove, ThemeProvider } from "baseui";
 import SideNavigation from "./side-navigation";
 import Header from "./header";
 import { MQ } from "../lib/constants";
 import { Page, Frame } from "../lib/types";
+
+function mod(n, m) {
+  return ((n % m) + m) % m;
+}
 
 interface Context {
   pages: Page[];
@@ -25,6 +30,33 @@ interface Props extends Context {
 
 function Layout({ children, ...pageProps }: Props) {
   const [css] = useStyletron();
+  const router = useRouter();
+
+  const handleHorizontalArrow = useCallback(
+    (event) => {
+      if (
+        (event.target as HTMLInputElement).id !== "search" &&
+        pageProps.activeFrame.key
+      ) {
+        const frames = [];
+        let activeFrameIndex = 0;
+        for (const pages of pageProps.pages) {
+          for (const frame of pages.children) {
+            if (pageProps.activeFrame.key === frame.key) {
+              activeFrameIndex = frames.length;
+            }
+            frames.push(frame);
+          }
+        }
+        const nextFrameIndex = mod(
+          activeFrameIndex + (event.key === "ArrowLeft" ? -1 : 1),
+          frames.length
+        );
+        router.push("/[frameKey]", `/${frames[nextFrameIndex].key}`);
+      }
+    },
+    [pageProps.activeFrame.key]
+  );
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -33,6 +65,8 @@ function Layout({ children, ...pageProps }: Props) {
           window.open(pageProps.figmaLink, "_blank");
         }
       },
+      ArrowLeft: handleHorizontalArrow,
+      ArrowRight: handleHorizontalArrow,
     });
     return () => {
       unsubscribe();
