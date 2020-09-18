@@ -59,6 +59,7 @@ function Layout({ children, ...pageProps }: Props) {
           <SideNavigation />
           <main
             className={css({
+              background: pageProps.activeFrame.key ? "#F6F6F6" : "#FFF",
               [MQ.medium]: {
                 marginTop: "60px",
               },
