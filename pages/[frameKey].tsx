@@ -63,13 +63,8 @@ function Node({ image }: { image: string }) {
           title={activeFrame.fileName}
           src={image}
           className={css({
-            display: "block",
             width: "100%",
-            border: "0",
-            minHeight: "calc(100vh - 124px)",
-            [MQ.medium]: {
-              minHeight: "calc(100vh - 60px)",
-            },
+            maxWidth: "1280px",
           })}
         />
       ) : (
