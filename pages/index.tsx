@@ -1,6 +1,6 @@
 import { useStyletron } from "baseui";
+import { Grid, Cell } from "baseui/layout-grid";
 import { Display, ParagraphMedium, DisplayXSmall } from "baseui/typography";
-import { MQ } from "../lib/constants";
 
 export async function getStaticProps() {
   const { getPages } = require("../lib/api");
@@ -15,43 +15,42 @@ export async function getStaticProps() {
 }
 
 export default function Home() {
-  const [css] = useStyletron();
+  const [css, theme] = useStyletron();
   return (
     <div
       className={css({
         display: "flex",
         alignItems: "flex-end",
         height: "calc(100vh - 124px)",
-        [MQ.medium]: {
+        [theme.mediaQuery.medium]: {
           height: "calc(100vh - 60px)",
         },
       })}
     >
       <div
         className={css({
-          paddingBottom: "10vh",
-          paddingLeft: "8vh",
-          paddingRight: "8vh",
-          flexBasis: "100%",
-          [MQ.small]: {
-            flexBasis: "75%",
-          },
-          [MQ.medium]: {
+          paddingBottom: theme.sizing.scale800,
+          flexBasis: "75%",
+          [theme.mediaQuery.medium]: {
             flexBasis: "50%",
           },
         })}
       >
-        <Display>Base</Display>
-        <DisplayXSmall color="contentTertiary">Documentation</DisplayXSmall>
-        <ParagraphMedium color="contentTertiary">
-          Reference this site for both high-level patterns as well as component
-          specific guidelines when using the Base design system.
-        </ParagraphMedium>
+        <Grid>
+          <Cell span={[12]}>
+            <Display>Base</Display>
+            <DisplayXSmall color="contentTertiary">Documentation</DisplayXSmall>
+            <ParagraphMedium color="contentTertiary">
+              Reference this site for both high-level patterns as well as
+              component specific guidelines when using the Base design system.
+            </ParagraphMedium>
+          </Cell>
+        </Grid>
       </div>
       <div
         className={css({
           display: "none",
-          [MQ.medium]: {
+          [theme.mediaQuery.medium]: {
             display: "block",
             flexBasis: "50%",
             height: "100%",
@@ -59,13 +58,13 @@ export default function Home() {
             backgroundRepeat: "no-repeat",
             backgroundImage: `url('collage-405.png')`,
           },
-          [MQ.medium + "and (min-height: 405px)"]: {
+          [theme.mediaQuery.medium + "and (min-height: 405px)"]: {
             backgroundImage: `url('collage-810.png')`,
           },
-          [MQ.medium + "and (min-height: 810px)"]: {
+          [theme.mediaQuery.medium + "and (min-height: 810px)"]: {
             backgroundImage: `url('collage-1620.png')`,
           },
-          [MQ.medium + "and (min-height: 1620px)"]: {
+          [theme.mediaQuery.medium + "and (min-height: 1620px)"]: {
             backgroundImage: `url('collage-3240.png')`,
           },
         })}

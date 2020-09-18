@@ -5,7 +5,6 @@ import { Button, KIND, SHAPE, SIZE } from "baseui/button";
 import { Logo, Console, Figma, Help } from "./icons";
 import Search from "./search";
 import { PageContext } from "./layout";
-import { MQ } from "../lib/constants";
 import * as gtag from "../lib/gtag";
 
 function Home() {
@@ -85,7 +84,7 @@ function Links() {
           <span
             className={css({
               display: "none",
-              [MQ.small]: {
+              [theme.mediaQuery.small]: {
                 display: "inline-block",
                 marginLeft: theme.sizing.scale400,
                 whiteSpace: "nowrap",
@@ -125,7 +124,7 @@ function Links() {
           <span
             className={css({
               display: "none",
-              [MQ.small]: {
+              [theme.mediaQuery.small]: {
                 display: "inline-block",
                 marginLeft: theme.sizing.scale400,
               },
@@ -147,7 +146,7 @@ function Links() {
         <span
           className={css({
             display: "none",
-            [MQ.small]: {
+            [theme.mediaQuery.small]: {
               display: "inline-block",
               marginLeft: theme.sizing.scale400,
             },
@@ -173,7 +172,7 @@ function Header() {
         height: "124px",
         paddingLeft: theme.sizing.scale800,
         paddingRight: theme.sizing.scale800,
-        [MQ.medium]: {
+        [theme.mediaQuery.medium]: {
           position: "fixed",
           top: "0",
           zIndex: "1",
@@ -186,7 +185,7 @@ function Header() {
         className={css({
           order: 1,
           marginRight: "auto",
-          [MQ.medium]: {
+          [theme.mediaQuery.medium]: {
             flex: "1",
             marginRight: "0",
           },
@@ -199,7 +198,7 @@ function Header() {
           order: 3,
           width: "100%",
           alignSelf: "baseline",
-          [MQ.medium]: {
+          [theme.mediaQuery.medium]: {
             order: 2,
             flex: "1",
             alignSelf: "initial",
@@ -213,7 +212,7 @@ function Header() {
           order: 2,
           display: "flex",
           justifyContent: "flex-end",
-          [MQ.medium]: {
+          [theme.mediaQuery.medium]: {
             order: 3,
             flex: "1",
           },

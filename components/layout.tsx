@@ -2,12 +2,13 @@ import { useEffect, createContext, useCallback, useState } from "react";
 import tinykeys from "tinykeys";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { useStyletron, DarkThemeMove, ThemeProvider, styled } from "baseui";
+import { useStyletron, ThemeProvider, styled } from "baseui";
+import { darkTheme } from "../lib/theme";
 import { Modal, ModalHeader, ModalBody } from "baseui/modal";
 import SideNavigation from "./side-navigation";
 import Header from "./header";
-import { MQ } from "../lib/constants";
 import { Page, Frame } from "../lib/types";
+import BottomNavigation from "./bottom-navigation";
 
 function mod(n, m) {
   return ((n % m) + m) % m;
@@ -45,7 +46,7 @@ interface Props extends Context {
 }
 
 function Layout({ children, ...pageProps }: Props) {
-  const [css] = useStyletron();
+  const [css, theme] = useStyletron();
   const router = useRouter();
   const [helpModalIsOpen, setHelpModalState] = useState(false);
 
@@ -157,23 +158,26 @@ function Layout({ children, ...pageProps }: Props) {
               </p>
             </ModalBody>
           </Modal>
-          <ThemeProvider theme={DarkThemeMove}>
+          <ThemeProvider theme={darkTheme}>
             <Header />
           </ThemeProvider>
           <SideNavigation />
           <main
             className={css({
-              background: activeFrameKey ? "#F6F6F6" : "#FFF",
-              [MQ.medium]: {
+              background: activeFrameKey
+                ? theme.colors.backgroundSecondary
+                : theme.colors.white,
+              [theme.mediaQuery.medium]: {
                 marginTop: "60px",
               },
-              [MQ.large]: {
+              [theme.mediaQuery.large]: {
                 marginLeft: "300px",
               },
             })}
           >
             {children}
           </main>
+          <BottomNavigation />
         </PageContext.Provider>
       </div>
     </div>

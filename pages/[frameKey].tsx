@@ -1,6 +1,5 @@
 import { useEffect, useContext } from "react";
 import { useStyletron } from "baseui";
-import { MQ } from "../lib/constants";
 import { PageContext } from "../components/layout";
 
 async function getStaticPaths() {
@@ -45,7 +44,7 @@ async function getStaticProps({ params }) {
 }
 
 function Node({ image }: { image: string }) {
-  const [css] = useStyletron();
+  const [css, theme] = useStyletron();
   const { activeFrame = { name: "Base Documentation" } } = useContext(
     PageContext
   );
@@ -56,7 +55,16 @@ function Node({ image }: { image: string }) {
   }, [image]);
 
   return (
-    <>
+    <div
+      className={css({
+        paddingTop: theme.sizing.scale800,
+        paddingLeft: theme.sizing.scale800,
+        paddingRight: theme.sizing.scale800,
+        [theme.mediaQuery.large]: {
+          paddingBottom: theme.sizing.scale800,
+        },
+      })}
+    >
       {image ? (
         <img
           id="frame-image"
@@ -65,6 +73,7 @@ function Node({ image }: { image: string }) {
           className={css({
             width: "100%",
             maxWidth: "1280px",
+            // boxShadow: theme.lighting.shadow700,
           })}
         />
       ) : (
@@ -75,7 +84,7 @@ function Node({ image }: { image: string }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            [MQ.medium]: {
+            [theme.mediaQuery.medium]: {
               height: "calc(100vh - 60px)",
             },
           })}
@@ -83,7 +92,7 @@ function Node({ image }: { image: string }) {
           Yikes! There was a problem rendering this page.
         </div>
       )}
-    </>
+    </div>
   );
 }
 

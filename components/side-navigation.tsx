@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useStyletron } from "baseui";
 import { PageContext } from "./layout";
 import * as gtag from "../lib/gtag";
-import { MQ } from "../lib/constants";
 
 function SideNavigation() {
   const [css, theme] = useStyletron();
@@ -23,16 +22,21 @@ function SideNavigation() {
     <nav
       className={css({
         display: "none",
-        [MQ.large]: {
+        [theme.mediaQuery.large]: {
+          background: theme.colors.backgroundSecondary,
           position: "fixed",
           top: "60px",
           width: "300px",
           height: "calc(100vh - 60px)",
           display: "flex",
           flexDirection: "column",
-          borderRight: `solid 1px ${theme.colors.border}`,
           paddingTop: theme.sizing.scale800,
           overflowY: "scroll",
+          /* Hide scrollbar for Chrome, Safari and Opera */
+          "::-webkit-scrollbar": {
+            display: "none",
+          },
+          scrollbarWidth: "none",
         },
       })}
     >
@@ -59,10 +63,12 @@ function SideNavigation() {
                   ref={isActive ? activeLink : null}
                   key={frame.key}
                   className={css({
-                    padding: `${theme.sizing.scale200} 0`,
-                    paddingLeft: theme.sizing.scale800,
+                    padding: `${theme.sizing.scale200} ${theme.sizing.scale400}`,
+                    marginLeft: theme.sizing.scale600,
+                    marginRight: theme.sizing.scale600,
+                    borderRadius: "3px",
                     background: isActive
-                      ? theme.colors.backgroundSecondary
+                      ? theme.colors.backgroundTertiary
                       : "none",
                   })}
                 >

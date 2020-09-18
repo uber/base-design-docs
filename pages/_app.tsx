@@ -2,10 +2,11 @@ import { AppProps } from "next/app";
 import Router from "next/router";
 import { useEffect } from "react";
 import { Provider as StyletronProvider } from "styletron-react";
-import { BaseProvider, LightThemeMove } from "baseui";
+import { BaseProvider } from "baseui";
 import { styletron, debug } from "../lib/styletron";
 import Layout from "../components/layout";
 import * as gtag from "../lib/gtag";
+import { lightTheme } from "../lib/theme";
 
 import "../styles.css";
 
@@ -22,7 +23,7 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <div>
       <StyletronProvider value={styletron} debug={debug} debugAfterHydration>
-        <BaseProvider theme={LightThemeMove} zIndex={2}>
+        <BaseProvider theme={lightTheme} zIndex={2}>
           <Layout {...pageProps}>
             <Component {...pageProps} />
           </Layout>
