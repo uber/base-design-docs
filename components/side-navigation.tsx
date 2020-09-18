@@ -39,7 +39,7 @@ function SideNavigation() {
       {pages.map((page) => {
         return (
           <div
-            key={page.id}
+            key={page.name}
             className={css({ marginBottom: theme.sizing.scale800 })}
           >
             <div
