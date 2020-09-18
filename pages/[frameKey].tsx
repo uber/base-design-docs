@@ -46,7 +46,7 @@ async function getStaticProps({ params }) {
 
 function Node({ image }: { image: string }) {
   const [css] = useStyletron();
-  const { activeFrame = { fileName: "Base Documentation" } } = useContext(
+  const { activeFrame = { name: "Base Documentation" } } = useContext(
     PageContext
   );
 
@@ -60,7 +60,7 @@ function Node({ image }: { image: string }) {
       {image ? (
         <img
           id="frame-image"
-          title={activeFrame.fileName}
+          title={activeFrame.name}
           src={image}
           className={css({
             width: "100%",
