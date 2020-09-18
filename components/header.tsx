@@ -2,7 +2,7 @@ import { useContext, Fragment } from "react";
 import Link from "next/link";
 import { useStyletron } from "baseui";
 import { Button, KIND, SHAPE, SIZE } from "baseui/button";
-import { Logo, Console, Figma } from "./icons";
+import { Logo, Console, Figma, Help } from "./icons";
 import Search from "./search";
 import { PageContext } from "./layout";
 import { MQ } from "../lib/constants";
@@ -50,9 +50,11 @@ function Home() {
 
 function Links() {
   const [css, theme] = useStyletron();
-  const { activeFrame = { key: null }, figmaLink = "#" } = useContext(
-    PageContext
-  );
+  const {
+    activeFrame = { key: null },
+    figmaLink = "#",
+    openHelpModal,
+  } = useContext(PageContext);
   return (
     <Fragment>
       <div
@@ -86,6 +88,7 @@ function Links() {
               [MQ.small]: {
                 display: "inline-block",
                 marginLeft: theme.sizing.scale400,
+                whiteSpace: "nowrap",
               },
             })}
           >
@@ -93,25 +96,54 @@ function Links() {
           </span>
         </Button>
       </div>
+      <div
+        className={css({
+          marginRight: theme.sizing.scale400,
+        })}
+      >
+        <Button
+          // @ts-ignore - Missing type in baseui
+          $as="a"
+          href={figmaLink}
+          target="_blank"
+          rel="noopener"
+          kind={KIND.tertiary}
+          shape={SHAPE.pill}
+          size={SIZE.compact}
+          title="Open in Figma"
+          onClick={() => {
+            gtag.event({
+              action: "click_link_header_external",
+              category: "navigation",
+              label: activeFrame.key
+                ? `figma_${activeFrame.key}`
+                : "figma_root",
+            });
+          }}
+        >
+          <Figma size="16px" />
+          <span
+            className={css({
+              display: "none",
+              [MQ.small]: {
+                display: "inline-block",
+                marginLeft: theme.sizing.scale400,
+              },
+            })}
+          >
+            Figma
+          </span>
+        </Button>
+      </div>
       <Button
-        // @ts-ignore - Missing type in baseui
-        $as="a"
-        href={figmaLink}
-        target="_blank"
-        rel="noopener"
-        kind={KIND.tertiary}
         shape={SHAPE.pill}
+        kind={KIND.tertiary}
         size={SIZE.compact}
-        title="Open in Figma"
         onClick={() => {
-          gtag.event({
-            action: "click_link_header_external",
-            category: "navigation",
-            label: activeFrame.key ? `figma_${activeFrame.key}` : "figma_root",
-          });
+          openHelpModal();
         }}
       >
-        <Figma size="16px" />
+        <Help size="16px" />
         <span
           className={css({
             display: "none",
@@ -121,7 +153,7 @@ function Links() {
             },
           })}
         >
-          Figma
+          Help
         </span>
       </Button>
     </Fragment>
