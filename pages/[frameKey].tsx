@@ -60,7 +60,7 @@ function Node({ image }: { image: string }) {
       {image ? (
         <img
           id="frame-image"
-          title={activeFrame && activeFrame.fileName}
+          title={activeFrame.fileName}
           src={image}
           className={css({
             display: "block",
