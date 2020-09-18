@@ -53,17 +53,18 @@ function Layout({ children, ...pageProps }: Props) {
     setHelpModalState(true);
   }, []);
 
+  const activeFrameKey = pageProps?.activeFrame?.key;
   const handleHorizontalArrow = useCallback(
     (event) => {
       if (
         (event.target as HTMLInputElement).id !== "search" &&
-        pageProps.activeFrame.key
+        activeFrameKey
       ) {
         const frames = [];
         let activeFrameIndex = 0;
         for (const pages of pageProps.pages) {
           for (const frame of pages.children) {
-            if (pageProps.activeFrame.key === frame.key) {
+            if (activeFrameKey === frame.key) {
               activeFrameIndex = frames.length;
             }
             frames.push(frame);
@@ -76,7 +77,7 @@ function Layout({ children, ...pageProps }: Props) {
         router.push("/[frameKey]", `/${frames[nextFrameIndex].key}`);
       }
     },
-    [pageProps.activeFrame.key]
+    [activeFrameKey]
   );
 
   useEffect(() => {
@@ -162,7 +163,7 @@ function Layout({ children, ...pageProps }: Props) {
           <SideNavigation />
           <main
             className={css({
-              background: pageProps.activeFrame.key ? "#F6F6F6" : "#FFF",
+              background: activeFrameKey ? "#F6F6F6" : "#FFF",
               [MQ.medium]: {
                 marginTop: "60px",
               },
