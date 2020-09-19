@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:vercel": "rm data/*.json && next build",
     "start": "next start",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
     "clean": "rm data/*.json"
