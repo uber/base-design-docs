@@ -164,11 +164,9 @@ function Layout({ children, ...pageProps }: Props) {
           <SideNavigation />
           <main
             className={css({
-              background: activeFrameKey
-                ? theme.colors.backgroundSecondary
-                : theme.colors.white,
+              marginTop: "20px",
               [theme.mediaQuery.medium]: {
-                marginTop: "60px",
+                marginTop: "80px",
               },
               [theme.mediaQuery.large]: {
                 marginLeft: "300px",

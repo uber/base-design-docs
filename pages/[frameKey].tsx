@@ -57,7 +57,6 @@ function Node({ image }: { image: string }) {
   return (
     <div
       className={css({
-        paddingTop: theme.sizing.scale800,
         paddingLeft: theme.sizing.scale800,
         paddingRight: theme.sizing.scale800,
         [theme.mediaQuery.large]: {
@@ -73,7 +72,7 @@ function Node({ image }: { image: string }) {
           className={css({
             width: "100%",
             maxWidth: "1280px",
-            // boxShadow: theme.lighting.shadow700,
+            boxShadow: theme.lighting.shadow700,
           })}
         />
       ) : (

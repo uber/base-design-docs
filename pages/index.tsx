@@ -19,11 +19,15 @@ export default function Home() {
   return (
     <div
       className={css({
+        background: theme.colors.white,
         display: "flex",
         alignItems: "flex-end",
-        height: "calc(100vh - 124px)",
+        height: "calc(100vh - 164px)",
+        marginLeft: theme.sizing.scale800,
+        marginRight: theme.sizing.scale800,
+        boxShadow: theme.lighting.shadow700,
         [theme.mediaQuery.medium]: {
-          height: "calc(100vh - 60px)",
+          height: "calc(100vh - 100px)",
         },
       })}
     >
