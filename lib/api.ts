@@ -181,14 +181,16 @@ async function getImage(frame: Frame): Promise<string> {
             if (json.images && json.images[frame.id]) {
               image = json.images[frame.id];
               console.log(`Fetch image for [${frame.key}] success!`);
-              try {
-                fs.writeFileSync(
-                  getImageDataPath(frame.key),
-                  JSON.stringify(json.images)
-                );
-              } catch (er) {
-                console.log(`There was a problem saving the image to disk.`);
-                console.log(er);
+              if (process.env.CACHE_IMAGES) {
+                try {
+                  fs.writeFileSync(
+                    getImageDataPath(frame.key),
+                    JSON.stringify(json.images)
+                  );
+                } catch (er) {
+                  console.log(`There was a problem saving the image to disk.`);
+                  console.log(er);
+                }
               }
             } else {
               throw new Error(JSON.stringify(json));
