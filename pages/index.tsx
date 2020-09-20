@@ -1,6 +1,5 @@
 import { useStyletron } from "baseui";
 import { Grid, Cell } from "baseui/layout-grid";
-import { Display, ParagraphMedium, DisplayXSmall } from "baseui/typography";
 
 export async function getStaticProps() {
   const { getSiteMap } = require("../lib/api");
@@ -42,12 +41,32 @@ export default function Home() {
       >
         <Grid>
           <Cell span={[12]}>
-            <Display>Base</Display>
-            <DisplayXSmall color="contentTertiary">Documentation</DisplayXSmall>
-            <ParagraphMedium color="contentTertiary">
+            <h1
+              className={css({
+                ...theme.typography.DisplayLarge,
+                margin: 0,
+              })}
+            >
+              Base
+            </h1>
+            <h2
+              className={css({
+                ...theme.typography.DisplayXSmall,
+                margin: 0,
+                color: theme.colors.contentTertiary,
+              })}
+            >
+              Documentation
+            </h2>
+            <p
+              className={css({
+                ...theme.typography.ParagraphSmall,
+                color: theme.colors.contentTertiary,
+              })}
+            >
               Reference this site for both high-level patterns as well as
               component specific guidelines when using the Base design system.
-            </ParagraphMedium>
+            </p>
           </Cell>
         </Grid>
       </div>
