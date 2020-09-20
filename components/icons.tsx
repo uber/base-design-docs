@@ -2,6 +2,35 @@ interface IconProps {
   size?: string;
 }
 
+export function Help({ size = "24px" }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <title>Circle question mark (filled)</title>
+      <g
+        transform="matrix(
+          1 0
+          0 1
+          1 1
+        )"
+      >
+        <path
+          fillRule="nonzero"
+          clipRule="nonzero"
+          d="M11 0C4.9 0 0 4.9 0 11C0 17.1 4.9 22 11 22C17.1 22 22 17.1 22 11C22 4.9 17.1 0 11 0ZM12 19L9 19L9 16L12 16L12 19ZM12.8999 12.6L12 13L12 14L9 14L9 11L11.7998 9.79999C12.5998 9.49999 13 8.8 13 8C13 6.9 12.1 6 11 6C9.9 6 9 6.9 9 8L6 8C6 5.2 8.2 3 11 3C13.8 3 16 5.2 16 8C16 10 14.7999 11.8 12.8999 12.6Z"
+          fill="currentColor"
+          opacity="1"
+        />
+      </g>
+    </svg>
+  );
+}
+
 export function Book({ size = "24px" }: IconProps) {
   return (
     <svg
