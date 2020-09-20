@@ -3,49 +3,44 @@ import { useStyletron } from "baseui";
 import { PageContext } from "../components/layout";
 
 async function getStaticPaths() {
-  const { getPages } = require("../lib/api");
-  const pages = await getPages();
-  let paths = [];
-  for (const page of pages) {
-    if (page && page.children) {
-      paths = [
-        ...paths,
-        ...page.children.map((frame) => ({
-          params: { frameKey: frame.key },
-        })),
-      ];
+  const { getSiteMap } = require("../lib/api");
+  const siteMap = await getSiteMap();
+  const paths = [];
+  for (const section of siteMap) {
+    for (const page of section.children) {
+      paths.push({
+        params: { pageKey: page.key },
+      });
     }
   }
   return { paths, fallback: false };
 }
 
 async function getStaticProps({ params }) {
-  const { getPages, getImage } = require("../lib/api");
-  const pages = await getPages();
-  let activeFrame;
-  for (const page of pages) {
-    const foundFrame = page.children.find(
-      (frame) => frame.key === params.frameKey
-    );
-    if (foundFrame) {
-      activeFrame = foundFrame;
+  const { getSiteMap, getImage } = require("../lib/api");
+  const siteMap = await getSiteMap();
+  let activePage;
+  for (const section of siteMap) {
+    const match = section.children.find((page) => page.key === params.pageKey);
+    if (match) {
+      activePage = match;
       break;
     }
   }
-  const image = await getImage(activeFrame);
+  const image = await getImage(activePage);
   return {
     props: {
       image,
-      pages,
-      activeFrame,
-      figmaLink: `https://www.figma.com/file/${activeFrame.fileKey}/${activeFrame.fileName}?node-id=${activeFrame.id}`,
+      siteMap,
+      activePage,
+      figmaLink: `https://www.figma.com/file/${activePage.fileKey}/${activePage.fileName}?node-id=${activePage.id}`,
     },
   };
 }
 
-function Node({ image }: { image: string }) {
+function Page({ image }: { image: string }) {
   const [css, theme] = useStyletron();
-  const { activeFrame = { name: "Base Documentation" } } = useContext(
+  const { activePage = { name: "Base Documentation" } } = useContext(
     PageContext
   );
 
@@ -67,7 +62,7 @@ function Node({ image }: { image: string }) {
       {image ? (
         <img
           id="frame-image"
-          title={activeFrame.name}
+          title={activePage.name}
           src={image}
           className={css({
             width: "100%",
@@ -95,4 +90,4 @@ function Node({ image }: { image: string }) {
   );
 }
 
-export { Node as default, getStaticPaths, getStaticProps };
+export { Page as default, getStaticPaths, getStaticProps };

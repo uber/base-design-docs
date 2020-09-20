@@ -7,7 +7,7 @@ import { darkTheme } from "../lib/theme";
 import { Modal, ModalHeader, ModalBody } from "baseui/modal";
 import SideNavigation from "./side-navigation";
 import Header from "./header";
-import { Page, Frame } from "../lib/types";
+import { Page, SiteMap } from "../lib/types";
 import BottomNavigation from "./bottom-navigation";
 
 function mod(n, m) {
@@ -29,16 +29,16 @@ const HotKey = styled("span", {
 });
 
 interface Context {
-  pages: Page[];
+  siteMap: SiteMap;
   figmaLink: string;
-  activeFrame?: Frame;
+  activePage?: Page;
   openHelpModal: () => void;
 }
 
 export const PageContext = createContext({
-  pages: [],
+  siteMap: [],
   figmaLink: "",
-  activeFrame: {},
+  activePage: {},
 } as Context);
 
 interface Props extends Context {
@@ -54,31 +54,28 @@ function Layout({ children, ...pageProps }: Props) {
     setHelpModalState(true);
   }, []);
 
-  const activeFrameKey = pageProps?.activeFrame?.key;
+  const activePageKey = pageProps?.activePage?.key;
   const handleHorizontalArrow = useCallback(
     (event) => {
-      if (
-        (event.target as HTMLInputElement).id !== "search" &&
-        activeFrameKey
-      ) {
-        const frames = [];
-        let activeFrameIndex = 0;
-        for (const pages of pageProps.pages) {
-          for (const frame of pages.children) {
-            if (activeFrameKey === frame.key) {
-              activeFrameIndex = frames.length;
+      if ((event.target as HTMLInputElement).id !== "search" && activePageKey) {
+        const pages = [];
+        let activePageIndex = 0;
+        for (const section of pageProps.siteMap) {
+          for (const page of section.children) {
+            if (activePageKey === page.key) {
+              activePageIndex = pages.length;
             }
-            frames.push(frame);
+            pages.push(page);
           }
         }
-        const nextFrameIndex = mod(
-          activeFrameIndex + (event.key === "ArrowLeft" ? -1 : 1),
-          frames.length
+        const nextPageIndex = mod(
+          activePageIndex + (event.key === "ArrowLeft" ? -1 : 1),
+          pages.length
         );
-        router.push("/[frameKey]", `/${frames[nextFrameIndex].key}`);
+        router.push("/[pageKey]", `/${pages[nextPageIndex].key}`);
       }
     },
-    [activeFrameKey]
+    [activePageKey]
   );
 
   useEffect(() => {

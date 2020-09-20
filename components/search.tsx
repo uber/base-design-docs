@@ -11,7 +11,7 @@ import * as gtag from "../lib/gtag";
 function Search() {
   const router = useRouter();
   const controlRef = useRef<HTMLInputElement>();
-  const { pages = [], activeFrame = { key: null } } = useContext(PageContext);
+  const { siteMap = [], activePage = { key: null } } = useContext(PageContext);
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -33,22 +33,22 @@ function Search() {
     let count = 0;
     let activeIndex = 0;
 
-    for (const page of pages) {
-      options[page.name] = [];
-      for (const frame of page.children) {
-        if (frame.key === activeFrame.key) activeIndex = count;
+    for (const section of siteMap) {
+      options[section.name] = [];
+      for (const page of section.children) {
+        if (page.key === activePage.key) activeIndex = count;
         count += 1;
-        options[page.name].push({
-          id: frame.key, // IDs may not be unique, so use `key` for this.
-          name: frame.name,
-          self: `${page.name} ${frame.name}`,
-          href: `/${frame.key}`,
+        options[section.name].push({
+          id: page.key, // IDs may not be unique, so use `key` for this.
+          name: page.name,
+          self: `${section.name} ${page.name}`,
+          href: `/${page.key}`,
         });
       }
     }
 
     return [options, activeIndex];
-  }, [activeFrame.key]);
+  }, [activePage.key]);
 
   const [placeholder, setPlaceholder] = useState("Search components...");
 
@@ -63,7 +63,7 @@ function Search() {
       type={TYPE.search}
       size={SIZE.compact}
       controlRef={controlRef}
-      placeholder={activeFrame.key ? placeholder : "Search components..."}
+      placeholder={activePage.key ? placeholder : "Search components..."}
       maxDropdownHeight="300px"
       getOptionLabel={({ option }) => option.name}
       onFocus={(event) => {
@@ -77,7 +77,7 @@ function Search() {
             category: "navigation",
             label: value[0].href as string,
           });
-          router.push("/[frameKey]", value[0].href);
+          router.push("/[pageKey]", value[0].href);
           controlRef.current && controlRef.current.blur();
           setPlaceholder(value[0].self);
         }
@@ -109,7 +109,7 @@ function Search() {
                   initialState={{
                     highlightedIndex: activeIndex,
                     isFocused: true,
-                    activedescendantId: activeFrame.key,
+                    activedescendantId: activePage.key,
                   }}
                 />
               </ThemeProvider>

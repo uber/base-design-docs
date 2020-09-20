@@ -3,11 +3,11 @@ import { Grid, Cell } from "baseui/layout-grid";
 import { Display, ParagraphMedium, DisplayXSmall } from "baseui/typography";
 
 export async function getStaticProps() {
-  const { getPages } = require("../lib/api");
-  const pages = await getPages();
+  const { getSiteMap } = require("../lib/api");
+  const siteMap = await getSiteMap();
   return {
     props: {
-      pages,
+      siteMap,
       activeFrame: {},
       figmaLink: `https://www.figma.com/files/${process.env.FIGMA_FILE_KEY}/project/${process.env.FIGMA_PROJECT_ID}/%E2%9D%96-Base-Documentation`,
     },

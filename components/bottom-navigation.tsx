@@ -6,7 +6,7 @@ import { Grid, Cell } from "baseui/layout-grid";
 
 function BottomNavigation() {
   const [css, theme] = useStyletron();
-  const { pages = [], activeFrame = { key: null } } = useContext(PageContext);
+  const { siteMap = [], activePage = { key: null } } = useContext(PageContext);
 
   return (
     <nav
@@ -21,8 +21,8 @@ function BottomNavigation() {
       })}
     >
       <Grid gridGaps={[24]}>
-        {pages.map((page) => (
-          <Cell key={page.name} span={[2, 2, 3]}>
+        {siteMap.map((section) => (
+          <Cell key={section.name} span={[2, 2, 3]}>
             <div>
               <div
                 className={css({
@@ -31,28 +31,28 @@ function BottomNavigation() {
                   padding: theme.sizing.scale400,
                 })}
               >
-                {page.name}
+                {section.name}
               </div>
               <div>
-                {page.children.map((frame) => (
+                {section.children.map((page) => (
                   <div
-                    key={frame.key}
+                    key={page.key}
                     className={css({
                       padding: `${theme.sizing.scale200} ${theme.sizing.scale400}`,
                       borderRadius: "3px",
                       background:
-                        activeFrame.key === frame.key
+                        activePage.key === page.key
                           ? theme.colors.backgroundTertiary
                           : null,
                     })}
                   >
-                    <Link href={`/[frameKey]`} as={`/${frame.key}`} passHref>
+                    <Link href={`/[pageKey]`} as={`/${page.key}`} passHref>
                       <a
                         className={css({
                           ...theme.typography.ParagraphMedium,
                           textDecoration: "none",
                           color:
-                            activeFrame.key === frame.key
+                            activePage.key === page.key
                               ? theme.colors.contentPrimary
                               : theme.colors.contentTertiary,
                           ":focus-visible": {
@@ -64,7 +64,7 @@ function BottomNavigation() {
                           },
                         })}
                       >
-                        {frame.name}
+                        {page.name}
                       </a>
                     </Link>
                   </div>

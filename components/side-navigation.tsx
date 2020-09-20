@@ -7,7 +7,7 @@ import * as gtag from "../lib/gtag";
 function SideNavigation() {
   const [css, theme] = useStyletron();
   const activeLink = useRef<HTMLDivElement>();
-  const { pages = [], activeFrame = { key: null } } = useContext(PageContext);
+  const { siteMap = [], activePage = { key: null } } = useContext(PageContext);
 
   useEffect(() => {
     if (activeLink.current && activeLink.current.scrollIntoView) {
@@ -16,7 +16,7 @@ function SideNavigation() {
         inline: "center",
       });
     }
-  }, [activeFrame.key]);
+  }, [activePage.key]);
 
   return (
     <nav
@@ -40,10 +40,10 @@ function SideNavigation() {
         },
       })}
     >
-      {pages.map((page) => {
+      {siteMap.map((section) => {
         return (
           <div
-            key={page.name}
+            key={section.name}
             className={css({ marginBottom: theme.sizing.scale800 })}
           >
             <div
@@ -54,14 +54,14 @@ function SideNavigation() {
                 marginBottom: theme.sizing.scale400,
               })}
             >
-              {page.name}
+              {section.name}
             </div>
-            {page.children.map((frame) => {
-              const isActive = frame.key === activeFrame.key;
+            {section.children.map((page) => {
+              const isActive = page.key === activePage.key;
               return (
                 <div
                   ref={isActive ? activeLink : null}
-                  key={frame.key}
+                  key={page.key}
                   className={css({
                     padding: `${theme.sizing.scale200} ${theme.sizing.scale400}`,
                     marginLeft: theme.sizing.scale600,
@@ -72,7 +72,7 @@ function SideNavigation() {
                       : "none",
                   })}
                 >
-                  <Link href={`/[frameKey]`} as={`/${frame.key}`} passHref>
+                  <Link href={`/[pageKey]`} as={`/${page.key}`} passHref>
                     <a
                       className={css({
                         ...theme.typography.ParagraphMedium,
@@ -92,11 +92,11 @@ function SideNavigation() {
                         gtag.event({
                           action: "click_link_sidenav",
                           category: "navigation",
-                          label: frame.key,
+                          label: page.key,
                         });
                       }}
                     >
-                      {frame.name}
+                      {page.name}
                     </a>
                   </Link>
                 </div>

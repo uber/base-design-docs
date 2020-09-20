@@ -50,7 +50,7 @@ function Home() {
 function Links() {
   const [css, theme] = useStyletron();
   const {
-    activeFrame = { key: null },
+    activePage = { key: null },
     figmaLink = "#",
     openHelpModal,
   } = useContext(PageContext);
@@ -114,9 +114,7 @@ function Links() {
             gtag.event({
               action: "click_link_header_external",
               category: "navigation",
-              label: activeFrame.key
-                ? `figma_${activeFrame.key}`
-                : "figma_root",
+              label: activePage.key ? `figma_${activePage.key}` : "figma_root",
             });
           }}
         >
