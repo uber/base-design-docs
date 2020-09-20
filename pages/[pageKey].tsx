@@ -62,7 +62,7 @@ function Page({ image }: { image: string }) {
       {image ? (
         <img
           id="frame-image"
-          title={activePage.name}
+          alt={activePage.name}
           src={image}
           className={css({
             width: "100%",
