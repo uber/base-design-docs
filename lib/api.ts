@@ -12,7 +12,7 @@ const SITE_MAP_DATA_PATH = path.join(process.cwd(), "./data/siteMap.json");
 const getImageDataPath = (id) =>
   path.join(process.cwd(), `./data/image-[${id}].json`);
 const getImageFilePath = (key) =>
-  path.join(process.cwd(), `./public/frames/${key}.png`);
+  path.join(process.cwd(), `./public/${key}.png`);
 
 function getPageKey(canvas: Canvas, frame: Frame) {
   return (
@@ -152,7 +152,7 @@ async function getSiteMap(): Promise<SiteMap> {
 }
 
 async function getImage(page: Page): Promise<string> {
-  const image = `/frames/${page.key}.png`;
+  const image = `/${page.key}.png`;
 
   try {
     if (fs.existsSync(getImageFilePath(page.key))) {
