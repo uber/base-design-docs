@@ -1,4 +1,5 @@
 import fs from "fs";
+import https from "https";
 import path from "path";
 import retry from "async-retry";
 import { SiteMap, Page, Section, Canvas, Frame, File, Project } from "./types";
@@ -10,6 +11,8 @@ const PROJECT_DATA_PATH = path.join(process.cwd(), "./data/project.json");
 const SITE_MAP_DATA_PATH = path.join(process.cwd(), "./data/siteMap.json");
 const getImageDataPath = (id) =>
   path.join(process.cwd(), `./data/image-[${id}].json`);
+const getImageFilePath = (key) =>
+  path.join(process.cwd(), `./public/frames/${key}.png`);
 
 function getPageKey(canvas: Canvas, frame: Frame) {
   return (
@@ -149,17 +152,17 @@ async function getSiteMap(): Promise<SiteMap> {
 }
 
 async function getImage(page: Page): Promise<string> {
-  // For network requests
-  let image = null;
+  const image = `/frames/${page.key}.png`;
+
   try {
-    if (process.env.CACHE_IMAGES) {
-      const project = fs.readFileSync(getImageDataPath(page.key));
-      const images = JSON.parse(project.toString());
-      image = images[page.id];
+    if (fs.existsSync(getImageFilePath(page.key))) {
+      console.log(`Image [${page.key}] found locally...`);
     } else {
-      throw new Error("Do not cache images");
+      throw new Error("No image file exists yet.");
     }
   } catch (er) {
+    console.log(`No image [${page.key}] found locally...`);
+
     try {
       console.log(`Fetching image for [${page.key}]...`);
       await retry(
@@ -176,18 +179,15 @@ async function getImage(page: Page): Promise<string> {
           if (contentType === "application/json; charset=utf-8") {
             const json = await response.json();
             if (json.images && json.images[page.id]) {
-              image = json.images[page.id];
-              console.log(`Fetch image for [${page.key}] success!`);
-              if (process.env.CACHE_IMAGES) {
-                try {
-                  fs.writeFileSync(
-                    getImageDataPath(page.key),
-                    JSON.stringify(json.images)
-                  );
-                } catch (er) {
-                  console.log(`There was a problem saving the image to disk.`);
-                  console.log(er);
-                }
+              const imageUrl = json.images[page.id];
+              console.log(`Image generation for [${page.key}] was successful!`);
+              try {
+                console.log(`Saving [${page.key}] image to disk...`);
+                await saveImageToDisk(imageUrl, getImageFilePath(page.key));
+                console.log("Image fetched successfully.");
+              } catch (er) {
+                console.log(`There was a problem saving the image to disk.`);
+                console.log(er);
               }
             } else {
               throw new Error(JSON.stringify(json));
@@ -217,6 +217,21 @@ async function getImage(page: Page): Promise<string> {
   }
 
   return image;
+}
+
+function saveImageToDisk(url, localPath) {
+  return new Promise((resolve, reject) => {
+    const file = fs.createWriteStream(localPath);
+    https
+      .get(url, (response) => {
+        response.pipe(file);
+        response.on("end", () => {
+          console.log("Image saved to disk!");
+          resolve();
+        });
+      })
+      .on("error", (er) => console.log(er));
+  });
 }
 
 export { getSiteMap, getImage };

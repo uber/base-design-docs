@@ -1,4 +1,5 @@
 import { useEffect, useContext } from "react";
+import Image from "next/image";
 import { useStyletron } from "baseui";
 import { PageContext } from "../components/layout";
 
@@ -60,10 +61,12 @@ function Page({ image }: { image: string }) {
       })}
     >
       {image ? (
-        <img
+        <Image
           id="frame-image"
           alt={activePage.name}
           src={image}
+          height="12768"
+          width="2560"
           className={css({
             width: "100%",
             maxWidth: "1280px",
