@@ -39,7 +39,11 @@ async function getStaticProps({ params }) {
   };
 }
 
-function Page({ image }: { image: string }) {
+function Page({
+  image,
+}: {
+  image: { src: string; height: number; width: number };
+}) {
   const [css, theme] = useStyletron();
   const { activePage = { name: "Base Documentation" } } = useContext(
     PageContext
@@ -60,35 +64,14 @@ function Page({ image }: { image: string }) {
         },
       })}
     >
-      {image ? (
-        <Image
-          id="frame-image"
-          alt={activePage.name}
-          src={image}
-          height="12768"
-          width="2560"
-          className={css({
-            width: "100%",
-            maxWidth: "1280px",
-            boxShadow: theme.lighting.shadow700,
-          })}
-        />
-      ) : (
-        <div
-          className={css({
-            width: "100%",
-            height: "calc(100vh - 124px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            [theme.mediaQuery.medium]: {
-              height: "calc(100vh - 60px)",
-            },
-          })}
-        >
-          Yikes! There was a problem rendering this page.
-        </div>
-      )}
+      <Image
+        {...image}
+        id="frame-image"
+        alt={activePage.name}
+        className={css({
+          boxShadow: theme.lighting.shadow700,
+        })}
+      />
     </div>
   );
 }

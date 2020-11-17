@@ -1,4 +1,5 @@
 import fs from "fs";
+import sizeOf from "image-size";
 import https from "https";
 import path from "path";
 import retry from "async-retry";
@@ -151,24 +152,31 @@ async function getSiteMap(): Promise<SiteMap> {
   return siteMap;
 }
 
-async function getImage(page: Page): Promise<string> {
-  const image = `/${page.key}.png`;
+async function getImage(
+  page: Page
+): Promise<{ src: string; height: number; width: number }> {
+  const image = {
+    src: `/${page.key}.png`,
+    height: 0,
+    width: 0,
+  };
+
+  console.log(image.src);
 
   try {
-    if (fs.existsSync(getImageFilePath(page.key))) {
-      console.log(`Image [${page.key}] found locally...`);
-    } else {
-      throw new Error("No image file exists yet.");
-    }
+    const dimensionsFromDisk = fs.readFileSync(getImageDataPath(page.key));
+    const dimensions = JSON.parse(dimensionsFromDisk.toString());
+    image.height = dimensions.height;
+    image.width = dimensions.width;
+    console.log(`Image for [${page.key}] found locally.`);
   } catch (er) {
-    console.log(`No image [${page.key}] found locally...`);
+    console.log(`No image for [${page.key}] found locally...`);
 
     try {
-      console.log(`Fetching image for [${page.key}]...`);
       await retry(
         async () => {
           const response = await fetch(
-            `https://api.figma.com/v1/images/${page.fileKey}?ids=${page.id}&format=png&scale=2`,
+            `https://api.figma.com/v1/images/${page.fileKey}?ids=${page.id}&format=png`,
             {
               headers: {
                 "X-FIGMA-TOKEN": process.env.FIGMA_AUTH_TOKEN,
@@ -182,9 +190,10 @@ async function getImage(page: Page): Promise<string> {
               const imageUrl = json.images[page.id];
               console.log(`Image generation for [${page.key}] was successful!`);
               try {
-                console.log(`Saving [${page.key}] image to disk...`);
-                await saveImageToDisk(imageUrl, getImageFilePath(page.key));
-                console.log("Image fetched successfully.");
+                const dimensions = await saveImageToDisk(imageUrl, page.key);
+                image.height = dimensions.height;
+                image.width = dimensions.width;
+                console.log("Image saved to disk successfully.");
               } catch (er) {
                 console.log(`There was a problem saving the image to disk.`);
                 console.log(er);
@@ -219,18 +228,20 @@ async function getImage(page: Page): Promise<string> {
   return image;
 }
 
-function saveImageToDisk(url, localPath) {
-  return new Promise((resolve, reject) => {
-    const file = fs.createWriteStream(localPath);
-    https
-      .get(url, (response) => {
-        response.pipe(file);
-        response.on("end", () => {
-          console.log("Image saved to disk!");
-          resolve();
-        });
-      })
-      .on("error", (er) => console.log(er));
+function saveImageToDisk(url, key): Promise<{ height: number; width: number }> {
+  return new Promise((resolve) => {
+    const file = fs.createWriteStream(getImageFilePath(key));
+    file.on("finish", () => {
+      const dimensions = sizeOf(getImageFilePath(key));
+      try {
+        fs.writeFileSync(getImageDataPath(key), JSON.stringify(dimensions));
+      } catch (er) {
+        console.log("There was an error saving image dimensions.");
+        console.error(er);
+      }
+      resolve(dimensions);
+    });
+    https.get(url, (response) => response.pipe(file));
   });
 }
 
