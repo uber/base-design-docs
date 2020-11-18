@@ -43,7 +43,7 @@ Pages auto-update as you edit files.
 
 This project is built with Next.js and Vercel.
 
-We use `getStaticPaths` to render a webpage for each top-level Frame in each file in our Figma Project. So, what is a top-level Frame?
+We use `getStaticPaths` and `getStaticProps` to render a webpage for each top-level Frame in each file in our Figma Project. So, what is a top-level Frame?
 
 First, recall that every Figma File has the following structure:
 
