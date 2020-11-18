@@ -3,17 +3,26 @@ import sizeOf from "image-size";
 import https from "https";
 import path from "path";
 import retry from "async-retry";
-import { SiteMap, Page, Section, Canvas, Frame, File, Project } from "./types";
+import {
+  SiteMap,
+  Page,
+  Section,
+  Canvas,
+  Frame,
+  File,
+  Project,
+  ImageData,
+} from "./types";
 
 const RETRY_LIMIT = 10;
 const RETRY_TIMEOUT = 1000 * 30; // 30s
 
 const PROJECT_DATA_PATH = path.join(process.cwd(), "./data/project.json");
 const SITE_MAP_DATA_PATH = path.join(process.cwd(), "./data/siteMap.json");
-const getImageDataPath = (id) =>
-  path.join(process.cwd(), `./data/image-[${id}].json`);
+const getImageDataPath = (key) =>
+  path.join(process.cwd(), `./public/frames/${key}.json`);
 const getImageFilePath = (key) =>
-  path.join(process.cwd(), `./public/${key}.png`);
+  path.join(process.cwd(), `./public/frames/${key}.png`);
 
 function getPageKey(canvas: Canvas, frame: Frame) {
   return (
@@ -152,11 +161,9 @@ async function getSiteMap(): Promise<SiteMap> {
   return siteMap;
 }
 
-async function getImage(
-  page: Page
-): Promise<{ src: string; height: number; width: number }> {
-  const image = {
-    src: `/${page.key}.png`,
+async function getImage(page: Page): Promise<ImageData> {
+  const image: ImageData = {
+    src: `/frames/${page.key}.png`,
     height: 0,
     width: 0,
   };

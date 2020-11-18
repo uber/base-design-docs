@@ -75,3 +75,6 @@ export interface Section extends Canvas {
  * of paths to render during a build (via getStaticPaths).
  */
 export type SiteMap = Section[];
+
+/** All of the information needed to render a next/image. */
+export type ImageData = { src: string; height: number; width: number };

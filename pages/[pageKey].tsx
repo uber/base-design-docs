@@ -45,9 +45,7 @@ function Page({
   image: { src: string; height: number; width: number };
 }) {
   const [css, theme] = useStyletron();
-  const { activePage = { name: "Base Documentation" } } = useContext(
-    PageContext
-  );
+  const { activePage } = useContext(PageContext);
 
   // Scroll to top of page when image changes.
   useEffect(() => {
@@ -67,10 +65,8 @@ function Page({
       <Image
         {...image}
         id="frame-image"
+        key={activePage.key}
         alt={activePage.name}
-        className={css({
-          boxShadow: theme.lighting.shadow700,
-        })}
       />
     </div>
   );
