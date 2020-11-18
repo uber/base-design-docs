@@ -55,6 +55,7 @@ function Page({
   return (
     <div
       className={css({
+        display: "flex",
         paddingLeft: theme.sizing.scale800,
         paddingRight: theme.sizing.scale800,
         [theme.mediaQuery.large]: {
@@ -62,12 +63,21 @@ function Page({
         },
       })}
     >
-      <Image
-        {...image}
-        id="frame-image"
-        key={activePage.key}
-        alt={activePage.name}
-      />
+      <div
+        className={css({
+          display: "flex",
+          overflow: "hidden",
+          borderRadius: theme.borders.radius400,
+          boxShadow: theme.lighting.shadow700,
+        })}
+      >
+        <Image
+          {...image}
+          id="frame-image"
+          key={activePage.key}
+          alt={activePage.name}
+        />
+      </div>
     </div>
   );
 }

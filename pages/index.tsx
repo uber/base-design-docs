@@ -19,6 +19,8 @@ export default function Home() {
     <div
       className={css({
         background: theme.colors.white,
+        overflow: "hidden",
+        borderRadius: theme.borders.radius400,
         display: "flex",
         alignItems: "flex-end",
         height: "calc(100vh - 164px)",
