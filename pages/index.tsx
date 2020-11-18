@@ -44,6 +44,7 @@ export default function Home() {
           ...theme.borders.border300,
           borderWidth: "2px",
           background: theme.colors.white,
+          maxWidth: "1500px",
         })}
       >
         <Image
