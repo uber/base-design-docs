@@ -161,9 +161,9 @@ function Layout({ children, ...pageProps }: Props) {
           <SideNavigation />
           <main
             className={css({
-              marginTop: "20px",
+              marginTop: "24px",
               [theme.mediaQuery.medium]: {
-                marginTop: "80px",
+                marginTop: "84px",
               },
               [theme.mediaQuery.large]: {
                 marginLeft: "300px",
