@@ -59,6 +59,7 @@ export interface Page extends Frame {
   key: string;
   fileName: string;
   fileKey: string;
+  title: string; // Used for page titles
 }
 
 /**
