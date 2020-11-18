@@ -25,7 +25,7 @@ export default function Home() {
           margin: 0,
         })}
       >
-        Base Design
+        Base Documentation
       </h1>
       <p
         className={css({
@@ -47,7 +47,7 @@ export default function Home() {
         })}
       >
         <Image
-          src="/collage-3240.png"
+          src="/collage.png"
           height="3240"
           width="5760"
           layout="responsive"

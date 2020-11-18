@@ -1,5 +1,6 @@
 import { useEffect, useContext } from "react";
 import Image from "next/image";
+import Head from "next/head";
 import { useStyletron } from "baseui";
 import { PageContext } from "../components/layout";
 
@@ -58,6 +59,14 @@ function Page({
         display: "flex",
       })}
     >
+      <Head>
+        <title>{activePage.fileName + " → " + activePage.name}</title>
+        <meta
+          property="og:title"
+          content={activePage.fileName + " → " + activePage.name}
+          key="title"
+        />
+      </Head>
       <div
         className={css({
           display: "flex",

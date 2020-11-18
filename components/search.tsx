@@ -41,7 +41,7 @@ function Search() {
         options[section.name].push({
           id: page.key, // IDs may not be unique, so use `key` for this.
           name: page.name,
-          self: `${section.name} ${page.name}`,
+          self: `${section.name} → ${page.name}`,
           href: `/${page.key}`,
         });
       }
