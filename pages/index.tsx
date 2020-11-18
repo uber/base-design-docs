@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { useStyletron } from "baseui";
-import { Grid, Cell } from "baseui/layout-grid";
 
 export async function getStaticProps() {
   const { getSiteMap } = require("../lib/api");

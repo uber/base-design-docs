@@ -21,7 +21,15 @@ FIGMA_PROJECT_ID=XYZ
 FIGMA_AUTH_TOKEN=XYZ
 ```
 
-Then, run the development server:
+You can find the first two variables by looking at the URL for a project:
+
+```
+https://www.figma.com/files/FIGMA_FILE_KEY/project/FIGMA_PROJECT_ID/Some-Cool-Project
+```
+
+You can create an auth token on your Figma user settings page. Note, this auth token needs viewing access to the project and each file in it.
+
+Once you have your environment set up, run the development server:
 
 ```bash
 $ yarn dev
@@ -43,7 +51,7 @@ First, recall that every Figma File has the following structure:
 Project > File[] > Page[] > Frame[]
 ```
 
-Every Project can have multuple Files, which can have multiple Pages, which in turn can have multiple Frames. We render a webpage for every top-level Frame within each Page.
+Every Project can have multuple Files, which can have multiple Pages, which in turn can have multiple Frames. **Top-level Frames are the direct child Frames of a Page**. We render a webpage for every one of these top-level Frames.
 
 Take the following Figma file structure:
 
@@ -94,11 +102,17 @@ There are a couple more conventions to keep in mind:
 
 So, given any arbitrary Project, provided at build-time as `FIGMA_PROJECT_ID`, so long as the files in the project follow the above conventions, we can build a website.
 
-### Rendering a Frame
+### Building the site
 
-You might wonder how we render a Frame as a webpage. For now, we just ask the Figma API for a PNG of the Frame at build-time. We receive a link from the API, which we simply embed on the page.
+At build time, we ask Figma for all of the files in our project (`FIGMA_PROJECT_KEY`). This is saved in `data/project.json`. With that information, we can query each file in the project. We ask for the first two levels of each file's node tree. This will give us the Pages/Top-level Frames for the file. With the pages/frames for each file we can build a site map, which gets saved in `data/siteMap.json`.
 
-We've also done some prototyping where we render the Frame as HTML & CSS (through React). The main benefit is that the pages are indexable— which is useful for SEO and cross-page search. It would also be interesting if the webpages could be made responsive.
+This first part of the build is initiated by `getStaticPaths`, which Next.js calls to build a static collection of pages. The second part of the build is calling `getStaticProps` for each of the pages we've returned in `getStaticPaths`.
+
+During the `getStaticProps` call we ask the Figma API for a PNG of the relevant Frame. We receive a link to the generated image from the API, download it to the `public` directory and then embed the image on the page with `next/image`.
+
+### Prior art
+
+We've done [some prototyping](https://v9-80-0.baseweb.design/guidelines) where we render the Frame as HTML & CSS (through React). The main benefit is that the pages are indexable— which is useful for SEO and cross-page search. It would also be interesting if the webpages could be made responsive.
 
 There have been a lot of issues with the HTML & CSS approach though. To start, it isn't clear if you can do responsive pages without an excessive amount of convention in your Figma File. We want our designers to focus on presenting useful documentation, not fussing over the rules for adding it. Furthermore, for a large File, the API can take quite a long time to query all of the JSON necessary to render the Frame accurately.
 
