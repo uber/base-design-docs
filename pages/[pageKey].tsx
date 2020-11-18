@@ -1,4 +1,5 @@
 import { useEffect, useContext } from "react";
+import Image from "next/image";
 import { useStyletron } from "baseui";
 import { PageContext } from "../components/layout";
 
@@ -38,11 +39,13 @@ async function getStaticProps({ params }) {
   };
 }
 
-function Page({ image }: { image: string }) {
+function Page({
+  image,
+}: {
+  image: { src: string; height: number; width: number };
+}) {
   const [css, theme] = useStyletron();
-  const { activePage = { name: "Base Documentation" } } = useContext(
-    PageContext
-  );
+  const { activePage } = useContext(PageContext);
 
   // Scroll to top of page when image changes.
   useEffect(() => {
@@ -52,40 +55,25 @@ function Page({ image }: { image: string }) {
   return (
     <div
       className={css({
-        paddingLeft: theme.sizing.scale800,
-        paddingRight: theme.sizing.scale800,
-        [theme.mediaQuery.large]: {
-          paddingBottom: theme.sizing.scale800,
-        },
+        display: "flex",
       })}
     >
-      {image ? (
-        <img
+      <div
+        className={css({
+          display: "flex",
+          overflow: "hidden",
+          ...theme.borders.border300,
+          borderWidth: "2px",
+          background: theme.colors.white,
+        })}
+      >
+        <Image
+          {...image}
           id="frame-image"
+          key={activePage.key}
           alt={activePage.name}
-          src={image}
-          className={css({
-            width: "100%",
-            maxWidth: "1280px",
-            boxShadow: theme.lighting.shadow700,
-          })}
         />
-      ) : (
-        <div
-          className={css({
-            width: "100%",
-            height: "calc(100vh - 124px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            [theme.mediaQuery.medium]: {
-              height: "calc(100vh - 60px)",
-            },
-          })}
-        >
-          Yikes! There was a problem rendering this page.
-        </div>
-      )}
+      </div>
     </div>
   );
 }

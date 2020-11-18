@@ -12,7 +12,6 @@ function BottomNavigation() {
     <nav
       className={css({
         ...theme.typography.ParagraphMedium,
-        background: theme.colors.backgroundSecondary,
         paddingTop: theme.sizing.scale800,
         paddingBottom: theme.sizing.scale1200,
         [theme.mediaQuery.large]: {

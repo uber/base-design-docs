@@ -1,15 +1,28 @@
 import fs from "fs";
+import sizeOf from "image-size";
+import https from "https";
 import path from "path";
 import retry from "async-retry";
-import { SiteMap, Page, Section, Canvas, Frame, File, Project } from "./types";
+import {
+  SiteMap,
+  Page,
+  Section,
+  Canvas,
+  Frame,
+  File,
+  Project,
+  ImageData,
+} from "./types";
 
 const RETRY_LIMIT = 10;
 const RETRY_TIMEOUT = 1000 * 30; // 30s
 
 const PROJECT_DATA_PATH = path.join(process.cwd(), "./data/project.json");
 const SITE_MAP_DATA_PATH = path.join(process.cwd(), "./data/siteMap.json");
-const getImageDataPath = (id) =>
-  path.join(process.cwd(), `./data/image-[${id}].json`);
+const getImageDataPath = (key) =>
+  path.join(process.cwd(), `./public/frames/${key}.json`);
+const getImageFilePath = (key) =>
+  path.join(process.cwd(), `./public/frames/${key}.png`);
 
 function getPageKey(canvas: Canvas, frame: Frame) {
   return (
@@ -148,24 +161,29 @@ async function getSiteMap(): Promise<SiteMap> {
   return siteMap;
 }
 
-async function getImage(page: Page): Promise<string> {
-  // For network requests
-  let image = null;
+async function getImage(page: Page): Promise<ImageData> {
+  const image: ImageData = {
+    src: `/frames/${page.key}.png`,
+    height: 0,
+    width: 0,
+  };
+
+  console.log(image.src);
+
   try {
-    if (process.env.CACHE_IMAGES) {
-      const project = fs.readFileSync(getImageDataPath(page.key));
-      const images = JSON.parse(project.toString());
-      image = images[page.id];
-    } else {
-      throw new Error("Do not cache images");
-    }
+    const dimensionsFromDisk = fs.readFileSync(getImageDataPath(page.key));
+    const dimensions = JSON.parse(dimensionsFromDisk.toString());
+    image.height = dimensions.height;
+    image.width = dimensions.width;
+    console.log(`Image for [${page.key}] found locally.`);
   } catch (er) {
+    console.log(`No image for [${page.key}] found locally...`);
+
     try {
-      console.log(`Fetching image for [${page.key}]...`);
       await retry(
         async () => {
           const response = await fetch(
-            `https://api.figma.com/v1/images/${page.fileKey}?ids=${page.id}&format=png&scale=2`,
+            `https://api.figma.com/v1/images/${page.fileKey}?ids=${page.id}&format=png`,
             {
               headers: {
                 "X-FIGMA-TOKEN": process.env.FIGMA_AUTH_TOKEN,
@@ -176,18 +194,16 @@ async function getImage(page: Page): Promise<string> {
           if (contentType === "application/json; charset=utf-8") {
             const json = await response.json();
             if (json.images && json.images[page.id]) {
-              image = json.images[page.id];
-              console.log(`Fetch image for [${page.key}] success!`);
-              if (process.env.CACHE_IMAGES) {
-                try {
-                  fs.writeFileSync(
-                    getImageDataPath(page.key),
-                    JSON.stringify(json.images)
-                  );
-                } catch (er) {
-                  console.log(`There was a problem saving the image to disk.`);
-                  console.log(er);
-                }
+              const imageUrl = json.images[page.id];
+              console.log(`Image generation for [${page.key}] was successful!`);
+              try {
+                const dimensions = await saveImageToDisk(imageUrl, page.key);
+                image.height = dimensions.height;
+                image.width = dimensions.width;
+                console.log("Image saved to disk successfully.");
+              } catch (er) {
+                console.log(`There was a problem saving the image to disk.`);
+                console.log(er);
               }
             } else {
               throw new Error(JSON.stringify(json));
@@ -217,6 +233,23 @@ async function getImage(page: Page): Promise<string> {
   }
 
   return image;
+}
+
+function saveImageToDisk(url, key): Promise<{ height: number; width: number }> {
+  return new Promise((resolve) => {
+    const file = fs.createWriteStream(getImageFilePath(key));
+    file.on("finish", () => {
+      const dimensions = sizeOf(getImageFilePath(key));
+      try {
+        fs.writeFileSync(getImageDataPath(key), JSON.stringify(dimensions));
+      } catch (er) {
+        console.log("There was an error saving image dimensions.");
+        console.error(er);
+      }
+      resolve(dimensions);
+    });
+    https.get(url, (response) => response.pipe(file));
+  });
 }
 
 export { getSiteMap, getImage };

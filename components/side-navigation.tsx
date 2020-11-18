@@ -23,7 +23,6 @@ function SideNavigation() {
       className={css({
         display: "none",
         [theme.mediaQuery.large]: {
-          background: theme.colors.backgroundSecondary,
           position: "fixed",
           top: "60px",
           width: "300px",
