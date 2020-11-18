@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useStyletron } from "baseui";
 import { Grid, Cell } from "baseui/layout-grid";
 
@@ -16,84 +17,42 @@ export async function getStaticProps() {
 export default function Home() {
   const [css, theme] = useStyletron();
   return (
-    <div
-      className={css({
-        background: theme.colors.white,
-        overflow: "hidden",
-        borderRadius: theme.borders.radius400,
-        display: "flex",
-        alignItems: "flex-end",
-        height: "calc(100vh - 164px)",
-        marginLeft: theme.sizing.scale800,
-        marginRight: theme.sizing.scale800,
-        boxShadow: theme.lighting.shadow700,
-        [theme.mediaQuery.medium]: {
-          height: "calc(100vh - 100px)",
-        },
-      })}
-    >
-      <div
+    <div>
+      <h1
         className={css({
-          paddingBottom: theme.sizing.scale800,
-          flexBasis: "75%",
-          [theme.mediaQuery.medium]: {
-            flexBasis: "50%",
-          },
+          ...theme.typography.DisplayLarge,
+          fontSize: "40px",
+          lineHeight: 1.25,
+          margin: 0,
         })}
       >
-        <Grid>
-          <Cell span={[12]}>
-            <h1
-              className={css({
-                ...theme.typography.DisplayLarge,
-                margin: 0,
-              })}
-            >
-              Base
-            </h1>
-            <h2
-              className={css({
-                ...theme.typography.DisplayXSmall,
-                margin: 0,
-                color: theme.colors.contentTertiary,
-              })}
-            >
-              Documentation
-            </h2>
-            <p
-              className={css({
-                ...theme.typography.ParagraphSmall,
-                color: theme.colors.contentTertiary,
-              })}
-            >
-              Reference this site for both high-level patterns as well as
-              component specific guidelines when using the Base design system.
-            </p>
-          </Cell>
-        </Grid>
-      </div>
+        Base Design
+      </h1>
+      <p
+        className={css({
+          ...theme.typography.ParagraphLarge,
+          color: theme.colors.contentTertiary,
+          margin: 0,
+          marginBottom: theme.sizing.scale800,
+        })}
+      >
+        Component specific guidelines for the Base design system.
+      </p>
       <div
         className={css({
-          display: "none",
-          [theme.mediaQuery.medium]: {
-            display: "block",
-            flexBasis: "50%",
-            height: "100%",
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-            backgroundImage: `url('collage-405.png')`,
-          },
-          [theme.mediaQuery.medium + "and (min-height: 405px)"]: {
-            backgroundImage: `url('collage-810.png')`,
-          },
-          [theme.mediaQuery.medium + "and (min-height: 810px)"]: {
-            backgroundImage: `url('collage-1620.png')`,
-          },
-          [theme.mediaQuery.medium + "and (min-height: 1620px)"]: {
-            backgroundImage: `url('collage-3240.png')`,
-          },
+          overflow: "hidden",
+          ...theme.borders.border300,
+          borderWidth: "2px",
+          background: theme.colors.white,
         })}
-      ></div>
+      >
+        <Image
+          src="/collage-3240.png"
+          height="3240"
+          width="5760"
+          layout="responsive"
+        />
+      </div>
     </div>
   );
 }

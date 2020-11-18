@@ -168,6 +168,8 @@ function Layout({ children, ...pageProps }: Props) {
               [theme.mediaQuery.large]: {
                 marginLeft: "300px",
               },
+              padding: theme.sizing.scale800,
+              paddingTop: 0,
             })}
           >
             {children}

@@ -56,19 +56,15 @@ function Page({
     <div
       className={css({
         display: "flex",
-        paddingLeft: theme.sizing.scale800,
-        paddingRight: theme.sizing.scale800,
-        [theme.mediaQuery.large]: {
-          paddingBottom: theme.sizing.scale800,
-        },
       })}
     >
       <div
         className={css({
           display: "flex",
           overflow: "hidden",
-          borderRadius: theme.borders.radius400,
-          boxShadow: theme.lighting.shadow700,
+          ...theme.borders.border300,
+          borderWidth: "2px",
+          background: theme.colors.white,
         })}
       >
         <Image
