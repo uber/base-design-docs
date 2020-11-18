@@ -137,6 +137,7 @@ async function getSiteMap(): Promise<SiteMap> {
                 key: getPageKey(canvas, frame),
                 fileKey,
                 fileName,
+                title: `${section.name} → ${frame.name}`,
               };
               section.children.push(page);
             }

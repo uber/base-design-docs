@@ -60,12 +60,8 @@ function Page({
       })}
     >
       <Head>
-        <title>{activePage.fileName + " → " + activePage.name}</title>
-        <meta
-          property="og:title"
-          content={activePage.fileName + " → " + activePage.name}
-          key="title"
-        />
+        <title>{activePage.title}</title>
+        <meta property="og:title" content={activePage.title} key="title" />
       </Head>
       <div
         className={css({
@@ -80,7 +76,7 @@ function Page({
           {...image}
           id="frame-image"
           key={activePage.key}
-          alt={activePage.name}
+          alt={activePage.title}
         />
       </div>
     </div>
