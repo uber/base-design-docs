@@ -189,3 +189,59 @@ export function SearchIcon({ size = "16px" }: IconProps) {
     </svg>
   );
 }
+
+export function LeftArrowIcon({ size = "16px" }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g
+        transform="matrix(
+         1 0
+         0 1
+         1.800048828125 3
+       )"
+      >
+        <path
+          fillRule="nonzero"
+          clipRule="nonzero"
+          d="M20.2 10.5L4.5 10.5L10 18L6.5 18L0 9L6.5 0L10 0L4.5 7.5L20.2 7.5L20.2 10.5Z"
+          fill="currentColor"
+          opacity="1"
+        />
+      </g>
+    </svg>
+  );
+}
+
+export function RightArrowIcon({ size = "16px" }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g
+        transform="matrix(
+          1 0
+          0 1
+          2 3
+        )"
+      >
+        <path
+          fillRule="nonzero"
+          clipRule="nonzero"
+          d="M20.2 9L13.7 18L10.2 18L15.7 10.5L0 10.5L0 7.5L15.7 7.5L10.2 0L13.7 0L20.2 9Z"
+          fill="currentColor"
+          opacity="1"
+        />
+      </g>
+    </svg>
+  );
+}
