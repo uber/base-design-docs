@@ -81,7 +81,8 @@ export default function Home() {
         <Image
           src="/collage.png"
           layout="fill"
-          className={css({ objectFit: "cover", objectPosition: "left" })}
+          objectFit="cover"
+          objectPosition="left"
         />
       </div>
     </div>
