@@ -89,7 +89,7 @@ function Page({ image }: { image: ImageData }) {
         className={css({ display: "flex", justifyContent: "space-between" })}
       >
         <Button
-          kind="tertiary"
+          kind="secondary"
           startEnhancer={() => <LeftArrowIcon />}
           // @ts-ignore - Missing type in baseui
           title="Previous page"
@@ -117,7 +117,7 @@ function Page({ image }: { image: ImageData }) {
           <Figma size="16px" />
         </Button>
         <Button
-          kind="tertiary"
+          kind="secondary"
           endEnhancer={() => <RightArrowIcon />}
           onClick={() => router.push("/[pageKey]", `/${nextPage.key}`)}
           // @ts-ignore - Missing type in baseui

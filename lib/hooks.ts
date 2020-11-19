@@ -4,7 +4,7 @@ function mod(n, m) {
   return ((n % m) + m) % m;
 }
 
-export function useSiblingPages(siteMap, key) {
+export function useSiblingPages(siteMap = [], key) {
   const siblingPages = useMemo(() => {
     const pages = [];
     let activePageIndex = 0;
@@ -21,7 +21,7 @@ export function useSiblingPages(siteMap, key) {
       : pages.length - 1;
     const nextPageIndex = key ? mod(activePageIndex + 1, pages.length) : 0;
     return [pages[previousPageIndex], pages[nextPageIndex]];
-  }, [key]);
+  }, [siteMap, key]);
 
   return siblingPages;
 }
