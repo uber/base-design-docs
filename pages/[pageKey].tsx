@@ -3,13 +3,11 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { useStyletron } from "baseui";
-import { Button } from "baseui/button";
 import { PageContext } from "../components/layout";
 import { Figma, LeftChevron, RightChevron } from "../components/icons";
 import * as gtag from "../lib/gtag";
 import { useSiblingPages } from "../lib/hooks";
 import { ImageData, Page as PageT } from "../lib/types";
-import { NONAME } from "dns";
 
 async function getStaticPaths() {
   const { getSiteMap } = require("../lib/api");
@@ -50,7 +48,6 @@ async function getStaticProps({ params }) {
 function Page({ image }: { image: ImageData }) {
   const [css, theme] = useStyletron();
   const { activePage, siteMap, figmaLink } = useContext(PageContext);
-  const router = useRouter();
 
   // Scroll to top of page when image changes.
   useEffect(() => {
