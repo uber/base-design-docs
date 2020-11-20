@@ -84,7 +84,13 @@ function Page({ image }: { image: ImageData }) {
           marginBottom: theme.sizing.scale800,
         })}
       >
-        <Image {...image} id="frame-image" key={activePage.key} alt={title} />
+        <Image
+          {...image}
+          id="frame-image"
+          key={activePage.key}
+          alt={title}
+          quality={100}
+        />
       </div>
       <div
         className={css({
