@@ -9,10 +9,7 @@ import SideNavigation from "./side-navigation";
 import Header from "./header";
 import { Page, SiteMap } from "../lib/types";
 import BottomNavigation from "./bottom-navigation";
-
-function mod(n, m) {
-  return ((n % m) + m) % m;
-}
+import { useSiblingPages } from "../lib/hooks";
 
 const HotKey = styled("span", {
   display: "inline-flex",
@@ -55,27 +52,9 @@ function Layout({ children, ...pageProps }: Props) {
   }, []);
 
   const activePageKey = pageProps?.activePage?.key;
-  const handleHorizontalArrow = useCallback(
-    (event) => {
-      if ((event.target as HTMLInputElement).id !== "search" && activePageKey) {
-        const pages = [];
-        let activePageIndex = 0;
-        for (const section of pageProps.siteMap) {
-          for (const page of section.children) {
-            if (activePageKey === page.key) {
-              activePageIndex = pages.length;
-            }
-            pages.push(page);
-          }
-        }
-        const nextPageIndex = mod(
-          activePageIndex + (event.key === "ArrowLeft" ? -1 : 1),
-          pages.length
-        );
-        router.push("/[pageKey]", `/${pages[nextPageIndex].key}`);
-      }
-    },
-    [activePageKey]
+  const [previousPage, nextPage] = useSiblingPages(
+    pageProps.siteMap,
+    activePageKey
   );
 
   useEffect(() => {
@@ -90,8 +69,8 @@ function Layout({ children, ...pageProps }: Props) {
           setHelpModalState(true);
         }
       },
-      ArrowLeft: handleHorizontalArrow,
-      ArrowRight: handleHorizontalArrow,
+      ArrowLeft: () => router.push("/[pageKey]", `/${previousPage.key}`),
+      ArrowRight: () => router.push("/[pageKey]", `/${nextPage.key}`),
     });
     return () => {
       unsubscribe();
@@ -161,9 +140,9 @@ function Layout({ children, ...pageProps }: Props) {
           <SideNavigation />
           <main
             className={css({
-              marginTop: "20px",
+              marginTop: "24px",
               [theme.mediaQuery.medium]: {
-                marginTop: "80px",
+                marginTop: "84px",
               },
               [theme.mediaQuery.large]: {
                 marginLeft: "300px",

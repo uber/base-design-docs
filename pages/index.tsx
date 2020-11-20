@@ -16,41 +16,73 @@ export async function getStaticProps() {
 export default function Home() {
   const [css, theme] = useStyletron();
   return (
-    <div>
-      <h1
-        className={css({
-          ...theme.typography.DisplayLarge,
-          fontSize: "40px",
-          lineHeight: 1.25,
-          margin: 0,
-        })}
-      >
-        Base Documentation
-      </h1>
-      <p
-        className={css({
-          ...theme.typography.ParagraphLarge,
-          color: theme.colors.contentTertiary,
-          margin: 0,
-          marginBottom: theme.sizing.scale800,
-        })}
-      >
-        Component specific guidelines for the Base design system.
-      </p>
+    <div
+      className={css({
+        ...theme.borders.border300,
+        borderWidth: "2px",
+        background: theme.colors.white,
+        display: "flex",
+        height: `calc(100vh - 172px)`,
+        [theme.mediaQuery.medium]: {
+          height: `calc(100vh - 108px)`,
+        },
+      })}
+    >
       <div
         className={css({
-          overflow: "hidden",
-          ...theme.borders.border300,
-          borderWidth: "2px",
-          background: theme.colors.white,
-          maxWidth: "1500px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-end",
+          padding: theme.sizing.scale1200,
+        })}
+      >
+        <h1
+          className={css({
+            ...theme.typography.DisplayLarge,
+            lineHeight: 1,
+            margin: 0,
+          })}
+        >
+          Base
+        </h1>
+        <h1
+          className={css({
+            ...theme.typography.DisplayXSmall,
+            color: theme.colors.contentTertiary,
+            lineHeight: 1,
+            margin: 0,
+            marginBottom: theme.sizing.scale800,
+          })}
+        >
+          Documentation
+        </h1>
+        <p
+          className={css({
+            ...theme.typography.ParagraphLarge,
+            color: theme.colors.contentTertiary,
+            lineHeight: 1.4,
+            margin: 0,
+          })}
+        >
+          Component specific guidelines for the Base design system.
+        </p>
+      </div>
+      <div
+        className={css({
+          position: "relative",
+          flexBasis: "66.66%",
+          flexGrow: "1",
+          display: "none",
+          [theme.mediaQuery.medium]: {
+            display: "block",
+          },
         })}
       >
         <Image
           src="/collage.png"
-          height="3240"
-          width="5760"
-          layout="responsive"
+          layout="fill"
+          objectFit="cover"
+          objectPosition="left"
         />
       </div>
     </div>

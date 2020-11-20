@@ -189,3 +189,59 @@ export function SearchIcon({ size = "16px" }: IconProps) {
     </svg>
   );
 }
+
+export function LeftChevron({ size = "16px" }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g
+        transform="matrix(
+          1 0
+          0 1
+          5.60009765625 2
+        )"
+      >
+        <path
+          fillRule="nonzero"
+          clipRule="nonzero"
+          d="M3.79999 10L11.5 20L7.69998 20L0 10L7.69998 0L11.5 0L3.79999 10Z"
+          fill="currentColor"
+          opacity="1"
+        />
+      </g>
+    </svg>
+  );
+}
+
+export function RightChevron({ size = "16px" }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g
+        transform="matrix(
+          1 0
+          0 1
+          6.89990234375 2
+        )"
+      >
+        <path
+          fillRule="nonzero"
+          clipRule="nonzero"
+          d="M11.5 10L3.80002 20L0 20L7.70001 10L0 0L3.80002 0L11.5 10Z"
+          fill="currentColor"
+          opacity="1"
+        />
+      </g>
+    </svg>
+  );
+}
