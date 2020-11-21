@@ -118,4 +118,4 @@ There have been a lot of issues with the HTML & CSS approach though. To start, i
 
 At a certain point a CMS is probably better suited for delivering structured data that can be rendered nicely across multiple mediums.
 
-So, with all of this considered, for now we use images.
+So, with all of this considered, for now we use images (pngs).

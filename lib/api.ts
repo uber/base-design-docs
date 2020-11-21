@@ -184,7 +184,7 @@ async function getImage(page: Page): Promise<ImageData> {
       await retry(
         async () => {
           const response = await fetch(
-            `https://api.figma.com/v1/images/${page.fileKey}?ids=${page.id}&format=png`,
+            `https://api.figma.com/v1/images/${page.fileKey}?ids=${page.id}&format=png&scale=4`,
             {
               headers: {
                 "X-FIGMA-TOKEN": process.env.FIGMA_AUTH_TOKEN,
