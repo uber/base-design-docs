@@ -1,6 +1,7 @@
 import { useRef, useEffect, useContext } from "react";
 import Link from "next/link";
 import { useStyletron } from "baseui";
+import { Accordion, Panel } from "baseui/accordion";
 import { PageContext } from "./layout";
 import * as gtag from "../lib/gtag";
 
@@ -39,71 +40,60 @@ function SideNavigation() {
         },
       })}
     >
-      {siteMap.map((section) => {
-        return (
-          <div
-            key={section.name}
-            className={css({ marginBottom: theme.sizing.scale800 })}
-          >
-            <div
-              className={css({
-                ...theme.typography.ParagraphMedium,
-                fontFamily: theme.typography.DisplayXSmall.fontFamily,
-                paddingLeft: theme.sizing.scale800,
-                marginBottom: theme.sizing.scale400,
+      <Accordion>
+        {siteMap.map((section) => {
+          return (
+            <Panel title={section.name} key={section.name}>
+              {section.children.map((page) => {
+                const isActive = page.key === activePage.key;
+                return (
+                  <div
+                    ref={isActive ? activeLink : null}
+                    key={page.key}
+                    className={css({
+                      padding: `${theme.sizing.scale200} ${theme.sizing.scale400}`,
+                      marginLeft: theme.sizing.scale600,
+                      marginRight: theme.sizing.scale600,
+                      borderRadius: "3px",
+                      background: isActive
+                        ? theme.colors.backgroundTertiary
+                        : "none",
+                    })}
+                  >
+                    <Link href={`/[pageKey]`} as={`/${page.key}`} passHref>
+                      <a
+                        className={css({
+                          ...theme.typography.ParagraphMedium,
+                          textDecoration: "none",
+                          color: isActive
+                            ? theme.colors.contentPrimary
+                            : theme.colors.contentTertiary,
+                          ":focus-visible": {
+                            outline: `solid 2px ${theme.colors.accent}`,
+                            outlineOffset: "2px",
+                          },
+                          ":hover": {
+                            color: theme.colors.black,
+                          },
+                        })}
+                        onClick={() => {
+                          gtag.event({
+                            action: "click_link_sidenav",
+                            category: "navigation",
+                            label: page.key,
+                          });
+                        }}
+                      >
+                        {page.name}
+                      </a>
+                    </Link>
+                  </div>
+                );
               })}
-            >
-              {section.name}
-            </div>
-            {section.children.map((page) => {
-              const isActive = page.key === activePage.key;
-              return (
-                <div
-                  ref={isActive ? activeLink : null}
-                  key={page.key}
-                  className={css({
-                    padding: `${theme.sizing.scale200} ${theme.sizing.scale400}`,
-                    marginLeft: theme.sizing.scale600,
-                    marginRight: theme.sizing.scale600,
-                    borderRadius: "3px",
-                    background: isActive
-                      ? theme.colors.backgroundTertiary
-                      : "none",
-                  })}
-                >
-                  <Link href={`/[pageKey]`} as={`/${page.key}`} passHref>
-                    <a
-                      className={css({
-                        ...theme.typography.ParagraphMedium,
-                        textDecoration: "none",
-                        color: isActive
-                          ? theme.colors.contentPrimary
-                          : theme.colors.contentTertiary,
-                        ":focus-visible": {
-                          outline: `solid 2px ${theme.colors.accent}`,
-                          outlineOffset: "2px",
-                        },
-                        ":hover": {
-                          color: theme.colors.black,
-                        },
-                      })}
-                      onClick={() => {
-                        gtag.event({
-                          action: "click_link_sidenav",
-                          category: "navigation",
-                          label: page.key,
-                        });
-                      }}
-                    >
-                      {page.name}
-                    </a>
-                  </Link>
-                </div>
-              );
-            })}
-          </div>
-        );
-      })}
+            </Panel>
+          );
+        })}
+      </Accordion>
     </nav>
   );
 }
