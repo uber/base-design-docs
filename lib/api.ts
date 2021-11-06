@@ -119,6 +119,7 @@ async function getSiteMap(): Promise<SiteMap> {
       // Note, we intentionally leave out most of the data sent over from Figma
       // because static prop data is inlined on the page.
       for (const canvas of file.document.children) {
+        console.log(file.name, canvas.name, canvas.type);
         if (canvas.name.match(/^[A-Z]/)) {
           const section: Section = {
             id: canvas.id,
@@ -126,7 +127,9 @@ async function getSiteMap(): Promise<SiteMap> {
             children: [],
           };
           for (const frame of canvas.children) {
+            console.log("  ", frame.name, frame.type);
             if (
+              frame.type === "FRAME" &&
               frame.name.match(/^[A-Z]/) &&
               frame.visible !== false // `visible` is only present when it is false
             ) {
